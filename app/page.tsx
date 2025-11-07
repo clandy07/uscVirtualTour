@@ -1,4 +1,6 @@
 import GoogleMap from './components/Map/GoogleMap';
+import MapControls from './components/Map/MapControls';
+import LocationButton from './components/Map/LocationButton';
 import Image from 'next/image';
 
 import usc_logo from '../public/usc-logo.webp';
@@ -11,13 +13,15 @@ export default function Home() {
         <Image src={usc_logo} alt='USC Logo' className='w-15 h-15 cursor-pointer'/>
         <input
           type="text"
-          placeholder="Search for a location..."
-          className="p-2 rounded-md w-1/3 text-black bg-gray-300"
+          placeholder="Search building/events..."
+          className="p-2 rounded-md w-1/3 text-black bg-gray-300 placeholder:text-gray-600"
         />
         <Image src={settings} alt='Settings Icon' className='w-8 h-8 cursor-pointer'/>
       </header>
       <main className="flex-1 relative">
         <GoogleMap />
+        <MapControls />
+        <LocationButton />
       </main>
     </div>
   );
