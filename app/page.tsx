@@ -1,7 +1,7 @@
+'use client';
+
 import GoogleMap from './components/Map/GoogleMap';
 import Sidebar from './components/Sidebar/Sidebar';
-import MapControls from './components/Map/MapControls';
-import LocationButton from './components/Map/LocationButton';
 import Image from 'next/image';
 
 import usc_logo from '../public/usc-logo.webp';
@@ -22,8 +22,6 @@ export default function Home() {
       <main className="flex-1 relative">
         <GoogleMap />
         <Sidebar />
-        <MapControls />
-        <LocationButton />
       </main>
     </div>
   );
