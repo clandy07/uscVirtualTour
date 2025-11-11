@@ -52,9 +52,14 @@ export const eventsRelations = relations(events, ({ many, one}) => ({
     })
 }));
 
-export const locationsRelations = relations(locations, ({ many }) => ({
+export const locationsRelations = relations(locations, ({ many, one }) => ({
     eventLocations: many(event_location_relations),
-    eventGroupLocations: many(event_group_location_relations) // locations one-to-many event_group_location_relations
+    eventGroupLocations: many(event_group_location_relations), // locations one-to-many event_group_location_relations
+    campus: one(campuses, {
+		fields: [locations.campus_id],
+		references: [campuses.id],
+	}),
+    buildings: many(buildings)
 }));
 
 export const eventLocationRelations = relations(event_location_relations, ({ one }) => ({
@@ -84,4 +89,23 @@ export const eventGroupLocationRelations = relations(event_group_location_relati
         fields: [event_group_location_relations.event_group_id],
         references: [event_groups.id],
     }),
+}));
+
+
+
+// buildings, campuses, and locations relations
+export const campusesRelations = relations(campuses, ({ many }) => ({
+	buildings: many(buildings),
+    locations: many(locations)
+}));
+
+export const buildingsRelations = relations(buildings, ({ one }) => ({
+	campus: one(campuses, {
+		fields: [buildings.campus_id],
+		references: [campuses.id],
+	}),
+    location: one(locations, {
+		fields: [buildings.location_id],
+		references: [locations.id],
+	}), 
 }));
