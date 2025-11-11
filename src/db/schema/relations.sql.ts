@@ -41,15 +41,20 @@ export const userOrgRelations = relations(user_org_relations, ({ one }) => ({
 
 // events, event_location_relations, and locations relations
 export const eventsRelations = relations(events, ({ many, one}) => ({
-    userOrgs: many(user_org_relations),
+    eventLocations: many(event_location_relations),
     organization: one(organizations, {
 		fields: [events.org_id],
 		references: [organizations.id],
 	}),
+    eventGroup: one(event_groups, {
+		fields: [events.event_group_id],
+		references: [event_groups.id],   
+    })
 }));
 
 export const locationsRelations = relations(locations, ({ many }) => ({
-    userOrgs: many(user_org_relations),
+    eventLocations: many(event_location_relations),
+    eventGroupLocations: many(event_group_location_relations) // locations one-to-many event_group_location_relations
 }));
 
 export const eventLocationRelations = relations(event_location_relations, ({ one }) => ({
@@ -60,5 +65,23 @@ export const eventLocationRelations = relations(event_location_relations, ({ one
     location: one(locations, {
         fields: [event_location_relations.location_id],
         references: [locations.id],
+    }),
+}));
+
+
+// event_groups, event_group_location_relations, and locations relations
+export const eventGroupsRelations = relations(event_groups, ({ many }) => ({
+    eventGroupLocations: many(event_group_location_relations),
+    events: many(events)
+}));
+
+export const eventGroupLocationRelations = relations(event_group_location_relations, ({ one }) => ({
+    location: one(locations, {
+        fields: [event_group_location_relations.location_id],
+        references: [locations.id]
+    }),
+    eventGroup: one(event_groups, {
+        fields: [event_group_location_relations.event_group_id],
+        references: [event_groups.id],
     }),
 }));
