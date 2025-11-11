@@ -1,7 +1,12 @@
-import { integer, pgTable } from "drizzle-orm/pg-core";
+import { integer, pgTable, primaryKey, index } from "drizzle-orm/pg-core";
 import { timestamps } from './columns.helpers';
+import { events } from "./events.psql";
+import { locations } from "./locations.psql";
 
 export const event_location_relations = pgTable("event_location_relations", {
-    location_id: integer(),
-    event_id: integer()
-});
+    location_id: integer().references(() => locations.id),
+    event_id: integer().references(() => events.id)
+}, (table) => [
+    primaryKey({ name: 'location_event_composite_pk', columns: [table.location_id, table.event_id] }),
+    index("location_event_composite,idx").on(table.location_id, table.event_id)
+]);
