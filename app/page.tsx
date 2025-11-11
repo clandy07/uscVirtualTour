@@ -1,13 +1,26 @@
 'use client';
 
+import { useState } from 'react';
 import GoogleMap from './components/Map/GoogleMap';
 import Sidebar from './components/Sidebar/Sidebar';
 import Image from 'next/image';
+import { CategoryFilter } from './types';
 
 import usc_logo from '../public/usc-logo.webp';
 import settings from '../public/settings.svg';
 
 export default function Home() {
+  const [activeFilters, setActiveFilters] = useState<CategoryFilter>({
+    academic: true,
+    events: false,
+    food: true,
+    facilities: false,
+    transport: false,
+    study: true,
+    dorms: false,
+    sports: true,
+  });
+
   return (
     <div className="h-screen w-screen flex flex-col">
       <header className="bg-foreground text-background p-4 shadow-md z-10 flex items-center gap-4 justify-between">
@@ -20,8 +33,8 @@ export default function Home() {
         <Image src={settings} alt='Settings Icon' className='w-8 h-8 cursor-pointer'/>
       </header>
       <main className="flex-1 relative">
-        <GoogleMap />
-        <Sidebar />
+        <GoogleMap activeFilters={activeFilters} />
+        <Sidebar onFilterChange={setActiveFilters} />
       </main>
     </div>
   );
