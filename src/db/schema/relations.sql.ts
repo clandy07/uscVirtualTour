@@ -109,3 +109,32 @@ export const buildingsRelations = relations(buildings, ({ one }) => ({
 		references: [locations.id],
 	}), 
 }));
+
+
+
+// schools, departments, and offices relations
+export const schoolsRelations = relations(schools, ({ many }) => ({
+	departments: many(departments),
+    offices: many(offices)
+}));
+
+export const departmentsRelations = relations(departments, ({ one, many }) => ({
+	school: one(schools, {
+		fields: [departments.school_id],
+		references: [schools.id],
+	}),
+    offices: many(offices)
+}));
+
+export const officesRelations = relations(offices, ({ one }) => ({
+	school: one(schools, {
+		fields: [offices.school_id],
+		references: [schools.id],
+	}),
+	department: one(departments, {
+		fields: [offices.department_id],
+		references: [departments.id],
+	}),
+}));
+
+
