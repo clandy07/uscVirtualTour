@@ -49,7 +49,8 @@ export const eventsRelations = relations(events, ({ many, one}) => ({
     eventGroup: one(event_groups, {
 		fields: [events.event_group_id],
 		references: [event_groups.id],   
-    })
+    }),
+    eventRooms: many(event_room_relations)
 }));
 
 export const locationsRelations = relations(locations, ({ many, one }) => ({
@@ -99,7 +100,7 @@ export const campusesRelations = relations(campuses, ({ many }) => ({
     locations: many(locations)
 }));
 
-export const buildingsRelations = relations(buildings, ({ one }) => ({
+export const buildingsRelations = relations(buildings, ({ one, many }) => ({
 	campus: one(campuses, {
 		fields: [buildings.campus_id],
 		references: [campuses.id],
@@ -108,6 +109,7 @@ export const buildingsRelations = relations(buildings, ({ one }) => ({
 		fields: [buildings.location_id],
 		references: [locations.id],
 	}), 
+    rooms: many(rooms)
 }));
 
 
@@ -126,7 +128,7 @@ export const departmentsRelations = relations(departments, ({ one, many }) => ({
     offices: many(offices)
 }));
 
-export const officesRelations = relations(offices, ({ one }) => ({
+export const officesRelations = relations(offices, ({ one, many }) => ({
 	school: one(schools, {
 		fields: [offices.school_id],
 		references: [schools.id],
@@ -135,6 +137,35 @@ export const officesRelations = relations(offices, ({ one }) => ({
 		fields: [offices.department_id],
 		references: [departments.id],
 	}),
+    rooms: many(rooms)
 }));
 
+
+
+// offices, rooms, and buildings relations
+export const roomsRelations = relations(rooms, ({ one, many }) => ({
+    office: one(offices, {
+        fields: [rooms.office_id],
+        references: [offices.id],
+    }),
+    building: one(buildings, {
+        fields: [rooms.building_id],
+        references: [buildings.id],
+    }),
+    eventRooms: many(event_room_relations)
+}));
+
+
+
+// rooms, event_room_relations, and events relations
+export const eventRoomRelations = relations(event_room_relations, ({ one }) => ({
+    room: one(rooms, {
+        fields: [event_room_relations.room_id],
+        references: [rooms.id],
+    }),
+    event: one(events, {
+        fields: [event_room_relations.event_id],
+        references: [events.id],
+    })
+}));
 
