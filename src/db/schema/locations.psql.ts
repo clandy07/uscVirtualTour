@@ -11,6 +11,6 @@ export const locations = pgTable("locations", {
     description: text(),
     campus_id: integer().references(() => campuses.id, {onDelete: 'cascade'})
 }, (table) => [
-    index("name_idx").on(table.name),
+    index("location_name_idx").on(table.name),
     index("category_campus_idx").on(table.category, table.campus_id)
 ]);

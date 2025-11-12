@@ -8,6 +8,6 @@ export const departments = pgTable("departments", {
   school_id: integer().references(() => schools.id, {onDelete: 'cascade'}),
   ...timestamps
 }, (table) => [
-    index("name_idx").on(table.name),
+    index("department_name_idx").on(table.name),
     index("school_idx").on(table.school_id)
 ]);

@@ -10,6 +10,6 @@ export const event_groups = pgTable("event_groups", {
     custom_marker: text(),
     ...timestamps
 }, (table) => [
-    index("date_time_start_idx").on(table.date_time_start),
-    index("date_time_end_idx").on(table.date_time_end)
+    index("event_group_date_time_start_idx").on(table.date_time_start),
+    index("event_group_date_time_end_idx").on(table.date_time_end)
 ]);

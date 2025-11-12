@@ -12,6 +12,6 @@ export const buildings = pgTable("buildings", {
     floor_count: smallint(),
     ...timestamps
 }, (table) => [
-    index("name_idx").on(table.name),
+    index("building_name_idx").on(table.name),
     index("campus_idx").on(table.campus_id)
 ]);

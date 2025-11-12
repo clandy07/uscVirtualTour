@@ -7,5 +7,5 @@ export const schools = pgTable("schools", {
     name: varchar({length: 255}).notNull(),
     ...timestamps
 }, (table) => [
-    index("name_idx").on(table.name)
+    index("school_name_idx").on(table.name)
 ]);

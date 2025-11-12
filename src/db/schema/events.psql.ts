@@ -17,8 +17,8 @@ export const events = pgTable("events", {
     visibility: visibilityEnum(),
     ...timestamps
 }, (table) => [
-    index("date_time_start_idx").on(table.date_time_start),
-    index("date_time_end_idx").on(table.date_time_end),
-    index("event_groupd_id_idx").on(table.event_group_id),
-    index("org_id_idx").on(table.org_id)
+    index("event_date_time_start_idx").on(table.date_time_start),
+    index("event_date_time_end_idx").on(table.date_time_end),
+    index("event_group_idx").on(table.event_group_id),
+    index("org_idx").on(table.org_id)
 ]);
