@@ -1,35 +1,44 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { CategoryFilter } from '@/app/types';
 
-interface SidebarItem {
-  id: string;
-  label: string;
-  icon: string;
-  checked: boolean;
+interface SidebarProps {
+  onFilterChange: (filters: CategoryFilter) => void;
 }
 
-export default function Sidebar() {
-  const [items, setItems] = useState<SidebarItem[]>([
-    { id: 'buildings', label: 'Buildings', icon: '🏢', checked: false },
-    { id: 'events', label: 'Events', icon: '📅', checked: false },
-    { id: 'food', label: 'Food', icon: '🍽️', checked: false },
-    { id: 'facilities', label: 'Facilities', icon: '🏛️', checked: false },
-    { id: 'transport', label: 'Transport/Parking', icon: '🚗', checked: false },
-    { id: 'study', label: 'Study Areas', icon: '📚', checked: false },
-    { id: 'dorms', label: 'Dorms/Residences', icon: '🏠', checked: false },
-    { id: 'sports', label: 'Sports/Recreation', icon: '⚽', checked: false },
-  ]);
+export default function Sidebar({ onFilterChange }: SidebarProps) {
+  const [filters, setFilters] = useState<CategoryFilter>({
+    academic: true,
+    events: false,
+    food: true,
+    facilities: false,
+    transport: false,
+    study: true,
+    dorms: false,
+    sports: true,
+  });
 
-  const toggleItem = (id: string) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, checked: !item.checked } : item
-    ));
+  const items = [
+    { id: 'academic' as keyof CategoryFilter, label: 'Academic Buildings', icon: '🏫' },
+    { id: 'events' as keyof CategoryFilter, label: 'Events', icon: '📅' },
+    { id: 'food' as keyof CategoryFilter, label: 'Food', icon: '🍽️' },
+    { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: '🏛️' },
+    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: '🚗' },
+    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: '📚' },
+    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: '🏠' },
+    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: '⚽' },
+  ];
+
+  const toggleFilter = (id: keyof CategoryFilter) => {
+    const newFilters = { ...filters, [id]: !filters[id] };
+    setFilters(newFilters);
+    onFilterChange(newFilters);
   };
 
   return (
-    <aside className="absolute left-4 top-20 bg-white rounded-lg shadow-lg p-4 w-64 z-20">
+    <aside className="absolute left-4 top-4 bg-white rounded-lg shadow-lg p-4 w-64 z-20 max-h-[calc(100vh-120px)] overflow-y-auto">
+      <h2 className="font-bold text-lg mb-3 text-gray-800">Map Layers</h2>
       <div className="space-y-2">
         {items.map((item) => (
           <label
@@ -38,8 +47,8 @@ export default function Sidebar() {
           >
             <input
               type="checkbox"
-              checked={item.checked}
-              onChange={() => toggleItem(item.id)}
+              checked={filters[item.id]}
+              onChange={() => toggleFilter(item.id)}
               className="w-4 h-4 accent-green-700"
             />
             <span className="text-xl">{item.icon}</span>
