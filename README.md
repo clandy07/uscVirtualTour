@@ -44,11 +44,14 @@ We are following a "Codebase first" approach. Codebase first is when database sc
 
 Below is the workflow when modifying the database:
 
-1. In terminal/CMD run `git pull origin main` so that you get the updates made by other devs in the schema definition of the codebase. Resolve any conflicts that arise.
-2. Modify the schema definition of the database in the code.
-3. In terminal/CMD run `npx drizzle-kit generate` to make migration files.
-4. In terminal/CMD run `npx drizzle-kit migrate` to perform migrations so that your local database gets updated.
-5. Repeat step 1 again and if there are updates to the database schema, repeat step 3 and then step 4. Afterwards you can make a pull request.
+1. Run `git pull origin main` to get latest schema/migrations and resolve any conflicts.
+2. Modify your schema.
+3. Run `npx drizzle-kit generate` to create migration for your changes.
+4. Run `npx drizzle-kit migrate` to apply all unapplied migrations, including yours.
+5. Run `git pull origin main` again before making a pull request. If there are schema updates, do the following before making a pull request:
+    *5.1.* Resolve any conflicts
+    *5.2.* Run `npx drizzle-kit generate` to create migration for conflict resolution changes.
+    *5.3.* Run `npx drizzle-kit migrate` to apply all unapplied migrations, including the new one.
 
 
 ## Learn More
