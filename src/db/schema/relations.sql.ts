@@ -16,6 +16,8 @@ import { users } from "./users.psql";
 
 import { relations } from 'drizzle-orm';
 
+// ALL RELATIONS HAVE BEEN CHECKED
+
 // users, user_org_relations, and organizations relations
 export const usersRelations = relations(users, ({ many }) => ({
     userOrgs: many(user_org_relations),
