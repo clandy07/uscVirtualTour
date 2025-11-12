@@ -5,8 +5,8 @@ export const event_groups = pgTable("event_groups", {
     id:serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     description: text(),
-    date_time_start: timestamp(),
-    date_time_end: timestamp(),
+    date_time_start: timestamp({withTimezone: true}),
+    date_time_end: timestamp({withTimezone: true}),
     custom_marker: text(),
     ...timestamps
 }, (table) => [
