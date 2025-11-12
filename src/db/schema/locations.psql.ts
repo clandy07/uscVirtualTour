@@ -9,8 +9,8 @@ export const locations = pgTable("locations", {
     name: varchar({ length: 255 }).notNull(),
     category: categoryEnum(),
     description: text(),
-    campus_id: integer().references(() => campuses.id)
+    campus_id: integer().references(() => campuses.id, {onDelete: 'cascade'})
 }, (table) => [
     index("name_idx").on(table.name),
-    index("category_campus_id_idx").on(table.category, table.campus_id)
+    index("category_campus_idx").on(table.category, table.campus_id)
 ]);

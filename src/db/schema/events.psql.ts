@@ -3,17 +3,17 @@ import { timestamps } from './columns.helpers';
 import { event_groups } from "./event_groups.psql";
 import { organizations } from "./organizations.psql";
 
-export const visibilityEnum = pgEnum('visibility', ['everyone', 'all_students', 'organization_members']);
+export const visibilityEnum = pgEnum('visibility', ['everyone', 'only_students', 'only_organization_members']);
 
 export const events = pgTable("events", {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     description: text(),
-    date_time_start: timestamp(),
+    date_time_start: timestamp().notNull(),
     date_time_end: timestamp(),
     custom_marker: text(),
-    event_group_id: integer().references(() => event_groups.id),
-    org_id: integer().references(() => organizations.id),
+    event_group_id: integer().references(() => event_groups.id, {onDelete: 'set null'}),
+    org_id: integer().references(() => organizations.id, {onDelete: 'set null'}),
     visibility: visibilityEnum(),
     ...timestamps
 }, (table) => [

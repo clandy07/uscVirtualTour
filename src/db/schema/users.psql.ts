@@ -7,7 +7,7 @@ export const users = pgTable("users", {
     id: serial().primaryKey(),
     student_or_admin_id: integer(),
     first_name: varchar({ length: 255 }).notNull(),
-    mid_name: varchar({ length: 255 }).notNull(), 
+    mid_name: varchar({ length: 255 }), 
     last_name: varchar({ length: 255 }).notNull(),
     password_hash: text(),
     role: roleEnum(),

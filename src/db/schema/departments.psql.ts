@@ -5,9 +5,9 @@ import { schools } from "./schools.psql";
 export const departments = pgTable("departments", {
   id: serial().primaryKey(),
   name: varchar({ length: 255 }).notNull(),
-  school_id: integer().references(() => schools.id),
+  school_id: integer().references(() => schools.id, {onDelete: 'cascade'}),
   ...timestamps
 }, (table) => [
     index("name_idx").on(table.name),
-    index("school_id_idx").on(table.school_id)
+    index("school_idx").on(table.school_id)
 ]);
