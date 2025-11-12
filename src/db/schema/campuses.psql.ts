@@ -7,5 +7,5 @@ export const campuses = pgTable("campuses", {
   address: text(),
   ...timestamps
 }, (table) => [
-    index("name_idx").on(table.name)
+    index("campus_name_idx").on(table.name)
 ]);
