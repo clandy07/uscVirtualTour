@@ -4,15 +4,17 @@ import { useState } from 'react';
 import GoogleMap from './components/Map/GoogleMap';
 import Sidebar from './components/Sidebar/Sidebar';
 import EventsPanel from './components/Events/EventsPanel';
+import BuildingPanel from './components/Buildings/BuildingPanel';
 import Image from 'next/image';
 import { CategoryFilter } from './types';
+import { Building } from '@/types';
 
 import usc_logo from '@/../public/usc-logo.webp';
 import settings from '@/../public/settings.svg';
 
 export default function Home() {
   const [activeFilters, setActiveFilters] = useState<CategoryFilter>({
-    academic: true,
+    building: true,
     events: false,
     food: true,
     facilities: false,
@@ -22,11 +24,12 @@ export default function Home() {
     sports: true,
   });
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
 
   return (
     <div className="h-screen w-screen flex flex-col">
       <header className="bg-foreground text-background p-4 shadow-md z-10 flex items-center gap-4 justify-between">
-        <Image src={usc_logo} alt='USC Logo' className='w-15 h-15 cursor-pointer'/>
+        <Image src={usc_logo} alt='USC Logo' className='w-10 h-10 cursor-pointer md:w-15 md:h-15'/>
         <input
           type="text"
           placeholder="Search building/events..."
@@ -39,11 +42,16 @@ export default function Home() {
           activeFilters={activeFilters}
           selectedEventId={selectedEventId}
           onEventSelect={setSelectedEventId}
+          onBuildingSelect={setSelectedBuilding}
         />
         <Sidebar onFilterChange={setActiveFilters} />
         {activeFilters.events && (
           <EventsPanel onEventClick={setSelectedEventId} />
         )}
+        <BuildingPanel
+          building={selectedBuilding}
+          onClose={() => setSelectedBuilding(null)}
+        />
       </main>
     </div>
   );

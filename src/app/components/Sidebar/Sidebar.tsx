@@ -2,6 +2,16 @@
 
 import { useState } from 'react';
 import { CategoryFilter } from '@/app/types';
+import Image from 'next/image';
+
+import BuildingIcon from '../../../../public/building.svg';
+import EventIcon from '../../../../public/event.svg';
+import FoodIcon from '../../../../public/food.svg';
+import FacilityIcon from '../../../../public/facility.svg';
+import TransportIcon from '../../../../public/parking.svg';
+import StudyIcon from '../../../../public/study.svg';
+import DormIcon from '../../../../public/dorm.svg';
+import SportIcon from '../../../../public/sport.svg';
 
 interface SidebarProps {
   onFilterChange: (filters: CategoryFilter) => void;
@@ -9,7 +19,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onFilterChange }: SidebarProps) {
   const [filters, setFilters] = useState<CategoryFilter>({
-    academic: true,
+    building: true,
     events: false,
     food: true,
     facilities: false,
@@ -20,14 +30,14 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
   });
 
   const items = [
-    { id: 'academic' as keyof CategoryFilter, label: 'Academic Buildings', icon: '🏫' },
-    { id: 'events' as keyof CategoryFilter, label: 'Events', icon: '📅' },
-    { id: 'food' as keyof CategoryFilter, label: 'Food', icon: '🍽️' },
-    { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: '🏛️' },
-    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: '🚗' },
-    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: '📚' },
-    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: '🏠' },
-    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: '⚽' },
+    { id: 'building' as keyof CategoryFilter, label: 'Academic Buildings', icon: BuildingIcon },
+    { id: 'events' as keyof CategoryFilter, label: 'Events', icon: EventIcon },
+    { id: 'food' as keyof CategoryFilter, label: 'Food', icon: FoodIcon },
+    { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: FacilityIcon },
+    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: TransportIcon },
+    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: StudyIcon },
+    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: DormIcon },
+    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: SportIcon },
   ];
 
   const toggleFilter = (id: keyof CategoryFilter) => {
@@ -51,7 +61,13 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
               onChange={() => toggleFilter(item.id)}
               className="w-4 h-4 accent-green-700"
             />
-            <span className="text-xl">{item.icon}</span>
+            <Image 
+              src={item.icon} 
+              alt={item.label}
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
             <span className="text-sm text-gray-700">{item.label}</span>
           </label>
         ))}

@@ -3,27 +3,41 @@ import React from 'react';
 import { useState } from 'react';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { MAP_CONFIG } from '@/app/lib/googleMaps';
-import { MOCK_LOCATIONS, MOCK_EVENTS } from '@/app/lib/mockData';
-import { CategoryFilter, Location, Event } from '@/app/types';
+import { MOCK_LOCATIONS, MOCK_EVENTS, MOCK_BUILDINGS } from '@/app/lib/mockData';
+import { CategoryFilter, Location, Event, Building } from '@/app/types';
 import MapController from './MapController';
 import LocationMarker from './LocationMarker';
 import EventMarker from './EventMarker';
+import BuildingMarker from './BuildingMarker';
 
 interface GoogleMapProps {
   activeFilters: CategoryFilter;
   selectedEventId?: number | null;
   onEventSelect?: (eventId: number | null) => void;
+  onBuildingSelect?: (building: Building | null) => void;
 }
 
-export default function GoogleMap({ activeFilters, selectedEventId, onEventSelect }: GoogleMapProps) {
+export default function GoogleMap({ activeFilters, selectedEventId, onEventSelect, onBuildingSelect }: GoogleMapProps) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<{ event: Event; location: Location } | null>(null);
+  const [selectedBuilding, setSelectedBuilding] = useState<{ building: Building; location: Location } | null>(null);
 
   const getFilteredLocations = () => {
+    // Exclude building category from regular location markers since buildings are handled separately
     return MOCK_LOCATIONS.filter(location => {
-      // Check if the location's category is enabled in filters
+      if (location.category === 'building') return false;
       return activeFilters[location.category as keyof CategoryFilter];
     });
+  };
+
+  const getFilteredBuildings = () => {
+    if (!activeFilters.building) return [];
+    
+    // Map buildings to their locations
+    return MOCK_BUILDINGS.map(building => {
+      const location = MOCK_LOCATIONS.find(loc => loc.id === building.location_id);
+      return location ? { building, location } : null;
+    }).filter(item => item !== null) as { building: Building; location: Location }[];
   };
 
   const getFilteredEvents = () => {
@@ -36,18 +50,37 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
   };
 
   const filteredLocations = getFilteredLocations();
+  const filteredBuildings = getFilteredBuildings();
   const filteredEvents = getFilteredEvents();
 
   const handleLocationClick = (location: Location) => {
     setSelectedLocation(location);
     setSelectedEvent(null);
+    setSelectedBuilding(null);
     onEventSelect?.(null);
+    onBuildingSelect?.(null);
+  };
+
+  const handleBuildingClick = (building: Building, location: Location) => {
+    setSelectedBuilding({ building, location });
+    setSelectedLocation(null);
+    setSelectedEvent(null);
+    onEventSelect?.(null);
+  };
+
+  const handleViewBuildingDetails = () => {
+    if (selectedBuilding) {
+      onBuildingSelect?.(selectedBuilding.building);
+      setSelectedBuilding(null); // Close the preview card
+    }
   };
 
   const handleEventClick = (event: Event, location: Location) => {
     setSelectedEvent({ event, location });
     setSelectedLocation(null);
+    setSelectedBuilding(null);
     onEventSelect?.(event.id);
+    onBuildingSelect?.(null);
   };
 
   // Handle event selection from EventsPanel
@@ -75,12 +108,22 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
       >
         <MapController />
         
-        {/* Render location markers */}
+        {/* Render location markers (excluding buildings) */}
         {filteredLocations.map((location) => (
           <LocationMarker
             key={`location-${location.id}`}
             location={location}
             onClick={handleLocationClick}
+          />
+        ))}
+
+        {/* Render building markers using their location coordinates */}
+        {filteredBuildings.map(({ building, location }) => (
+          <BuildingMarker
+            key={`building-${building.id}`}
+            building={building}
+            location={location}
+            onClick={(bldg) => handleBuildingClick(bldg, location)}
           />
         ))}
 
@@ -117,6 +160,32 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
           )}
           <button className="w-full bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded transition-colors text-sm font-medium">
             Get Directions
+          </button>
+        </div>
+      )}
+
+      {/* Preview card for selected building */}
+      {selectedBuilding && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-white p-4 rounded-lg shadow-xl z-30 max-w-sm w-80">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="font-bold text-lg text-gray-800">🏛️ {selectedBuilding.building.name}</h3>
+            <button
+              onClick={() => setSelectedBuilding(null)}
+              className="text-gray-500 hover:text-gray-700 text-xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+          {selectedBuilding.building.floor_array && (
+            <div className="mb-3">
+              <span className='text-gray-700'>{selectedBuilding.building.description}</span>
+            </div>
+          )}
+          <button 
+            onClick={handleViewBuildingDetails}
+            className="w-full bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded transition-colors text-sm font-medium"
+          >
+            View Building Details
           </button>
         </div>
       )}

@@ -1,7 +1,7 @@
 export interface Location {
   id: number;
   name: string;
-  category: 'building' | 'food' | 'sports' | 'facilities' | 'transport' | 'study' | 'dorms';
+  category: 'academic' | 'food' | 'sports' | 'facilities' | 'transport' | 'study' | 'dorms';
   description?: string;
   geometry_id: number;
   campus_id: number;
@@ -11,33 +11,9 @@ export interface Location {
 export interface Building {
   id: number;
   name: string;
-  description?: string;
   campus_id: number;
   floor_array?: number[];
   location_id: number;
-}
-
-export interface Room {
-  id: string;
-  name: string;
-  building_id: string;
-  office_id?: string;
-  geometry_id: string;
-  description?: string;
-  floor_index: number;
-}
-
-export interface Office {
-  id: string;
-  name: string;
-  department_id: string;
-  school_id: string;
-}
-
-export interface Department {
-  id: string;
-  name: string;
-  school_id: string;
 }
 
 export interface Event {
