@@ -152,7 +152,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
           {selectedLocation.description && (
             <p className="text-sm text-gray-700 mb-3">{selectedLocation.description}</p>
           )}
-          <button className="w-full bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-medium">
+          <button className="w-full bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-bold">
             Get Directions
           </button>
         </div>
@@ -179,7 +179,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
           )}
           <button 
             onClick={handleViewBuildingDetails}
-            className="w-full bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-medium"
+            className="w-full bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-bold"
           >
             View Building Details
           </button>
@@ -202,20 +202,20 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
             </button>
           </div>
           <p className="text-sm text-gray-600 mb-2">
-            <span className="font-medium">Location:</span> {selectedEvent.location.name}
+            <span className="font-bold">Location:</span> {selectedEvent.location.name}
           </p>
           <p className="text-sm text-gray-600 mb-2">
-            <span className="font-medium">Start:</span>{' '}
+            <span className="font-bold">Start:</span>{' '}
             {new Date(selectedEvent.event.date_time_start).toLocaleString()}
           </p>
           <p className="text-sm text-gray-600 mb-3">
-            <span className="font-medium">End:</span>{' '}
+            <span className="font-bold">End:</span>{' '}
             {new Date(selectedEvent.event.date_time_end).toLocaleString()}
           </p>
           {selectedEvent.event.description && (
             <p className="text-sm text-gray-700 mb-3">{selectedEvent.event.description}</p>
           )}
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-medium">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition-all hover:scale-105 text-sm font-bold">
             View Event Details
           </button>
         </div>
