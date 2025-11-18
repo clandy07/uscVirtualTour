@@ -1,13 +1,6 @@
 import Image from 'next/image';
 
-import BuildingSvg from '../../../../public/building.svg';
-import FoodSvg from '../../../../public/food.svg';
-import SportSvg from '../../../../public/sport.svg';
-import StudySvg from '../../../../public/study.svg';
-import FacilitySvg from '../../../../public/facility.svg';
-import TransportSvg from '../../../../public/parking.svg';
-import DormSvg from '../../../../public/dorm.svg';
-import EventSvg from '../../../../public/event.svg';
+import { buildingIcon, eventsIcon, foodIcon, facilitiesIcon, transportIcon, studyIcon, dormsIcon, sportsIcon }  from "../../lib/icons";
 
 const ICON_SIZE = 24; // Inner icon size
 const CONTAINER_SIZE = 48; // Outer circle size
@@ -35,7 +28,7 @@ const IconWrapper = ({ children, bgColor, borderColor }: IconWrapperProps) => (
 export const BuildingIcon = () => (
   <IconWrapper bgColor="#991B1B" borderColor="#FFFFFF">
     <Image 
-      src={BuildingSvg}
+      src={buildingIcon}
       alt="Building"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -47,7 +40,7 @@ export const BuildingIcon = () => (
 export const FoodIcon = () => (
   <IconWrapper bgColor="#EA580C" borderColor="#FFFFFF">
     <Image 
-      src={FoodSvg}
+      src={foodIcon}
       alt="Food"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -59,7 +52,7 @@ export const FoodIcon = () => (
 export const SportsIcon = () => (
   <IconWrapper bgColor="#16A34A" borderColor="#FFFFFF">
     <Image 
-      src={SportSvg}
+      src={sportsIcon}
       alt="Sports"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -71,7 +64,7 @@ export const SportsIcon = () => (
 export const StudyIcon = () => (
   <IconWrapper bgColor="#0891B2" borderColor="#FFFFFF">
     <Image 
-      src={StudySvg}
+      src={studyIcon}
       alt="Study"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -83,7 +76,7 @@ export const StudyIcon = () => (
 export const FacilitiesIcon = () => (
   <IconWrapper bgColor="#7C3AED" borderColor="#FFFFFF">
     <Image 
-      src={FacilitySvg}
+      src={facilitiesIcon}
       alt="Facilities"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -95,7 +88,7 @@ export const FacilitiesIcon = () => (
 export const TransportIcon = () => (
   <IconWrapper bgColor="#6B7280" borderColor="#FFFFFF">
     <Image 
-      src={TransportSvg}
+      src={transportIcon}
       alt="Transport"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -107,7 +100,7 @@ export const TransportIcon = () => (
 export const DormsIcon = () => (
   <IconWrapper bgColor="#DC2626" borderColor="#FFFFFF">
     <Image 
-      src={DormSvg}
+      src={dormsIcon}
       alt="Dorms"
       width={ICON_SIZE}
       height={ICON_SIZE}
@@ -131,7 +124,7 @@ export const EventIcon = ({ isOngoing, isUpcoming }: EventIconProps) => {
   return (
     <IconWrapper bgColor={getBgColor()} borderColor="#FFFFFF">
       <Image 
-        src={EventSvg}
+        src={eventsIcon}
         alt="Event"
         width={ICON_SIZE}
         height={ICON_SIZE}

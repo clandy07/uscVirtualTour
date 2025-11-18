@@ -9,8 +9,7 @@ import Image from "next/image";
 import { CategoryFilter } from "./types";
 import { Building } from "@/types";
 
-import usc_logo from "@/../public/usc-logo.webp";
-import profile from "@/../public/profile.svg";
+import { uscLogo, profileIcon }  from "../app/lib/icons";
 
 export default function Home() {
 	const [activeFilters, setActiveFilters] = useState<CategoryFilter>({
@@ -32,7 +31,7 @@ export default function Home() {
 		<div className="h-screen w-screen flex flex-col">
 			<header className="bg-transparent text-background p-4 px-6 z-50 flex items-center gap-4 justify-between absolute top-0 left-0 w-full">
 				<Image
-					src={usc_logo}
+					src={uscLogo}
 					alt="USC Logo"
 					className="w-10 h-10 cursor-pointer md:w-15 md:h-15"
 				/>
@@ -45,7 +44,7 @@ export default function Home() {
 				</div>
 				<div className="bg-gray-400 rounded-full p-1">
 					<Image
-						src={profile}
+						src={profileIcon}
 						alt="Profile Icon"
 						className="w-8 h-8 cursor-pointer brightness-0 invert"
 					/>

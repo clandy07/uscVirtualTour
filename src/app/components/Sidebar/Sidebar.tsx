@@ -4,14 +4,7 @@ import { useState } from 'react';
 import { CategoryFilter } from '@/app/types';
 import Image from 'next/image';
 
-import BuildingIcon from '../../../../public/building.svg';
-import EventIcon from '../../../../public/event.svg';
-import FoodIcon from '../../../../public/food.svg';
-import FacilityIcon from '../../../../public/facility.svg';
-import TransportIcon from '../../../../public/parking.svg';
-import StudyIcon from '../../../../public/study.svg';
-import DormIcon from '../../../../public/dorm.svg';
-import SportIcon from '../../../../public/sport.svg';
+import { buildingIcon, eventsIcon, foodIcon, facilitiesIcon, transportIcon, studyIcon, dormsIcon, sportsIcon }  from "../../lib/icons";
 
 interface SidebarProps {
   onFilterChange: (filters: CategoryFilter) => void;
@@ -32,14 +25,14 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const items = [
-    { id: 'building' as keyof CategoryFilter, label: 'Academic Buildings', icon: BuildingIcon },
-    { id: 'events' as keyof CategoryFilter, label: 'Events', icon: EventIcon },
-    { id: 'food' as keyof CategoryFilter, label: 'Food', icon: FoodIcon },
-    { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: FacilityIcon },
-    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: TransportIcon },
-    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: StudyIcon },
-    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: DormIcon },
-    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: SportIcon },
+    { id: 'building' as keyof CategoryFilter, label: 'Academic Buildings', icon: buildingIcon },
+    { id: 'events' as keyof CategoryFilter, label: 'Events', icon: eventsIcon },
+    { id: 'food' as keyof CategoryFilter, label: 'Food', icon: foodIcon },
+    { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: facilitiesIcon },
+    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: transportIcon },
+    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: studyIcon },
+    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: dormsIcon },
+    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: sportsIcon },
   ];
 
   const toggleFilter = (id: keyof CategoryFilter) => {
