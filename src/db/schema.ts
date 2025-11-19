@@ -108,6 +108,14 @@ export const events = pgTable("events", {
     index("org_idx").on(table.org_id)
 ]);
 
+export const schools = pgTable("schools", {
+    id: serial().primaryKey(),
+    name: varchar({length: 255}).notNull(),
+    ...timestamps
+}, (table) => [
+    index("school_name_idx").on(table.name)
+]);
+
 export const offices = pgTable("offices", {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
