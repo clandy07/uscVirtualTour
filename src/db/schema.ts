@@ -8,7 +8,8 @@ export const roleEnum = pgEnum('role', ['student', 'admin']);
 export const users = pgTable("users", {
     id: serial().primaryKey(),
     email: varchar({length: 320}).notNull(),
-    student_or_admin_id: integer(),
+    // student_or_admin_id: integer(), // we might use the username plugin so this might be removed
+    username: varchar({length: 255}).notNull(), //this is the student ID or admin ID field. its now called "username" kay arte ang better-auth
     first_name: varchar({ length: 255 }).notNull(),
     mid_name: varchar({ length: 255 }), 
     last_name: varchar({ length: 255 }).notNull(),
@@ -16,7 +17,7 @@ export const users = pgTable("users", {
     ...timestamps
 },(t) => [
     index("last_name_idx").on(t.last_name),
-    unique("users_student_or_admin_id_role_composite_unique").on(t.student_or_admin_id, t.role)
+    unique("username_role_composite_unique").on(t.username, t.role)
 ]);
 
 export const organizations = pgTable("organizations", {
@@ -332,3 +333,36 @@ export const eventRoomRelations = relations(event_room_relations, ({ one }) => (
     })
 }));
 
+export const schema = {
+    users,
+    organizations,
+    user_org_relations,
+    campuses,
+    locations,
+    buildings,
+    event_groups,
+    events,
+    schools,
+    departments,
+    offices,
+    rooms,
+    event_room_relations,
+    event_location_relations,
+    event_group_location_relations,
+
+    usersRelations,
+    organizationsRelations,
+    userOrgRelations,
+    eventsRelations,
+    locationsRelations,
+    eventLocationRelations,
+    eventGroupsRelations,
+    eventGroupLocationRelations,
+    campusesRelations,
+    buildingsRelations,
+    schoolsRelations,
+    departmentsRelations,
+    officesRelations,
+    roomsRelations,
+    eventRoomRelations
+};
