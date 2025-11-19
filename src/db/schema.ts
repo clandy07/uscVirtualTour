@@ -1,4 +1,6 @@
-import { smallint, integer, serial, pgTable, primaryKey, varchar, pgEnum, boolean, unique, text, index } from "drizzle-orm/pg-core";
+import { smallint, integer, serial, timestamp, pgTable, 
+        primaryKey, varchar, pgEnum, boolean, unique, 
+        text, index } from "drizzle-orm/pg-core";
 import {timestamps} from './columns.helpers'
 
 export const roleEnum = pgEnum('role', ['student', 'admin']);
@@ -73,3 +75,24 @@ export const buildings = pgTable("buildings", {
 ]);
 
 
+
+
+export const visibilityEnum = pgEnum('visibility', ['everyone', 'only_students', 'only_organization_members']);
+
+export const events = pgTable("events", {
+    id: serial().primaryKey(),
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    date_time_start: timestamp({withTimezone: true}).notNull(),
+    date_time_end: timestamp({withTimezone: true}),
+    custom_marker: text(),
+    event_group_id: integer().references(() => event_groups.id, {onDelete: 'set null'}),
+    org_id: integer().references(() => organizations.id, {onDelete: 'set null'}),
+    visibility: visibilityEnum(),
+    ...timestamps
+}, (table) => [
+    index("event_date_time_start_idx").on(table.date_time_start),
+    index("event_date_time_end_idx").on(table.date_time_end),
+    index("event_group_idx").on(table.event_group_id),
+    index("org_idx").on(table.org_id)
+]);
