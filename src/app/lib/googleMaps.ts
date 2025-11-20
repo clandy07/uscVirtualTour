@@ -12,10 +12,3 @@ export const MAP_CONFIG: MapConfig = {
   apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
 };
 
-export const MAP_STYLES = [
-  {
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  },
-];

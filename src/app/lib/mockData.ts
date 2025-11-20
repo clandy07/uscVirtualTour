@@ -1,41 +1,12 @@
-export interface Location {
-  id: number;
-  name: string;
-  category: 'academic' | 'food' | 'sports' | 'facilities' | 'transport' | 'study' | 'dorms';
-  description?: string;
-  geometry_id: number;
-  campus_id: number;
-  coordinates: { lat: number; lng: number };
-}
-
-export interface Building {
-  id: number;
-  name: string;
-  campus_id: number;
-  floor_array?: number[];
-  location_id: number;
-}
-
-export interface Event {
-  id: number;
-  theme: string;
-  description: string;
-  date_time_start: string;
-  date_time_end: string;
-  custom_marker?: string;
-  event_group_id?: number;
-  org_id?: number;
-  visibility: 'public' | 'private';
-  location_id: number;
-}
+import { Location, Building, Event } from '../types/index';
 
 // Mock USC Talamban Campus Locations
 export const MOCK_LOCATIONS: Location[] = [
-  // Academic Buildings
+  // Buildings
   {
     id: 1,
     name: 'Bunzel Building',
-    category: 'academic',
+    category: 'building',
     description: 'Main academic building with classrooms and faculty offices',
     geometry_id: 1,
     campus_id: 1,
@@ -44,7 +15,7 @@ export const MOCK_LOCATIONS: Location[] = [
   {
     id: 2,
     name: 'SMED Building',
-    category: 'academic',
+    category: 'building',
     description: 'Science laboratories and technology classrooms',
     geometry_id: 2,
     campus_id: 1,
@@ -53,7 +24,7 @@ export const MOCK_LOCATIONS: Location[] = [
   {
     id: 3,
     name: 'SAFAD Buidling',
-    category: 'academic',
+    category: 'building',
     description: 'USC School of Arts, Fine Arts, and Design',
     geometry_id: 3,
     campus_id: 1,
@@ -180,10 +151,10 @@ export const MOCK_LOCATIONS: Location[] = [
 ];
 
 export const MOCK_BUILDINGS: Building[] = [
-  { id: 1, name: 'Bunzel Building', campus_id: 1, floor_array: [1, 2, 3, 4], location_id: 1 },
-  { id: 2, name: 'SMED Building', campus_id: 1, floor_array: [1, 2, 3], location_id: 2 },
-  { id: 3, name: 'SAFAD Building', campus_id: 1, floor_array: [1, 2, 3, 4, 5], location_id: 3 },
-  { id: 4, name: 'Learning Resource Center', campus_id: 1, floor_array: [1, 2, 3, 4, 5], location_id: 4 },
+  { id: 1, name: 'Bunzel Building', campus_id: 1, description: "Cool kids", floor_array: [1, 2, 3, 4], location_id: 1 },
+  { id: 2, name: 'SMED Building', campus_id: 1, description: "Trendy kids", floor_array: [1, 2, 3], location_id: 2 },
+  { id: 3, name: 'SAFAD Building', campus_id: 1, description: "Art kids", floor_array: [1, 2, 3, 4, 5], location_id: 3 },
+  { id: 4, name: 'Learning Resource Center', campus_id: 1, description: "Just an ordinary library", floor_array: [1, 2, 3, 4, 5], location_id: 4 },
 ];
 
 export const MOCK_EVENTS: Event[] = [
