@@ -8,6 +8,7 @@ export const roleEnum = pgEnum('role', ['student', 'admin']);
 export const users = pgTable("users", {
     id: serial().primaryKey(),
     email: varchar({length: 320}).notNull(),
+    email_verified: boolean(),
     // student_or_admin_id: integer(), // we might use the username plugin so this might be removed
     username: varchar({length: 255}).notNull(), //this is the student ID or admin ID field. its now called "username" kay arte ang better-auth
     displayUsername: varchar({length: 255}).notNull(),
@@ -20,6 +21,13 @@ export const users = pgTable("users", {
     index("last_name_idx").on(t.last_name),
     unique("username_unique").on(t.username)
 ]);
+
+export const user_profiles = pgTable("user_profiles", {
+    user_id: serial().primaryKey().references(() => users.id, {onDelete: 'cascade'}),
+    role: roleEnum().default("student")
+}, (table) => [
+    unique("user_profile_unique").on(table.user_id)
+])
 
 export const organizations = pgTable("organizations", {
     id: serial().primaryKey(),
@@ -182,8 +190,16 @@ import { relations } from 'drizzle-orm';
 // ALL RELATIONS HAVE BEEN CHECKED
 
 // users, user_org_relations, and organizations relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
     userOrgs: many(user_org_relations),
+    userProfiles: one(user_profiles)
+}));
+
+export const userProfileRelations = relations(user_profiles, ({ one }) => ({
+	user: one(users, { 
+        fields: [user_profiles.user_id], 
+        references: [users.id] 
+    }),
 }));
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
