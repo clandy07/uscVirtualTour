@@ -2,10 +2,11 @@ import { smallint, integer, serial, timestamp, pgTable,
         primaryKey, varchar, pgEnum, boolean, unique, 
         text, index } from "drizzle-orm/pg-core";
 import {timestamps} from './columns.helpers'
-import { users, sessions, accounts, verifications, userRelations, sessionRelations, accountRelations} from "./auth-schema";
+import * as authSchema from "./auth-schema";
 
 export const roleEnum = pgEnum('role', ['student', 'admin']);
 
+export const users = authSchema.users;
 // export const users = pgTable("users", {
 //     id: serial().primaryKey(),
 //     email: varchar({length: 320}).notNull(),
@@ -22,6 +23,13 @@ export const roleEnum = pgEnum('role', ['student', 'admin']);
 //     index("last_name_idx").on(t.last_name),
 //     unique("username_unique").on(t.username)
 // ]);
+
+export const sessions = authSchema.sessions;
+export const accounts = authSchema.accounts;
+export const verifications = authSchema.verifications;
+export const userRelations = authSchema.userRelations;
+export const sessionRelations = authSchema.sessionRelations
+export const accountRelations = authSchema.accountRelations;
 
 export const user_profiles = pgTable("user_profiles", {
     user_id: integer().references(() => users.id, {onDelete: 'cascade'}),
