@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, unique} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -14,12 +14,9 @@ export const users = pgTable("users", {
     .notNull(),
   username: text("username").notNull(),
   displayUsername: text("display_username"),
-  mid_name: text("mid_name").default("joe").notNull(),
+  mid_name: text("mid_name"),
   last_name: text("last_name").default("joe").notNull(),
-},(t) => [
-    index("last_name_idx").on(t.last_name),
-    unique("username_unique").on(t.username)
-]);
+});
 
 export const sessions = pgTable(
   "sessions",
