@@ -23,7 +23,7 @@ export const users = pgTable("users", {
 ]);
 
 export const user_profiles = pgTable("user_profiles", {
-    user_id: serial().primaryKey().references(() => users.id, {onDelete: 'cascade'}),
+    user_id: integer().references(() => users.id, {onDelete: 'cascade'}),
     role: roleEnum().default("student")
 }, (table) => [
     unique("user_profile_unique").on(table.user_id)
