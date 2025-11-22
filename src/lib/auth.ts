@@ -9,7 +9,7 @@ export const auth = betterAuth({
         enabled: true, 
     }, 
     user: {
-        modelName: "users",
+        modelName: "user",
         fields: {
             name: "first_name",
             createdAt: "created_at",
