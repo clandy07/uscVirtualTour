@@ -29,8 +29,7 @@ export const auth = betterAuth({
             },
             mid_name:{
                 type: "string",
-                required: true,
-                defaultValue: "joe",
+                required: false,
                 input: false, // don't allow user to set username
             },
             last_name:{
