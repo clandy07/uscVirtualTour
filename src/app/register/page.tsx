@@ -407,7 +407,7 @@ export default function RegisterPage() {
                         </div>
 
                         {/* Terms and Conditions */}
-                        <div className="flex items-start">
+                        {/* <div className="flex items-start">
                             <input
                                 id="terms"
                                 name="terms"
@@ -425,7 +425,7 @@ export default function RegisterPage() {
                                     Privacy Policy
                                 </Link>
                             </label>
-                        </div>
+                        </div> */}
 
                         {/* Submit Button */}
                         <button

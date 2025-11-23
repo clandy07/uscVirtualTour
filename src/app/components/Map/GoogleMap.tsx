@@ -14,20 +14,12 @@ interface GoogleMapProps {
 }
 
 // TODO: Replace with actual API calls to fetch locations, buildings, and events
-// These will come from your database via API routes
 
 export default function GoogleMap({ activeFilters, selectedEventId, onEventSelect, onBuildingSelect }: GoogleMapProps) {
   // TODO: Add state for fetched data from API
-  // const [locations, setLocations] = useState<Location[]>([]);
-  // const [buildings, setBuildings] = useState<Building[]>([]);
-  // const [events, setEvents] = useState<Event[]>([]);
-
+ 
   // TODO: Fetch data from API endpoints
-  // useEffect(() => {
-  //   fetchLocations().then(setLocations);
-  //   fetchBuildings().then(setBuildings);
-  //   fetchEvents().then(setEvents);
-  // }, []);
+  
 
   return (
     <APIProvider apiKey={MAP_CONFIG.apiKey}>
@@ -42,10 +34,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
         <MapController />
         
         {/* TODO: Add markers here when data is fetched from API */}
-        {/* Example: */}
-        {/* {locations.map(location => (
-          <LocationMarker key={location.id} location={location} onClick={handleLocationClick} />
-        ))} */}
+       
       </Map>
 
       {/* TODO: Re-enable info cards when implementing API data */}
