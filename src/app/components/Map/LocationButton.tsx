@@ -14,40 +14,42 @@ export default function LocationButton({ onLocationFound }: LocationButtonProps)
     setIsLoading(true);
     setError(null);
 
-    useGoogleGeolocation();
 
-    // try {
-    //   // Try browser geolocation first
-    //   if (navigator.geolocation) {
-    //     navigator.geolocation.getCurrentPosition(
-    //       (position) => {
-    //         const coords = {
-    //           lat: position.coords.latitude,
-    //           lng: position.coords.longitude,
-    //         };
-    //         onLocationFound(coords);
-    //         setIsLoading(false);
-    //       },
-    //       async (geoError) => {
-    //         console.warn('Browser geolocation failed, trying Google API:', geoError);
-    //         // Fallback to Google Geolocation API
-    //         await useGoogleGeolocation();
-    //       },
-    //       {
-    //         enableHighAccuracy: true,
-    //         timeout: 5000,
-    //         maximumAge: 0,
-    //       }
-    //     );
-    //   } else {
-    //     // No browser geolocation, use Google directly
-    //     await useGoogleGeolocation();
-    //   }
-    // } catch (err) {
-    //   setError('Unable to retrieve your location');
-    //   console.error('Location error:', err);
-    //   setIsLoading(false);
-    // }
+    // Strictly use Google Geolocation API
+    // useGoogleGeolocation();
+
+    try {
+      // Try browser geolocation first
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const coords = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            onLocationFound(coords);
+            setIsLoading(false);
+          },
+          async (geoError) => {
+            console.warn('Browser geolocation failed, trying Google API:', geoError);
+            // Fallback to Google Geolocation API
+            await useGoogleGeolocation();
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        // No browser geolocation, use Google directly
+        await useGoogleGeolocation();
+      }
+    } catch (err) {
+      setError('Unable to retrieve your location');
+      console.error('Location error:', err);
+      setIsLoading(false);
+    }
   };
 
   const useGoogleGeolocation = async () => {

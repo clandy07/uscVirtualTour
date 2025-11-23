@@ -32,11 +32,11 @@ export default function EventsPanel({ onEventClick }: EventsPanelProps) {
   };
 
   return (
-    <aside className={`absolute right-4 top-25 bg-white rounded-lg shadow-lg w-80 z-50 transition-all duration-300 ${
+    <aside className={`absolute right-4 top-25 bg-white rounded-lg shadow-lg w-80 z-25 transition-all duration-300 ${
       isExpanded ? 'max-h-[calc(100vh-120px)]' : 'max-h-14'
     }`}>
       <div 
-        className="p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors"
+        className="p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="font-bold text-lg text-gray-800">Campus Events</h2>

@@ -5,11 +5,12 @@ import GoogleMap from "./components/Map/GoogleMap";
 import Sidebar from "./components/Sidebar/Sidebar";
 import EventsPanel from "./components/Events/EventsPanel";
 import BuildingPanel from "./components/Buildings/BuildingPanel";
+import ProfileMenu from "./components/Profile/ProfileMenu";
 import Image from "next/image";
 import { CategoryFilter } from "./types";
 import { Building } from "@/types";
 
-import { uscLogo, profileIcon }  from "../app/lib/icons";
+import { uscLogo }  from "../app/lib/icons";
 
 export default function Home() {
 	const [activeFilters, setActiveFilters] = useState<CategoryFilter>({
@@ -42,13 +43,7 @@ export default function Home() {
 						className="bg-transparent outline-none w-200"
 					/>
 				</div>
-				<div className="bg-gray-400 rounded-full p-1">
-					<Image
-						src={profileIcon}
-						alt="Profile Icon"
-						className="w-8 h-8 cursor-pointer brightness-0 invert"
-					/>
-				</div>
+				<ProfileMenu />
 			</header>
 			<main className="flex-1 relative">
 				<GoogleMap
