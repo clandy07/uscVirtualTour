@@ -3,23 +3,27 @@
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
+import { authClient } from "@/lib/auth-client"; 
 
 import { uscLogo } from "../lib/icons";
 
 type FieldErrors = {
+    email?: string;
     firstName?: string;
+    middleName?: string;
     lastName?: string;
-    studentOrAdminId?: string;
+    username?: string; //username is the student ID or admin ID
     password?: string;
     confirmPassword?: string;
 };
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
+        email: '',
         firstName: '',
         middleName: '',
         lastName: '',
-        studentOrAdminId: '',
+        username: '',
         password: '',
         confirmPassword: '',
         role: 'student' as 'student' | 'admin',
@@ -29,6 +33,13 @@ export default function RegisterPage() {
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const roleField =
+        formData.role === "student"
+            ? { is_student: true }
+            : formData.role === "admin"
+            ? { is_admin: true }
+            : {};
 
     // Password strength calculator
     const passwordStrength = useMemo(() => {
@@ -57,10 +68,24 @@ export default function RegisterPage() {
     const validateForm = () => {
         const errors: FieldErrors = {};
 
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+        } else {
+            // Simple email regex pattern
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(formData.email)) {
+                errors.email = 'Please enter a valid email address';
+            }
+        }
+
         if (!formData.firstName.trim()) {
             errors.firstName = 'First name is required';
         } else if (!/^[a-zA-Z\s]+$/.test(formData.firstName)) {
             errors.firstName = 'First name should contain only letters';
+        }
+
+        if (formData.middleName.trim() && (!/^[a-zA-Z\s]+$/.test(formData.middleName))) { // middle name is only optional
+            errors.middleName = 'Middle name should contain only letters';
         }
 
         if (!formData.lastName.trim()) {
@@ -69,10 +94,10 @@ export default function RegisterPage() {
             errors.lastName = 'Last name should contain only letters';
         }
 
-        if (!formData.studentOrAdminId.trim()) {
-            errors.studentOrAdminId = `${formData.role === 'student' ? 'Student' : 'Admin'} ID is required`;
-        } else if (!/^\d+$/.test(formData.studentOrAdminId.trim())) {
-            errors.studentOrAdminId = 'ID must contain only numbers';
+        if (!formData.username.trim()) {
+            errors.username = `${formData.role === 'student' ? 'Student' : 'Admin'} ID is required`;
+        } else if (!/^\d+$/.test(formData.username.trim())) {
+            errors.username = 'ID must contain only numbers';
         }
 
         if (!formData.password) {
@@ -100,6 +125,30 @@ export default function RegisterPage() {
         }
 
         setIsLoading(true);
+        
+
+        const { data, error } = await authClient.signUp.email({
+            email: formData.email, // required
+            name: formData.firstName, // required. although the key is just called "name", in the db is it the `first_name` field of `users` table
+            mid_name: formData.middleName,
+            last_name: formData.lastName,
+            password: formData.password, // required
+            username: formData.username, // required
+            displayUsername: formData.username,
+            ...roleField
+        }, {
+            // onRequest: (ctx) => {
+            //     //show loading
+            // },
+            onSuccess: (ctx) => {
+                //redirect to the dashboard or sign in page
+                console.log(ctx)
+            },
+            onError: (ctx) => {
+                // display the error message
+                alert(ctx.error.message);
+            },
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -172,6 +221,35 @@ export default function RegisterPage() {
                                 <option value="student">Student</option>
                                 <option value="admin">Admin</option>
                             </select>
+                        </div>
+
+                        {/* Email*/}
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-bold text-gray-900 mb-2"
+                            >
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="text"
+                                required
+                                value={formData.email}
+                                onChange={handleChange}
+                                disabled={isLoading}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black ${fieldErrors.username
+                                    ? 'border-red-300 focus:ring-green-700'
+                                    : 'border-gray-300 focus:ring-green-700'
+                                    }`}
+                            // placeholder="Enter your ID number"
+                            />
+                            {fieldErrors.email && (
+                                <p className="mt-1 text-sm text-red-600">
+                                    {fieldErrors.email}
+                                </p>
+                            )}
                         </div>
 
                         {/* Name Fields */}
@@ -252,31 +330,31 @@ export default function RegisterPage() {
                             />
                         </div>
 
-                        {/* Student/Admin ID */}
+                        {/* Student/Admin ID (username)*/}
                         <div>
                             <label
-                                htmlFor="studentOrAdminId"
+                                htmlFor="username"
                                 className="block text-sm font-bold text-gray-900 mb-2"
                             >
                                 {formData.role === 'student' ? 'Student ID' : 'Admin ID'}
                             </label>
                             <input
-                                id="studentOrAdminId"
-                                name="studentOrAdminId"
+                                id="username"
+                                name="username"
                                 type="text"
                                 required
-                                value={formData.studentOrAdminId}
+                                value={formData.username}
                                 onChange={handleChange}
                                 disabled={isLoading}
-                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black ${fieldErrors.studentOrAdminId
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black ${fieldErrors.username
                                     ? 'border-red-300 focus:ring-green-700'
                                     : 'border-gray-300 focus:ring-green-700'
                                     }`}
                             // placeholder="Enter your ID number"
                             />
-                            {fieldErrors.studentOrAdminId && (
+                            {fieldErrors.username && (
                                 <p className="mt-1 text-sm text-red-600">
-                                    {fieldErrors.studentOrAdminId}
+                                    {fieldErrors.username}
                                 </p>
                             )}
                         </div>
