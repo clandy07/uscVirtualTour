@@ -56,7 +56,7 @@ export default function SignInPage() {
         const { data, error } = await authClient.signIn.username({
             username: formData.username, // required
             password: formData.password, // required
-            
+            rememberMe: false
         }, {
             onSuccess: (ctx) =>{
                 setIsLoading(false)
