@@ -31,12 +31,12 @@ export const userRelations = authSchema.userRelations;
 export const sessionRelations = authSchema.sessionRelations
 export const accountRelations = authSchema.accountRelations;
 
-export const user_profiles = pgTable("user_profiles", {
-    user_id: text().references(() => users.id, {onDelete: 'cascade'}),
-    role: roleEnum().default("student")
-}, (table) => [
-    unique("user_profile_unique").on(table.user_id)
-])
+// export const user_profiles = pgTable("user_profiles", {  // no reason to have it right now
+//     user_id: text().references(() => users.id, {onDelete: 'cascade'}),
+//     role: roleEnum().default("student")
+// }, (table) => [
+//     unique("user_profile_unique").on(table.user_id)
+// ])
 
 export const organizations = pgTable("organizations", {
     id: serial().primaryKey(),
@@ -201,15 +201,15 @@ import { relations } from 'drizzle-orm';
 // users, user_org_relations, and organizations relations
 export const usersRelations = relations(users, ({ one, many }) => ({
     userOrgs: many(user_org_relations),
-    userProfiles: one(user_profiles)
+    //userProfiles: one(user_profiles)
 }));
 
-export const userProfileRelations = relations(user_profiles, ({ one }) => ({
-	user: one(users, { 
-        fields: [user_profiles.user_id], 
-        references: [users.id] 
-    }),
-}));
+// export const userProfileRelations = relations(user_profiles, ({ one }) => ({
+// 	user: one(users, { 
+//         fields: [user_profiles.user_id], 
+//         references: [users.id] 
+//     }),
+// }));
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
     userOrgs: many(user_org_relations),
