@@ -29,6 +29,13 @@
       "when": 1763842010516,
       "tag": "20251122200650_bouncy_sprite",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763929355410,
+      "tag": "20251123202235_next_vision",
+      "breakpoints": true
     }
   ]
 }
