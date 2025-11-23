@@ -46,7 +46,7 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
       isExpanded ? 'max-h-[calc(100vh-120px)]' : 'max-h-14'
     }`}>
       <div 
-        className="p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors"
+        className="p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="font-bold text-lg text-gray-800">Map Layers</h2>
