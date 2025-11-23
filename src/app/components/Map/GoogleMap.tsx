@@ -221,7 +221,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
             >
               <div className="relative cursor-pointer">
                 <div 
-                  className="w-12 h-12 rounded-full bg-green-700 border-4 border-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+                  className="w-12 h-12 rounded-full bg-green-900 border-4 border-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
                 >
                   <span className="text-white font-bold text-sm">{items.length}</span>
                 </div>
