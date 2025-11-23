@@ -3,28 +3,34 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
+
+import { authClient } from '@/lib/auth-client';
 
 import { uscLogo } from "../lib/icons";
 
+
 export default function SignInPage() {
+    const router = useRouter();
+
     const [formData, setFormData] = useState({
-        studentOrAdminId: '',
+        username: '',
         password: '',
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState<{
-        studentOrAdminId?: string;
+        username?: string; //username is the `username` field in the `users` table
         password?: string;
     }>({});
 
     const validateForm = () => {
-        const errors: { studentOrAdminId?: string; password?: string } = {};
+        const errors: { username?: string; password?: string } = {};
 
-        if (!formData.studentOrAdminId.trim()) {
-            errors.studentOrAdminId = 'Student/Admin ID is required';
-        } else if (!/^\d+$/.test(formData.studentOrAdminId.trim())) {
-            errors.studentOrAdminId = 'ID must contain only numbers';
+        if (!formData.username.trim()) {
+            errors.username = 'Student/Admin ID is required';
+        } else if (!/^\d+$/.test(formData.username.trim())) {
+            errors.username = 'ID must contain only numbers';
         }
 
         if (!formData.password) {
@@ -46,6 +52,25 @@ export default function SignInPage() {
         }
 
         setIsLoading(true);
+
+        const { data, error } = await authClient.signIn.username({
+            username: formData.username, // required
+            password: formData.password, // required
+        }, {
+            onSuccess: (ctx) =>{
+                setIsLoading(false)
+                console.log(ctx)
+                router.push("/");
+            },
+
+            onError: (ctx) =>{
+                setIsLoading(false)
+                const { code, message } = ctx.error;
+                console.log(`code: ${code}`)
+                console.log(`message: ${message}`)
+                setError(message)
+            }
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,28 +127,28 @@ export default function SignInPage() {
                         {/* Student/Admin ID Field */}
                         <div>
                             <label
-                                htmlFor="studentOrAdminId"
+                                htmlFor="username"
                                 className="block text-sm text-gray-900 mb-2 font-bold"
                             >
                                 Student/Admin ID
                             </label>
                             <input
-                                id="studentOrAdminId"
-                                name="studentOrAdminId"
+                                id="username"
+                                name="username"
                                 type="text"
                                 required
-                                value={formData.studentOrAdminId}
+                                value={formData.username}
                                 onChange={handleChange}
-                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-black ${fieldErrors.studentOrAdminId
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-black ${fieldErrors.username
                                         ? 'border-red-300 focus:ring-red-500'
                                         : 'border-gray-300 focus:ring-green-700'
                                     }`}
                                 // placeholder="Enter your ID number"
                                 disabled={isLoading}
                             />
-                            {fieldErrors.studentOrAdminId && (
+                            {fieldErrors.username && (
                                 <p className="mt-1 text-sm text-red-600">
-                                    {fieldErrors.studentOrAdminId}
+                                    {fieldErrors.username}
                                 </p>
                             )}
                         </div>

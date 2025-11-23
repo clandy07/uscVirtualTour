@@ -16,6 +16,8 @@ export const users = pgTable("users", {
   displayUsername: text("display_username"),
   mid_name: text("mid_name"),
   last_name: text("last_name").default("joe").notNull(),
+  is_student: boolean("is_student").default(false).notNull(),
+  is_admin: boolean("is_admin").default(false).notNull(),
 },(t) => [
   index("last_name_idx").on(t.last_name),
   unique("username_unique").on(t.username)
