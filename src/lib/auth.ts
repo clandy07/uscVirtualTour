@@ -38,6 +38,18 @@ export const auth = betterAuth({
                 defaultValue: "joe",
                 input: true, // don't allow user to set username
             },
+            is_student: {
+                type: "boolean",
+                required: true,
+                defaultValue: false,
+                input: true
+            },
+            is_admin: {
+                type: "boolean",
+                required: true,
+                defaultValue: false,
+                input: true
+            }
         },
     },
     database: drizzleAdapter(db, {
