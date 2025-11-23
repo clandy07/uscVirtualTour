@@ -135,18 +135,46 @@ export default function RegisterPage() {
             password: formData.password, // required
             username: formData.username, // required
             displayUsername: formData.username,
-            ...roleField
+            ...roleField,
+            callbackURL: "/"
         }, {
             // onRequest: (ctx) => {
             //     //show loading
             // },
             onSuccess: (ctx) => {
                 //redirect to the dashboard or sign in page
-                console.log(ctx)
+                console.log(ctx.response.body)
+                setIsLoading(false)
             },
             onError: (ctx) => {
-                // display the error message
-                alert(ctx.error.message);
+                setIsLoading(false)
+
+                const { code, message } = ctx.error;
+
+                // Map Better Auth error codes to form fields
+                const codeToField: Record<string, keyof FieldErrors> = {
+                    USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "email",
+                    USERNAME_IS_ALREADY_TAKEN_PLEASE_TRY_ANOTHER: "username",
+                    // EMAIL_TAKEN: "email",
+                    // INVALID_EMAIL: "email",
+                    // INVALID_USERNAME: "username",
+                    // PASSWORD_TOO_WEAK: "password",
+                };
+                const field = codeToField[code];
+
+                if (field) {
+                    // Update ONLY the field that corresponds to the error code
+                    setFieldErrors((prev) => ({
+                        ...prev,
+                        [field]: message,   // overwrite that field's error
+                    }));
+                } else {
+                    // Unknown error → put it in a generic error field
+                    setFieldErrors((prev) => ({
+                        ...prev,
+                        general: message,
+                    }));
+                }
             },
         });
     };
@@ -325,9 +353,17 @@ export default function RegisterPage() {
                                 value={formData.middleName}
                                 onChange={handleChange}
                                 disabled={isLoading}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black"
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black ${fieldErrors.middleName
+                                    ? 'border-red-300 focus:ring-green-700'
+                                    : 'border-gray-300 focus:ring-green-700'
+                                    }`}
                             // placeholder="Santos"
                             />
+                            {fieldErrors.middleName && (
+                                <p className="mt-1 text-sm text-red-600">
+                                    {fieldErrors.middleName}
+                                </p>
+                            )}
                         </div>
 
                         {/* Student/Admin ID (username)*/}
