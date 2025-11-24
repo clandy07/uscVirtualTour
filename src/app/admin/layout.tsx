@@ -102,16 +102,16 @@ export default function AdminLayout({
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="text-gray-900 hover:text-green-700 text-sm flex items-center gap-2"
+                className="text-gray-900 hover:text-green-700 text-sm flex items-center gap-2 cursor-pointer"
               >
                 <span>←</span>
                 <span>Back to Map</span>
               </Link>
               <button 
                 onClick={handleSignOut}
-                className="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800"
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 cursor-pointer"
               >
-                Logout
+                Sign out
               </button>
             </div>
           </div>

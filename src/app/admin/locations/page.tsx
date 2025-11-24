@@ -103,7 +103,7 @@ export default function LocationsPage() {
         </div>
         <button
           onClick={handleAdd}
-          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium"
+          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
         >
           + Add Location
         </button>
@@ -121,7 +121,7 @@ export default function LocationsPage() {
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value as Location['category'] | 'all')}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
         >
           <option value="all">All Categories</option>
           {categories.map((cat) => (
@@ -176,13 +176,13 @@ export default function LocationsPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => handleEdit(location)}
-                    className="text-green-700 hover:text-green-900 mr-4"
+                    className="text-green-700 hover:text-green-900 mr-4 cursor-pointer"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(location.id)}
-                    className="text-red-600 hover:text-red-900"
+                    className="text-red-600 hover:text-red-900 cursor-pointer"
                   >
                     Delete
                   </button>
@@ -260,14 +260,14 @@ export default function LocationsPage() {
                 <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium"
+                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
                   >
                     {editingLocation ? 'Update' : 'Create'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium"
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium cursor-pointer"
                   >
                     Cancel
                   </button>

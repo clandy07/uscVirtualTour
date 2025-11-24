@@ -94,7 +94,7 @@ export default function LocationButton({ onLocationFound }: LocationButtonProps)
       <button
         onClick={handleLocationClick}
         disabled={isLoading}
-        className={`w-14 h-14 bg-white hover:bg-gray-100 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 ${
+        className={`w-14 h-14 bg-white hover:bg-gray-100 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${
           isLoading ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         aria-label="Get current location"

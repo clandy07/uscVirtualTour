@@ -70,7 +70,7 @@ export default function OrganizationsPage() {
         </div>
         <button
           onClick={handleAdd}
-          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium"
+          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
         >
           + Add Organization
         </button>
@@ -137,13 +137,13 @@ export default function OrganizationsPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => handleEdit(org)}
-                    className="text-green-700 hover:text-green-900 mr-4"
+                    className="text-green-700 hover:text-green-900 mr-4 cursor-pointer"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(org.id)}
-                    className="text-red-600 hover:text-red-900"
+                    className="text-red-600 hover:text-red-900 cursor-pointer"
                   >
                     Delete
                   </button>
@@ -191,14 +191,14 @@ export default function OrganizationsPage() {
                 <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium"
+                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
                   >
                     {editingOrg ? 'Update' : 'Create'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium"
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium cursor-pointer"
                   >
                     Cancel
                   </button>
