@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: '📊' },
@@ -19,7 +20,59 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data } = await authClient.getSession();
+        console.log('Admin check - session data:', data); // Debug log
+        const user = data?.user || data;
+        if (!user?.is_admin) {
+          // Not an admin, redirect to home
+          console.log('User is not admin, redirecting...');
+          router.push('/');
+          return;
+        }
+        setSession(data);
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/signin');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-700"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const user = session?.user || session;
+  if (!user?.is_admin) {
+    return null; // Will redirect in useEffect
+  }
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -54,7 +107,10 @@ export default function AdminLayout({
                 <span>←</span>
                 <span>Back to Map</span>
               </Link>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800">
+              <button 
+                onClick={handleSignOut}
+                className="px-4 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800"
+              >
                 Logout
               </button>
             </div>
