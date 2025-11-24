@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { MOCK_EVENTS } from '@/app/lib/mockData';
+import { Event } from '@/app/types';
 
 interface EventsPanelProps {
+  events?: Event[];
   onEventClick?: (eventId: number) => void;
 }
 
-export default function EventsPanel({ onEventClick }: EventsPanelProps) {
+export default function EventsPanel({ events = [], onEventClick }: EventsPanelProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const getEventStatus = (startDate: string, endDate: string) => {
@@ -49,30 +50,34 @@ export default function EventsPanel({ onEventClick }: EventsPanelProps) {
         isExpanded ? 'max-h-[calc(100vh-180px)] opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="p-4 space-y-3">
-          {MOCK_EVENTS.map((event, index) => {
-            const status = getEventStatus(event.date_time_start, event.date_time_end);
-            return (
-              <div
-                key={event.id}
-                onClick={() => onEventClick?.(event.id)}
-                className="p-3 border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-md cursor-pointer transition-all hover:scale-102 bg-white animate-fadeIn"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div className="flex justify-between items-start gap-2 mb-2">
-                  <h3 className="font-semibold text-sm text-gray-900 flex-1">{event.theme}</h3>
-                  <div className="flex-shrink-0">
-                    {getStatusBadge(status)}
+          {events.length === 0 ? (
+            <p className="text-sm text-gray-500 text-center py-4">No events to display</p>
+          ) : (
+            events.map((event, index) => {
+              const status = getEventStatus(event.date_time_start, event.date_time_end || event.date_time_start);
+              return (
+                <div
+                  key={event.id}
+                  onClick={() => event.id && onEventClick?.(event.id)}
+                  className="p-3 border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-md cursor-pointer transition-all hover:scale-102 bg-white animate-fadeIn"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className="flex justify-between items-start gap-2 mb-2">
+                    <h3 className="font-semibold text-sm text-gray-900 flex-1">{event.name}</h3>
+                    <div className="flex-shrink-0">
+                      {getStatusBadge(status)}
+                    </div>
                   </div>
+                  <p className="text-xs text-gray-600 mb-1">
+                    📅 {new Date(event.date_time_start).toLocaleDateString()}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    🕐 {new Date(event.date_time_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
-                <p className="text-xs text-gray-600 mb-1">
-                  📅 {new Date(event.date_time_start).toLocaleDateString()}
-                </p>
-                <p className="text-xs text-gray-600">
-                  🕐 {new Date(event.date_time_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </aside>

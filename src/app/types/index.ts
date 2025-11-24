@@ -1,20 +1,18 @@
 export interface Location {
   id: number;
   name: string;
-  category: 'building' | 'food' | 'sports' | 'facilities' | 'transport' | 'study' | 'dorms';
+  category?: 'buildings' | 'events' | 'food' | 'facilities' | 'transport_parking' | 'study_areas' | 'dorms_residences' | 'sports_recreation';
   description?: string;
-  geometry_id: number;
   campus_id: number;
-  coordinates: { lat: number; lng: number };
 }
 
 export interface Building {
   id: number;
   name: string;
-  description?: string;
   campus_id: number;
-  floor_array?: number[];
   location_id: number;
+  basement_count?: number;
+  floor_count?: number;
 }
 
 export interface Room {
@@ -34,6 +32,12 @@ export interface Office {
   school_id: string;
 }
 
+export interface Organization {
+  id: number;
+  logo?: string;
+  is_student_org?: boolean;
+}
+
 export interface Department {
   id: string;
   name: string;
@@ -42,15 +46,14 @@ export interface Department {
 
 export interface Event {
   id: number;
-  theme: string;
-  description: string;
+  name: string;
+  description?: string;
   date_time_start: string;
-  date_time_end: string;
+  date_time_end?: string;
   custom_marker?: string;
   event_group_id?: number;
   org_id?: number;
-  visibility: 'public' | 'private';
-  location_id: number;
+  visibility?: 'everyone' | 'only_students' | 'only_organization_members';
 }
 
 export type CategoryFilter = {

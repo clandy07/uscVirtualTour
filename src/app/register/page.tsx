@@ -248,7 +248,7 @@ export default function RegisterPage() {
                                 value={formData.role}
                                 onChange={handleChange}
                                 disabled={isLoading}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black"
+                                className="w-full px-2 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed text-black"
                             >
                                 <option value="student">Student</option>
                                 <option value="admin">Admin</option>
@@ -525,7 +525,7 @@ export default function RegisterPage() {
                         </div>
 
                         {/* Terms and Conditions */}
-                        <div className="flex items-start">
+                        {/* <div className="flex items-start">
                             <input
                                 id="terms"
                                 name="terms"
@@ -543,7 +543,7 @@ export default function RegisterPage() {
                                     Privacy Policy
                                 </Link>
                             </label>
-                        </div>
+                        </div> */}
 
                         {/* Submit Button */}
                         <button
