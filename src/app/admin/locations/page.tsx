@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-// import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
+import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
 import { Location } from '@/app/types';
 
 const categories: { value: Location['category']; label: string }[] = [
@@ -27,13 +27,21 @@ export default function LocationsPage() {
     category: 'buildings' as Location['category'],
     description: '',
     campus_id: 0,
+    coordinates: null as { lat: number; lng: number } | null,
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<Location['category'] | 'all'>('all');
+  const [showMapPicker, setShowMapPicker] = useState(false);
+  const [latInput, setLatInput] = useState<string>('');
+  const [lngInput, setLngInput] = useState<string>('');
 
   const handleAdd = () => {
     setEditingLocation(null);
     setFormData({ name: '', category: 'buildings', description: '', campus_id: 0 });
+    setFormData({ name: '', category: 'buildings', description: '', campus_id: 0, coordinates: null });
+    setLatInput('');
+    setLngInput('');
+    setShowMapPicker(false);
     setIsModalOpen(true);
   };
 
@@ -44,7 +52,11 @@ export default function LocationsPage() {
       category: location.category || 'buildings',
       description: location.description || '',
       campus_id: location.campus_id,
+      coordinates: (location as any).coordinates ?? null,
     });
+    const coords = (location as any).coordinates;
+    setLatInput(coords?.lat ? String(coords.lat) : '');
+    setLngInput(coords?.lng ? String(coords.lng) : '');
     setIsModalOpen(true);
   };
 
@@ -64,7 +76,7 @@ export default function LocationsPage() {
         )
       );
     } else {
-      const newLocation: Location = {
+      const newLocation: any = {
         id: Math.max(0, ...locations.map((l) => l.id)) + 1,
         ...formData,
       };
@@ -103,7 +115,7 @@ export default function LocationsPage() {
         </div>
         <button
           onClick={handleAdd}
-          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
+          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer"
         >
           + Add Location
         </button>
@@ -176,13 +188,13 @@ export default function LocationsPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => handleEdit(location)}
-                    className="text-green-700 hover:text-green-900 mr-4 cursor-pointer"
+                    className="text-green-700 hover:text-green-900 mr-4 cursor-pointer font-bold"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(location.id)}
-                    className="text-red-600 hover:text-red-900 cursor-pointer"
+                    className="text-red-600 hover:text-red-900 cursor-pointer font-bold"
                   >
                     Delete
                   </button>
@@ -257,17 +269,84 @@ export default function LocationsPage() {
                   />
                 </div>
 
+                {/* Coordinates (manual input or map picker) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">Coordinates (optional)</label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      placeholder="Latitude"
+                      value={latInput}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLatInput(v);
+                        const lat = v === '' ? null : parseFloat(v);
+                        const lng = lngInput === '' ? null : parseFloat(lngInput);
+                        if (lat !== null && !isNaN(lat) && lng !== null && !isNaN(lng)) {
+                          setFormData({ ...formData, coordinates: { lat, lng } });
+                        } else {
+                          setFormData({ ...formData, coordinates: null });
+                        }
+                      }}
+                      className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Longitude"
+                      value={lngInput}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLngInput(v);
+                        const lat = latInput === '' ? null : parseFloat(latInput);
+                        const lng = v === '' ? null : parseFloat(v);
+                        if (lat !== null && !isNaN(lat) && lng !== null && !isNaN(lng)) {
+                          setFormData({ ...formData, coordinates: { lat, lng } });
+                        } else {
+                          setFormData({ ...formData, coordinates: null });
+                        }
+                      }}
+                      className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    />
+                  </div>
+
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowMapPicker(!showMapPicker)}
+                      className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-bold"
+                    >
+                      {showMapPicker ? 'Hide map' : 'Pick on map'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setFormData({ ...formData, coordinates: null }); setLatInput(''); setLngInput(''); }}
+                      className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm"
+                    >
+                      Clear coordinates
+                    </button>
+                  </div>
+
+                  {showMapPicker && (
+                    <div className="mt-3">
+                      <AdminMapPicker
+                        coordinates={formData.coordinates ?? undefined}
+                        onCoordinatesSelect={(coords) => { setFormData({ ...formData, coordinates: coords }); setLatInput(String(coords.lat)); setLngInput(String(coords.lng)); }}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-medium cursor-pointer"
+                    className="flex-1 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer"
                   >
                     {editingLocation ? 'Update' : 'Create'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium cursor-pointer"
+                    className="flex-1 px-4 py-2 border-2 border-green-700 text-green-700 rounded-lg hover:bg-green-50 font-bold cursor-pointer"
                   >
                     Cancel
                   </button>

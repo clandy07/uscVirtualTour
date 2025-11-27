@@ -200,7 +200,7 @@ export default function SignInPage() {
                             </div>
                             <Link
                                 href="/forgot-password"
-                                className="text-sm text-green-700 hover:text-green-800 font-medium"
+                                className="text-sm text-green-700 hover:text-green-800 font-bold"
                             >
                                 Forgot password?
                             </Link>
@@ -210,7 +210,7 @@ export default function SignInPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 focus:ring-4 focus:ring-green-300 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
+                            className="w-full bg-green-700 text-white py-3 rounded-lg font-bold hover:bg-green-800 focus:ring-4 focus:ring-green-300 transition duration-200 disabled:bg-green-400 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
                         >
                             {isLoading ? (
                                 <>
