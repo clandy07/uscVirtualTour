@@ -126,6 +126,9 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
     setRouteDestination(null);
     setRouteResult(null);
     setDestinationName('');
+    // Close info cards when route is cleared
+    setSelectedLocation(null);
+    setSelectedBuilding(null);
   };
   
   // Handle location click
@@ -162,6 +165,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
       <Map
         defaultCenter={MAP_CONFIG.center}
         defaultZoom={MAP_CONFIG.zoom}
+        minZoom={15}
         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID}
         className="w-full h-full"
         disableDefaultUI={true}

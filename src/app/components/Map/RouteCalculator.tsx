@@ -40,16 +40,17 @@ export default function RouteCalculator({
   }, [map]);
 
   useEffect(() => {
-    if (!directionsRenderer) return;
+    if (!directionsRenderer || !map) return;
 
     // Clear route if origin or destination is null
     if (!origin || !destination) {
+      // Properly clear by setting the map to null, which removes everything
       directionsRenderer.setMap(null);
-      if (map) {
-        directionsRenderer.setMap(map);
-      }
       return;
     }
+
+    // Re-attach to map before setting new directions
+    directionsRenderer.setMap(map);
 
     const directionsService = new google.maps.DirectionsService();
 
