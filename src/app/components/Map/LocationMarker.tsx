@@ -1,7 +1,7 @@
 'use client';
 
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Location } from '@/app/types';
+import { Location } from '@/types';
 import { BuildingIcon, FoodIcon, SportsIcon, StudyIcon, FacilitiesIcon, TransportIcon, DormsIcon } from './CustomMarkers';
 
 interface LocationMarkerProps {
@@ -9,20 +9,22 @@ interface LocationMarkerProps {
   onClick?: (location: Location) => void;
 }
 
-const getMarkerIcon = (category: string) => {
+const getMarkerIcon = (category?: string) => {
   switch (category) {
-    case 'building': return <BuildingIcon />;
+    case 'buildings': return <BuildingIcon />;
     case 'food': return <FoodIcon />;
-    case 'sports': return <SportsIcon />;
-    case 'study': return <StudyIcon />;
+    case 'sports_recreation': return <SportsIcon />;
+    case 'study_areas': return <StudyIcon />;
     case 'facilities': return <FacilitiesIcon />;
-    case 'transport': return <TransportIcon />;
-    case 'dorms': return <DormsIcon />;
+    case 'transport_parking': return <TransportIcon />;
+    case 'dorms_residences': return <DormsIcon />;
     default: return <FacilitiesIcon />;
   }
 };
 
 export default function LocationMarker({ location, onClick }: LocationMarkerProps) {
+  if (!location.coordinates) return null;
+  
   return (
     <AdvancedMarker
       position={location.coordinates}

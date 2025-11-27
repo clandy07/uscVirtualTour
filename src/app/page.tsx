@@ -7,21 +7,20 @@ import EventsPanel from "./components/Events/EventsPanel";
 import BuildingPanel from "./components/Buildings/BuildingPanel";
 import ProfileMenu from "./components/Profile/ProfileMenu";
 import Image from "next/image";
-import { CategoryFilter } from "./types";
-import { Building } from "@/types";
+import { CategoryFilter, Building } from "@/types";
 
 import { uscLogo }  from "../app/lib/icons";
 
 export default function Home() {
 	const [activeFilters, setActiveFilters] = useState<CategoryFilter>({
-		building: true,
+		buildings: true,
 		events: false,
 		food: true,
 		facilities: false,
-		transport: false,
-		study: true,
-		dorms: false,
-		sports: true,
+		transport_parking: false,
+		study_areas: true,
+		dorms_residences: false,
+		sports_recreation: true,
 	});
 	const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 	const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(

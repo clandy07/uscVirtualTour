@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CategoryFilter } from '@/app/types';
+import { CategoryFilter } from '@/types';
 import Image from 'next/image';
 
 import { buildingIcon, eventsIcon, foodIcon, facilitiesIcon, transportIcon, studyIcon, dormsIcon, sportsIcon }  from "../../lib/icons";
@@ -12,27 +12,27 @@ interface SidebarProps {
 
 export default function Sidebar({ onFilterChange }: SidebarProps) {
   const [filters, setFilters] = useState<CategoryFilter>({
-    building: true,
+    buildings: true,
     events: false,
     food: true,
     facilities: false,
-    transport: false,
-    study: true,
-    dorms: false,
-    sports: true,
+    transport_parking: false,
+    study_areas: true,
+    dorms_residences: false,
+    sports_recreation: true,
   });
 
   const [isExpanded, setIsExpanded] = useState(true);
 
   const items = [
-    { id: 'building' as keyof CategoryFilter, label: 'Academic Buildings', icon: buildingIcon },
+    { id: 'buildings' as keyof CategoryFilter, label: 'Academic Buildings', icon: buildingIcon },
     { id: 'events' as keyof CategoryFilter, label: 'Events', icon: eventsIcon },
     { id: 'food' as keyof CategoryFilter, label: 'Food', icon: foodIcon },
     { id: 'facilities' as keyof CategoryFilter, label: 'Facilities', icon: facilitiesIcon },
-    { id: 'transport' as keyof CategoryFilter, label: 'Transport/Parking', icon: transportIcon },
-    { id: 'study' as keyof CategoryFilter, label: 'Study Areas', icon: studyIcon },
-    { id: 'dorms' as keyof CategoryFilter, label: 'Dorms/Residences', icon: dormsIcon },
-    { id: 'sports' as keyof CategoryFilter, label: 'Sports/Recreation', icon: sportsIcon },
+    { id: 'transport_parking' as keyof CategoryFilter, label: 'Transport/Parking', icon: transportIcon },
+    { id: 'study_areas' as keyof CategoryFilter, label: 'Study Areas', icon: studyIcon },
+    { id: 'dorms_residences' as keyof CategoryFilter, label: 'Dorms/Residences', icon: dormsIcon },
+    { id: 'sports_recreation' as keyof CategoryFilter, label: 'Sports/Recreation', icon: sportsIcon },
   ];
 
   const toggleFilter = (id: keyof CategoryFilter) => {

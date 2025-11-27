@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Event } from '@/app/types';
+import { Event } from '@/types';
 
 interface EventsPanelProps {
   events?: Event[];

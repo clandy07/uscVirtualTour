@@ -7,6 +7,7 @@ import { authClient } from '@/lib/auth-client';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: '📊' },
+  { name: 'Campuses', href: '/admin/campuses', icon: '🏫' },
   { name: 'Buildings', href: '/admin/buildings', icon: '🏢' },
   { name: 'Locations', href: '/admin/locations', icon: '📍' },
   { name: 'Events', href: '/admin/events', icon: '📅' },
@@ -134,8 +135,8 @@ export default function AdminLayout({
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     active
-                      ? 'bg-green-50 text-green-700 font-medium'
-                      : 'text-green-700 hover:bg-green-50'
+                      ? 'bg-green-50 text-black font-bold'
+                      : 'text-black hover:bg-green-50'
                   }`}
                 >
                   <span className="text-xl">{item.icon}</span>

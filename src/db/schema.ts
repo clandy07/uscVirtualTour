@@ -73,7 +73,9 @@ export const locations = pgTable("locations", {
     name: varchar({ length: 255 }).notNull(),
     category: categoryEnum(),
     description: text(),
-    campus_id: integer().references(() => campuses.id, {onDelete: 'cascade'})
+    campus_id: integer().references(() => campuses.id, {onDelete: 'cascade'}),
+    latitude: varchar({ length: 50 }),
+    longitude: varchar({ length: 50 })
 }, (table) => [
     index("location_name_idx").on(table.name),
     index("category_campus_idx").on(table.category, table.campus_id)
@@ -90,7 +92,8 @@ export const buildings = pgTable("buildings", {
     ...timestamps
 }, (table) => [
     index("building_name_idx").on(table.name),
-    index("campus_idx").on(table.campus_id)
+    index("campus_idx").on(table.campus_id),
+    unique("building_location_unique").on(table.location_id)
 ]);
 
 export const event_groups = pgTable("event_groups", {
@@ -250,7 +253,7 @@ export const locationsRelations = relations(locations, ({ many, one }) => ({
         fields: [locations.campus_id],
         references: [campuses.id],
     }),
-    buildings: many(buildings)
+    building: one(buildings) // locations one-to-one building (a location can have at most one building)
 }));
 
 export const eventLocationRelations = relations(event_location_relations, ({ one }) => ({

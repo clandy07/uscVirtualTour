@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 // import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
-import { Event } from '@/app/types';
+import { Event } from '@/types';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([

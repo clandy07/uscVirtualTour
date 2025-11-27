@@ -1,19 +1,21 @@
 export interface Location {
   id: number;
   name: string;
-  category: 'academic' | 'food' | 'sports' | 'facilities' | 'transport' | 'study' | 'dorms';
+  category?: 'buildings' | 'events' | 'food' | 'facilities' | 'transport_parking' | 'study_areas' | 'dorms_residences' | 'sports_recreation';
   description?: string;
-  geometry_id: number;
   campus_id: number;
-  coordinates: { lat: number; lng: number };
+  latitude?: string;
+  longitude?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface Building {
   id: number;
   name: string;
   campus_id: number;
-  floor_array?: number[];
   location_id: number;
+  floor_count?: number;
+  basement_count?: number;
 }
 
 export interface Event {
@@ -30,14 +32,14 @@ export interface Event {
 }
 
 export type CategoryFilter = {
-  building: boolean;
+  buildings: boolean;
   events: boolean;
   food: boolean;
   facilities: boolean;
-  transport: boolean;
-  study: boolean;
-  dorms: boolean;
-  sports: boolean;
+  transport_parking: boolean;
+  study_areas: boolean;
+  dorms_residences: boolean;
+  sports_recreation: boolean;
 };
 
 export interface MapConfig {

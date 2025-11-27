@@ -54,7 +54,7 @@ export default function AdminDashboard() {
               className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-md transition-all"
             >
               <span className="text-2xl">{action.icon}</span>
-              <span className="font-medium text-gray-900">{action.name}</span>
+              <span className="font-bold text-gray-900">{action.name}</span>
             </Link>
           ))}
         </div>

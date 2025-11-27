@@ -1,7 +1,7 @@
 'use client';
 
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Event, Location } from '@/app/types';
+import { Event, Location } from '@/types';
 import { EventIcon } from './CustomMarkers';
 
 interface EventMarkerProps {

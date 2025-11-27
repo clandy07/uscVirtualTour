@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
-import { Location } from '@/app/types';
+import { Location } from '@/types';
 
 const categories: { value: Location['category']; label: string }[] = [
   { value: 'buildings', label: 'Buildings' },
-  { value: 'events', label: 'Events' },
   { value: 'food', label: 'Food & Dining' },
   { value: 'facilities', label: 'Facilities' },
   { value: 'transport_parking', label: 'Transport & Parking' },
@@ -16,10 +15,10 @@ const categories: { value: Location['category']; label: string }[] = [
 ];
 
 export default function LocationsPage() {
-  const [locations, setLocations] = useState<Location[]>([
-    { id: 1, name: 'Student Center', category: 'buildings', description: '', campus_id: 1 },
-    { id: 2, name: 'Campus Cafe', category: 'food', description: '', campus_id: 1 },
-  ]);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [campuses, setCampuses] = useState<{ id: number; name: string }[]>([]);
+  const [selectedCampusId, setSelectedCampusId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [formData, setFormData] = useState({
@@ -35,10 +34,55 @@ export default function LocationsPage() {
   const [latInput, setLatInput] = useState<string>('');
   const [lngInput, setLngInput] = useState<string>('');
 
+  // Fetch campuses on mount
+  useEffect(() => {
+    const fetchCampuses = async () => {
+      try {
+        const response = await fetch('/api/campuses');
+        const data = await response.json();
+        if (data.success) {
+          setCampuses(data.data);
+          if (data.data.length > 0) {
+            setSelectedCampusId(data.data[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching campuses:', error);
+      }
+    };
+    fetchCampuses();
+  }, []);
+
+  // Fetch locations when campus changes
+  useEffect(() => {
+    const fetchLocations = async () => {
+      if (!selectedCampusId) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/campuses/${selectedCampusId}/locations`);
+        const data = await response.json();
+        if (data.success) {
+          setLocations(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchLocations();
+  }, [selectedCampusId]);
+
   const handleAdd = () => {
     setEditingLocation(null);
-    setFormData({ name: '', category: 'buildings', description: '', campus_id: 0 });
-    setFormData({ name: '', category: 'buildings', description: '', campus_id: 0, coordinates: null });
+    setFormData({ 
+      name: '', 
+      category: 'buildings', 
+      description: '', 
+      campus_id: selectedCampusId || 0, 
+      coordinates: null 
+    });
     setLatInput('');
     setLngInput('');
     setShowMapPicker(false);
@@ -47,43 +91,104 @@ export default function LocationsPage() {
 
   const handleEdit = (location: Location) => {
     setEditingLocation(location);
+    
+    // Parse coordinates from latitude/longitude strings
+    let coordinates = null;
+    if ((location as any).latitude && (location as any).longitude) {
+      coordinates = {
+        lat: parseFloat((location as any).latitude),
+        lng: parseFloat((location as any).longitude)
+      };
+    }
+    
     setFormData({
       name: location.name,
       category: location.category || 'buildings',
       description: location.description || '',
       campus_id: location.campus_id,
-      coordinates: (location as any).coordinates ?? null,
+      coordinates: coordinates,
     });
-    const coords = (location as any).coordinates;
-    setLatInput(coords?.lat ? String(coords.lat) : '');
-    setLngInput(coords?.lng ? String(coords.lng) : '');
+    setLatInput(coordinates?.lat ? String(coordinates.lat) : '');
+    setLngInput(coordinates?.lng ? String(coordinates.lng) : '');
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm('Are you sure you want to delete this location?')) {
-      setLocations(locations.filter((l) => l.id !== id));
-      // TODO: Call API to delete
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this location?')) return;
+    if (!selectedCampusId) return;
+    
+    try {
+      const response = await fetch(`/api/campuses/${selectedCampusId}/locations/${id}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setLocations(locations.filter((l) => l.id !== id));
+      } else {
+        alert('Failed to delete location: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error deleting location:', error);
+      alert('Failed to delete location');
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingLocation) {
-      setLocations(
-        locations.map((l) =>
-          l.id === editingLocation.id ? { ...l, ...formData } : l
-        )
-      );
-    } else {
-      const newLocation: any = {
-        id: Math.max(0, ...locations.map((l) => l.id)) + 1,
-        ...formData,
+    if (!selectedCampusId) return;
+    
+    try {
+      const payload = {
+        name: formData.name,
+        category: formData.category,
+        description: formData.description,
+        latitude: formData.coordinates?.lat.toString() || null,
+        longitude: formData.coordinates?.lng.toString() || null,
       };
-      setLocations([...locations, newLocation]);
+      
+      if (editingLocation) {
+        // Update existing location
+        const response = await fetch(`/api/campuses/${selectedCampusId}/locations/${editingLocation.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          setLocations(
+            locations.map((l) =>
+              l.id === editingLocation.id ? data.data.location : l
+            )
+          );
+          setIsModalOpen(false);
+        } else {
+          alert('Failed to update location: ' + (data.error || 'Unknown error'));
+        }
+      } else {
+        // Create new location
+        const response = await fetch(`/api/campuses/${selectedCampusId}/locations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          setLocations([...locations, data.data.location]);
+          setIsModalOpen(false);
+        } else {
+          alert('Failed to create location: ' + (data.error || 'Unknown error'));
+        }
+      }
+    } catch (error) {
+      console.error('Error saving location:', error);
+      alert('Failed to save location');
     }
-    // TODO: Call API to create/update
-    setIsModalOpen(false);
   };
 
   const getCategoryBadgeColor = (category: Location['category']) => {
@@ -115,10 +220,27 @@ export default function LocationsPage() {
         </div>
         <button
           onClick={handleAdd}
-          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer"
+          disabled={!selectedCampusId}
+          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           + Add Location
         </button>
+      </div>
+
+      {/* Campus Selector */}
+      <div className="flex items-center gap-4">
+        <label className="text-sm font-medium text-gray-900">Select Campus:</label>
+        <select
+          value={selectedCampusId || ''}
+          onChange={(e) => setSelectedCampusId(parseInt(e.target.value))}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
+        >
+          {campuses.map((campus) => (
+            <option key={campus.id} value={campus.id}>
+              {campus.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Search and Filter */}
@@ -167,19 +289,32 @@ export default function LocationsPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredLocations.map((location) => (
-              <tr key={location.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{location.name}</div>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  Loading locations...
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryBadgeColor(location.category)}`}>
-                    {categories.find((c) => c.value === location.category)?.label}
-                  </span>
+              </tr>
+            ) : filteredLocations.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  No locations found
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">Campus {location.campus_id}</div>
-                </td>
+              </tr>
+            ) : (
+              filteredLocations.map((location) => (
+                <tr key={location.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{location.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryBadgeColor(location.category)}`}>
+                      {categories.find((c) => c.value === location.category)?.label}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{campuses.find(c => c.id === location.campus_id)?.name || 'Unknown'}</div>
+                  </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900 truncate max-w-xs">
                     {location.description || 'No description'}
@@ -200,7 +335,8 @@ export default function LocationsPage() {
                   </button>
                 </td>
               </tr>
-            ))}
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -247,13 +383,13 @@ export default function LocationsPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-1">
-                    Campus ID
+                    Campus
                   </label>
                   <input
-                    type="number"
-                    value={formData.campus_id}
-                    onChange={(e) => setFormData({ ...formData, campus_id: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    type="text"
+                    value={campuses.find(c => c.id === formData.campus_id)?.name || 'Unknown'}
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-black"
                   />
                 </div>
 

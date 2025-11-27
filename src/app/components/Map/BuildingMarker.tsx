@@ -1,7 +1,7 @@
 'use client';
 
 import { AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Building, Location } from '@/app/types';
+import { Building, Location } from '@/types';
 import { BuildingIcon } from './CustomMarkers';
 
 interface BuildingMarkerProps {

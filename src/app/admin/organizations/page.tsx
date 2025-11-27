@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Organization } from '@/app/types';
+import { Organization } from '@/types';
 
 export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([
