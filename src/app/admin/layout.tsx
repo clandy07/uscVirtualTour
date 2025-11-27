@@ -90,7 +90,7 @@ export default function AdminLayout({
             <div className="flex items-center">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="text-gray-900 hover:text-green-700 focus:outline-none"
+                className="text-green-700 hover:text-green-800 focus:outline-none font-bold"
               >
                 <span className="text-2xl">{sidebarOpen ? '☰' : '☰'}</span>
               </button>
@@ -135,7 +135,7 @@ export default function AdminLayout({
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     active
                       ? 'bg-green-50 text-green-700 font-medium'
-                      : 'text-gray-900 hover:bg-gray-100'
+                      : 'text-green-700 hover:bg-green-50'
                   }`}
                 >
                   <span className="text-xl">{item.icon}</span>
