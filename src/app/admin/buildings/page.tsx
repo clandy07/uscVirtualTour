@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 // import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
 import { Building } from '@/types';
+import Toast, { ToastType } from '@/app/components/Toast';
 
 export default function BuildingsPage() {
   const [buildings, setBuildings] = useState<Building[]>([]);
@@ -20,6 +21,7 @@ export default function BuildingsPage() {
     basement_count: 0,
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   // Fetch campuses on mount
   useEffect(() => {
@@ -94,23 +96,25 @@ export default function BuildingsPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this building?')) return;
+    if (!confirm('Are you sure you want to delete this building and its associated location?')) return;
     if (!selectedCampusId) return;
     
     try {
-      const building = buildings.find(b => b.id === id);
-      if (!building) return;
-
       const response = await fetch(`/api/campuses/${selectedCampusId}/buildings/${id}`, {
         method: 'DELETE',
       });
       
-      // Note: DELETE endpoint not implemented in API, you may need to add it
-      // For now, we'll just remove from state
-      setBuildings(buildings.filter((b) => b.id !== id));
+      const data = await response.json();
+      
+      if (data.success) {
+        setBuildings(buildings.filter((b) => b.id !== id));
+        setToast({ message: 'Building deleted successfully', type: 'success' });
+      } else {
+        setToast({ message: data.error || 'Failed to delete building', type: 'error' });
+      }
     } catch (error) {
       console.error('Error deleting building:', error);
-      alert('Failed to delete building');
+      setToast({ message: 'Failed to delete building', type: 'error' });
     }
   };
 
@@ -142,8 +146,9 @@ export default function BuildingsPage() {
             )
           );
           setIsModalOpen(false);
+          setToast({ message: 'Building updated successfully', type: 'success' });
         } else {
-          alert('Failed to update building: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to update building', type: 'error' });
         }
       } else {
         // Create new building
@@ -159,13 +164,14 @@ export default function BuildingsPage() {
         if (data.success) {
           setBuildings([...buildings, data.data.building]);
           setIsModalOpen(false);
+          setToast({ message: 'Building created successfully', type: 'success' });
         } else {
-          alert('Failed to create building: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to create building', type: 'error' });
         }
       }
     } catch (error) {
       console.error('Error saving building:', error);
-      alert('Failed to save building');
+      setToast({ message: 'Failed to save building', type: 'error' });
     }
   };
 
@@ -175,6 +181,13 @@ export default function BuildingsPage() {
 
   return (
     <div className="space-y-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Buildings</h2>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
 import { Location } from '@/types';
+import Toast, { ToastType } from '@/app/components/Toast';
 
 const categories: { value: Location['category']; label: string }[] = [
   { value: 'buildings', label: 'Buildings' },
@@ -33,6 +34,7 @@ export default function LocationsPage() {
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [latInput, setLatInput] = useState<string>('');
   const [lngInput, setLngInput] = useState<string>('');
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   // Fetch campuses on mount
   useEffect(() => {
@@ -114,7 +116,7 @@ export default function LocationsPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this location?')) return;
+    if (!confirm('Are you sure you want to delete this location and its associated building?')) return;
     if (!selectedCampusId) return;
     
     try {
@@ -126,12 +128,13 @@ export default function LocationsPage() {
       
       if (data.success) {
         setLocations(locations.filter((l) => l.id !== id));
+        setToast({ message: 'Location deleted successfully', type: 'success' });
       } else {
-        alert('Failed to delete location: ' + (data.error || 'Unknown error'));
+        setToast({ message: data.error || 'Failed to delete location', type: 'error' });
       }
     } catch (error) {
       console.error('Error deleting location:', error);
-      alert('Failed to delete location');
+      setToast({ message: 'Failed to delete location', type: 'error' });
     }
   };
 
@@ -165,8 +168,9 @@ export default function LocationsPage() {
             )
           );
           setIsModalOpen(false);
+          setToast({ message: 'Location updated successfully', type: 'success' });
         } else {
-          alert('Failed to update location: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to update location', type: 'error' });
         }
       } else {
         // Create new location
@@ -181,13 +185,14 @@ export default function LocationsPage() {
         if (data.success) {
           setLocations([...locations, data.data.location]);
           setIsModalOpen(false);
+          setToast({ message: 'Location created successfully', type: 'success' });
         } else {
-          alert('Failed to create location: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to create location', type: 'error' });
         }
       }
     } catch (error) {
       console.error('Error saving location:', error);
-      alert('Failed to save location');
+      setToast({ message: 'Failed to save location', type: 'error' });
     }
   };
 
@@ -213,6 +218,13 @@ export default function LocationsPage() {
 
   return (
     <div className="space-y-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Locations</h2>

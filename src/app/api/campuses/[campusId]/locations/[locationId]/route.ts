@@ -103,7 +103,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/campuses/:campusId/locations/:locationId - Delete a location (Admin only)
+// DELETE /api/campuses/:campusId/locations/:locationId - Delete a location and its associated building (Admin only)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ campusId: string; locationId: string }> }
@@ -123,6 +123,19 @@ export async function DELETE(
       );
     }
 
+    // Check if there's an associated building and delete it first
+    const [existingBuilding] = await db
+      .select()
+      .from(buildings)
+      .where(eq(buildings.location_id, locationIdNum));
+
+    if (existingBuilding) {
+      await db
+        .delete(buildings)
+        .where(eq(buildings.id, existingBuilding.id));
+    }
+
+    // Delete the location
     const [deletedLocation] = await db
       .delete(locations)
       .where(eq(locations.id, locationIdNum))
@@ -137,7 +150,7 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Location deleted successfully',
+      message: 'Location and associated building deleted successfully',
       data: deletedLocation
     });
   } catch (error) {

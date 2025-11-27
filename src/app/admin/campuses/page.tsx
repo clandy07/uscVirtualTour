@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Toast, { ToastType } from '@/app/components/Toast';
 
 interface Campus {
   id: number;
@@ -18,6 +19,7 @@ export default function CampusesPage() {
     address: '',
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   // Fetch campuses on mount
   useEffect(() => {
@@ -66,12 +68,13 @@ export default function CampusesPage() {
       
       if (data.success) {
         setCampuses(campuses.filter((c) => c.id !== id));
+        setToast({ message: 'Campus deleted successfully', type: 'success' });
       } else {
-        alert('Failed to delete campus: ' + (data.error || 'Unknown error'));
+        setToast({ message: data.error || 'Failed to delete campus', type: 'error' });
       }
     } catch (error) {
       console.error('Error deleting campus:', error);
-      alert('Failed to delete campus');
+      setToast({ message: 'Failed to delete campus', type: 'error' });
     }
   };
 
@@ -101,8 +104,9 @@ export default function CampusesPage() {
             )
           );
           setIsModalOpen(false);
+          setToast({ message: 'Campus updated successfully', type: 'success' });
         } else {
-          alert('Failed to update campus: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to update campus', type: 'error' });
         }
       } else {
         // Create new campus
@@ -117,13 +121,14 @@ export default function CampusesPage() {
         if (data.success) {
           setCampuses([...campuses, data.data]);
           setIsModalOpen(false);
+          setToast({ message: 'Campus created successfully', type: 'success' });
         } else {
-          alert('Failed to create campus: ' + (data.error || 'Unknown error'));
+          setToast({ message: data.error || 'Failed to create campus', type: 'error' });
         }
       }
     } catch (error) {
       console.error('Error saving campus:', error);
-      alert('Failed to save campus');
+      setToast({ message: 'Failed to save campus', type: 'error' });
     }
   };
 
@@ -134,6 +139,13 @@ export default function CampusesPage() {
 
   return (
     <div className="space-y-6">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Campuses</h2>

@@ -86,6 +86,18 @@ textarea:disabled::placeholder {
     }
   }
 
+  /* Slide in from right animation for toasts */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
   .animate-slideUp {
     animation: slideUp 0.3s ease-out forwards;
   }
@@ -101,6 +113,10 @@ textarea:disabled::placeholder {
 
   .animate-scaleIn {
     animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  .animate-slideInRight {
+    animation: slideInRight 0.3s ease-out forwards;
   }
 
   .hover\:scale-102:hover {

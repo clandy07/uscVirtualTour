@@ -98,3 +98,61 @@ export async function PATCH(
     );
   }
 }
+
+// DELETE /api/campuses/:campusId/buildings/:buildingId - Delete a building and optionally its location (Admin only)
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ campusId: string; buildingId: string }> }
+) {
+  const authError = await requireAdmin(request);
+  if (authError) return authError;
+
+  try {
+    const { campusId, buildingId } = await params;
+    const campusIdNum = parseInt(campusId);
+    const buildingIdNum = parseInt(buildingId);
+
+    if (isNaN(campusIdNum) || isNaN(buildingIdNum)) {
+      return NextResponse.json(
+        { error: 'Invalid campus or building ID' },
+        { status: 400 }
+      );
+    }
+
+    // Get the building first to find its location_id
+    const [building] = await db
+      .select()
+      .from(buildings)
+      .where(eq(buildings.id, buildingIdNum));
+
+    if (!building) {
+      return NextResponse.json(
+        { error: 'Building not found' },
+        { status: 404 }
+      );
+    }
+
+    // Delete the building
+    await db
+      .delete(buildings)
+      .where(eq(buildings.id, buildingIdNum));
+
+    // If building had an associated location, delete it too
+    if (building.location_id) {
+      await db
+        .delete(locations)
+        .where(eq(locations.id, building.location_id));
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Building and associated location deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting building:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete building' },
+      { status: 500 }
+    );
+  }
+}
