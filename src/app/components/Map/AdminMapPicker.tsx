@@ -30,6 +30,7 @@ export default function AdminMapPicker({ coordinates, onCoordinatesSelect }: Adm
                         mapId={process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID}
                         onClick={handleMapClick}
                         clickableIcons={false}
+                        disableDefaultUI={true}
                     >
                         {coordinates && (
                             <AdvancedMarker position={coordinates}>
