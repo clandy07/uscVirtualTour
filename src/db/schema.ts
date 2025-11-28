@@ -48,8 +48,8 @@ export const organizations = pgTable("organizations", {
 });
 
 export const user_org_relations = pgTable("user_org_relations", {
-    user_id: text().references(() => users.id, {onDelete: 'cascade'}),
-    org_id: integer().references(() => organizations.id, {onDelete: 'cascade'}),
+    user_id: text().notNull().references(() => users.id, {onDelete: 'cascade'}),
+    org_id: integer().notNull().references(() => organizations.id, {onDelete: 'cascade'}),
     can_post_events: boolean().default(false).notNull(),
     can_add_members: boolean().default(false).notNull(),
     can_remove_members: boolean().default(false).notNull(),
