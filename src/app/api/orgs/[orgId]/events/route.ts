@@ -96,11 +96,15 @@ export async function POST(request: NextRequest,
                     { status: 401 }
                 );
             }
+            else{
+                // this is where code for the students who can post in their orgs will be handled
+            }
         }
 
         const body = await request.json();
 
         // You MUST validate the body here
+        // below is the code for admin to post an event. the orgId will be null  for events posted by admins
         const {
             name: eventName,
             description,
