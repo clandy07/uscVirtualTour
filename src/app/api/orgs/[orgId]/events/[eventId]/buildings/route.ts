@@ -6,7 +6,7 @@ import { eq, SQL, and, ilike, or, inArray } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 
-// GET /orgs/:orgId/events/:eventId/locations - Get all locations in a given event of a given org
+// GET /orgs/:orgId/events/:eventId/buildings - Get all buildings in a given event of a given org
 export async function GET(
     request: NextRequest, 
     { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
@@ -56,10 +56,19 @@ export async function GET(
             },
             where: (events, { eq }) => (eq(events.id, parseInt(eventId))),
             with: {
-
+                
                 eventLocations: {
                     with: {
-                        location: true
+                        location: {
+                            with: {
+                                building: {
+                                    columns: {
+                                        created_at: false,
+                                        updated_at: false
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
