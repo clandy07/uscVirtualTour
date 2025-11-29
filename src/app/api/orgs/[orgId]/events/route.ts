@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { events, event_room_relations, event_location_relations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
-import { eq, SQL, and, ilike, or, inArray } from 'drizzle-orm';
+import { eq, SQL, and, ilike, or, inArray, lte, gte } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
@@ -21,8 +21,8 @@ export async function GET(
 
         const filters: SQL[] = [];
 
-        if(dateTimeStart) filters.push(eq(events.date_time_start, new Date(dateTimeStart)));
-        if(dateTimeEnd) filters.push(eq(events.date_time_end, new Date(dateTimeEnd)));
+        if(dateTimeStart) filters.push(gte(events.date_time_start, new Date(dateTimeStart)));
+        if(dateTimeEnd) filters.push(lte(events.date_time_end, new Date(dateTimeEnd)));
 
         if(name) filters.push(ilike(events.name, `${name}%`));
 
@@ -33,7 +33,7 @@ export async function GET(
         if(!session){ // if this executes, then a guest accessed this endpoint
             filters.push(eq(events.visibility, "everyone"))
         }
-        else if(getUserRole(session.user) === 'student'){
+        else if(getUserRole(session.user) == 'student'){
             filters.push(inArray(events.visibility, ["everyone", "only_students"]))
         }
 
@@ -81,6 +81,8 @@ export async function POST(request: NextRequest,
         const userOrgs = await getUserOrgs(session.user)
         const userRole = getUserRole(session.user)
 
+        let orgIdTemp: null | number = null;
+
         if(userRole == "student" && !userOrgs.includes(parseInt(orgId))){
             // student doesnt even belong to the org, so they are blocked from using this endpoint to post events for their org
             return NextResponse.json(
@@ -97,35 +99,51 @@ export async function POST(request: NextRequest,
                 );
             }
             else{
-                // this is where code for the students who can post in their orgs will be handled
+                orgIdTemp = parseInt(orgId)
             }
         }
 
-        const body = await request.json();
+        const body: {
+            name: string, 
+            description: string | null | undefined,
+            dateTimeStart: Date | string,
+            dateTimeEnd: Date | string | null | undefined,
+            visibility: "everyone" | "only_students" | "only_organization_members",
+            evetGroupId: number | null | undefined,
+            customMarker: string | null | undefined,
+            roomId: number | null | undefined,
+            locationId: number | null | undefined
+        } = await request.json();
 
-        // You MUST validate the body here
-        // below is the code for admin to post an event. the orgId will be null  for events posted by admins
-        const {
-            name: eventName,
-            description,
-            date_time_start,
-            date_time_end,
-            visibility,
-            event_group_id,
-            custom_marker,
-            roomId,
-            locationId
-        } = body;
+
+        const eventName = body.name;
+        const description = body.description;
+        const date_time_start = new Date(body.dateTimeStart);
+        const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
+        const visibility = body.visibility;
+        const event_group_id = body.evetGroupId;
+        const custom_marker = body.customMarker;
+        const roomId = body.roomId;
+        const locationId = body.locationId;
+
+        if (!roomId && !locationId){
+            return NextResponse.json(
+                {
+                    error: "'roomId' and 'locationId' cannot be both null. Provide at least one."
+                },
+                { status: 400 }
+            );
+        }
 
         const eventResult = await db.insert(events).values(
             {
                 name: eventName,
                 description: description,
-                date_time_start: new Date(date_time_start),
-                date_time_end: new Date(date_time_end),
+                date_time_start: date_time_start,
+                date_time_end: date_time_end,
                 custom_marker: custom_marker,
-                event_group_id: parseInt(event_group_id),
-                org_id: parseInt(orgId),
+                event_group_id: event_group_id,
+                org_id: orgIdTemp,
                 visibility: visibility
             }
         ).returning({ insertedEventId: events.id });
@@ -135,13 +153,13 @@ export async function POST(request: NextRequest,
         if(inLocation){
             result = await db.insert(event_location_relations).values({
                 event_id: insertedEventId,
-                location_id: parseInt(locationId)
+                location_id: locationId
             });
         }
         else{
             result = await db.insert(event_room_relations).values({
                 event_id: insertedEventId,
-                room_id: parseInt(roomId)
+                room_id: roomId
             });
         }
 
