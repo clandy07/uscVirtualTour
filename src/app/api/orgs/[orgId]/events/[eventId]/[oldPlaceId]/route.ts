@@ -8,110 +8,7 @@ import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
 import {isNumber} from '@/app/utils'
 
-// GET /orgs/:orgId/events/:eventId - Get full details of a given event in a given org
-export async function GET(
-    request: NextRequest, 
-    { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
 
-    try {        
-        const { orgId, eventId } = await params
-
-        const event = await db.select({eventId: events.id, eventVisibility: events.visibility}).from(events).where(
-            and(
-                eq(events.id, parseInt(eventId)),
-                eq(events.org_id, parseInt(orgId))
-            )
-        )
-
-        // if (event.length <= 0){
-        //     return NextResponse.json({ data: [] });
-        // }
-
-        const {eventVisibility} = event[0]
-
-        const session = await checkAuth(request)
-        if(!session && eventVisibility != "everyone"){ 
-            // code block runs if a guest tried to get the campus of an event not visible to them
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            );
-        }
-        else if(session && eventVisibility != "everyone"){
-            // there is a valid session 
-            const userRole = getUserRole(session.user)
-            const userOrgs = getUserOrgs(session.user)
-            if (userRole == "student" && eventVisibility == "only_organization_members" && !(await userOrgs).includes(parseInt(orgId))){
-                // code block runs if the student tried to get the campus of an event only visible to members of an org they are not part of
-                return NextResponse.json(
-                    { error: "Unauthorized" },
-                    { status: 401 }
-                ); 
-            }
-        }
-
-        const result = await db.select().from(events).where(eq(events.id, parseInt(eventId)))
-    
-        return NextResponse.json({ data: result });
-        
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
-    }
-
-}
-
-
-export async function DELETE(
-    request: NextRequest, 
-    { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
-
-    try {    
-        const {orgId, eventId} = await params
-
-        const session = await checkAuth(request)
-        if(!session){
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            );        
-        }
-
-        const userOrgs = await getUserOrgs(session.user)
-        const userRole = getUserRole(session.user)
-
-        if(userRole == "student" && !userOrgs.includes(parseInt(orgId))){
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            );     
-        }
-        else if(userRole == "student"){
-            const {can_post_events} = await getUserOrgPermissions(session.user, parseInt(orgId))
-            if(!can_post_events){
-                return NextResponse.json(
-                    { error: "Unauthorized" },
-                    { status: 401 }
-                );       
-            }
-        }
-
-        const temp = await db.delete(events).where(eq(events.id, parseInt(eventId))).returning({ deletedId: events.id });
-        const result = temp[0]
-
-        return NextResponse.json({ data: result });
-
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
-    }
-}
 
 
 export async function PATCH(
@@ -123,7 +20,8 @@ export async function PATCH(
     try {
         const {orgId, eventId, oldPlaceId} = await params
         const searchParams = request.nextUrl.searchParams
-        const inLocation:boolean = (searchParams.get('inLocation') === "true")
+        const inLocation:boolean = (searchParams.get('inLocation') == "true")
+        const isSamePlaceType:boolean = (searchParams.get('isSamePlaceType') == "true")
 
         const session = await checkAuth(request)
         if(!session){
@@ -201,35 +99,40 @@ export async function PATCH(
         const {eventIdUpdated} = eventResult[0]
 
         
-        if(inLocation && isNumber(locationId)){
-            const result = await db.update(event_location_relations).set({
-                location_id: locationId
-            }).where(
-                and(
-                    eq(event_location_relations.event_id, eventIdUpdated),
-                    eq(event_location_relations.location_id, parseInt(oldPlaceId))
-                )
-            ).returning({
-                eventIdUpdated: event_location_relations.event_id,
-                newLocationId: event_location_relations.location_id
-            });
+        if(isSamePlaceType){        
+            if(inLocation && isNumber(locationId)){
+                const result = await db.update(event_location_relations).set({
+                    location_id: locationId
+                }).where(
+                    and(
+                        eq(event_location_relations.event_id, eventIdUpdated),
+                        eq(event_location_relations.location_id, parseInt(oldPlaceId))
+                    )
+                ).returning({
+                    eventIdUpdated: event_location_relations.event_id,
+                    newLocationId: event_location_relations.location_id
+                });
 
-            return NextResponse.json({ data: result[0] });
+                return NextResponse.json({ data: result[0] });
+            }
+            else if(!inLocation && isNumber(roomId)){
+                const result = await db.update(event_room_relations).set({
+                    room_id: roomId
+                }).where(
+                    and(
+                        eq(event_room_relations.event_id, eventIdUpdated),
+                        eq(event_room_relations.room_id, parseInt(oldPlaceId))
+                    )
+                ).returning({
+                    eventIdUpdated: event_room_relations.event_id,
+                    newRoomId: event_room_relations.room_id
+                });
+
+                return NextResponse.json({ data: result[0] });
+            }
         }
-        else if(isNumber(roomId)){
-            const result = await db.update(event_room_relations).set({
-                room_id: roomId
-            }).where(
-                and(
-                    eq(event_room_relations.event_id, eventIdUpdated),
-                    eq(event_room_relations.room_id, parseInt(oldPlaceId))
-                )
-            ).returning({
-                eventIdUpdated: event_room_relations.event_id,
-                newRoomId: event_room_relations.room_id
-            });
-
-            return NextResponse.json({ data: result[0] });
+        else{
+            
         }
     } catch (err){
         console.error(err);
