@@ -117,11 +117,11 @@ export async function DELETE(
 export async function PATCH(
     request: NextRequest, 
     { params }: { 
-        params: Promise<{ orgId: string, eventId: string }> 
+        params: Promise<{ orgId: string, eventId: string, oldPlaceId: string }> 
     }){
 
     try {
-        const {orgId, eventId} = await params
+        const {orgId, eventId, oldPlaceId} = await params
         const searchParams = request.nextUrl.searchParams
         const inLocation:boolean = (searchParams.get('inLocation') === "true")
 
@@ -196,34 +196,41 @@ export async function PATCH(
             }
         )
         .where(eq(events.id, parseInt(eventId)))
-        .returning({ updatedEventId: events.id });
+        .returning({ eventIdUpdated: events.id });
 
-        const {updatedEventId} = eventResult[0]
+        const {eventIdUpdated} = eventResult[0]
 
-        let result;
+        
         if(inLocation && isNumber(locationId)){
-            result = await db.update(event_location_relations).set({
+            const result = await db.update(event_location_relations).set({
                 location_id: locationId
             }).where(
                 and(
-                    eq(event_location_relations.event_id, updatedEventId),
-                    eq(event_location_relations.location_id, locationId)
+                    eq(event_location_relations.event_id, eventIdUpdated),
+                    eq(event_location_relations.location_id, parseInt(oldPlaceId))
                 )
-            );
+            ).returning({
+                eventIdUpdated: event_location_relations.event_id,
+                newLocationId: event_location_relations.location_id
+            });
+
+            return NextResponse.json({ data: result[0] });
         }
         else if(isNumber(roomId)){
-            result = await db.update(event_room_relations).set({
+            const result = await db.update(event_room_relations).set({
                 room_id: roomId
             }).where(
                 and(
-                    eq(event_room_relations.event_id, updatedEventId),
-                    eq(event_room_relations.room_id, roomId)
+                    eq(event_room_relations.event_id, eventIdUpdated),
+                    eq(event_room_relations.room_id, parseInt(oldPlaceId))
                 )
-            );
+            ).returning({
+                eventIdUpdated: event_room_relations.event_id,
+                newRoomId: event_room_relations.room_id
+            });
+
+            return NextResponse.json({ data: result[0] });
         }
-
-        return NextResponse.json({ data: eventResult });
-
     } catch (err){
         console.error(err);
         return NextResponse.json(
