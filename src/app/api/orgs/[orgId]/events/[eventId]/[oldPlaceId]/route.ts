@@ -13,9 +13,7 @@ import {isNumber} from '@/app/utils'
 
 export async function PATCH(
     request: NextRequest, 
-    { params }: { 
-        params: Promise<{ orgId: string, eventId: string, oldPlaceId: string }> 
-    }){
+    { params }: { params: Promise<{ orgId: string, eventId: string, oldPlaceId: string }> }){
 
     try {
         const {orgId, eventId, oldPlaceId} = await params
