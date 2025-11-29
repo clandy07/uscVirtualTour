@@ -22,24 +22,30 @@ export async function GET(request: NextRequest) {
 
         if(name) filters.push(ilike(event_groups.name, `${name}%`));
 
-        let query = db.select({
-            id: event_groups.id,
-            name: event_groups.name,
-            description: event_groups.description,
-            date_time_start: event_groups.date_time_start,
-            date_time_end: event_groups.date_time_end,
-            custom_marker: event_groups.custom_marker
-        }).from(event_groups);
-
         if(filters.length > 0){
-            const result = await query.where(and(...filters));
+            const result = await db.select({
+                id: event_groups.id,
+                name: event_groups.name,
+                description: event_groups.description,
+                date_time_start: event_groups.date_time_start,
+                date_time_end: event_groups.date_time_end,
+                custom_marker: event_groups.custom_marker
+            }).from(event_groups).where(and(...filters));
+
             return NextResponse.json({ data: result });
         }
         else{
-            const result = await query;
+            const result = await db.select({
+                id: event_groups.id,
+                name: event_groups.name,
+                description: event_groups.description,
+                date_time_start: event_groups.date_time_start,
+                date_time_end: event_groups.date_time_end,
+                custom_marker: event_groups.custom_marker
+            }).from(event_groups);
+
             return NextResponse.json({ data: result });
         }
-        
         
     } catch (err) {
         console.error(err);
