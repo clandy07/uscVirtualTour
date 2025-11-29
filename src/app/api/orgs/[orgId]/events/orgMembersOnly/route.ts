@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { events } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
-import { eq, SQL, and, ilike, or, inArray } from 'drizzle-orm';
+import { eq, SQL, and, ilike, lte, gte } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 
@@ -25,7 +25,7 @@ export async function GET(
         const userRole = getUserRole(session.user)
         const userOrgs = await getUserOrgs(session?.user)
 
-        if(userRole === 'student' && !userOrgs.includes(parseInt(orgId))){
+        if(userRole == 'student' && !userOrgs.includes(parseInt(orgId))){
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
@@ -39,8 +39,8 @@ export async function GET(
 
         const filters: SQL[] = [];
 
-        if(dateTimeStart) filters.push(eq(events.date_time_start, new Date(dateTimeStart)));
-        if(dateTimeEnd) filters.push(eq(events.date_time_end, new Date(dateTimeEnd)));
+        if(dateTimeStart) filters.push(gte(events.date_time_start, new Date(dateTimeStart)));
+        if(dateTimeEnd) filters.push(lte(events.date_time_end, new Date(dateTimeEnd)));
 
         if(name) filters.push(ilike(events.name, `${name}%`));
 
