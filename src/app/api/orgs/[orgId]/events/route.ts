@@ -163,7 +163,7 @@ export async function POST(request: NextRequest,
             });
         }
 
-        return NextResponse.json({ data: result });
+        return NextResponse.json({ data: eventResult[0] });
         
     } catch (err) {
         console.error(err);
