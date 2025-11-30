@@ -59,7 +59,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         ).where(
             eq(event_groups.id, parseInt(eventGrpId))
         ).returning({
-            updatedId: event_groups.id
+            updatedId: event_groups.id,
+            description: event_groups.description,
+            dateTimeStart: event_groups.date_time_start,
+            dateTimeEnd: event_groups.date_time_end,
+            customMarker: event_groups.custom_marker
         })
 
         return NextResponse.json({ data: result[0] });
