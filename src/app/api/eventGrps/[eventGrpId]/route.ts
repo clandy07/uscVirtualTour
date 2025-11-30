@@ -6,13 +6,15 @@ import { eq, SQL, and, ilike, or, inArray, lte, gte } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
+import { isNumericString } from '@/app/utils';
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ eventGrpId: string }> }) {
     try {        
         const session = await checkAuth(request)
-        const {eventGrpId} = await params
+        const pathParams = await params
+        const eventGroupId = isNumericString(pathParams.eventGrpId) ? parseInt(pathParams.eventGrpId) : null
         
-        if(!eventGrpId){
+        if(eventGroupId === null){
             return NextResponse.json(
                 { error: "eventGrpId must be a valid number" },
                 { status: 400 }
@@ -57,7 +59,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
                 custom_marker: custom_marker
             }
         ).where(
-            eq(event_groups.id, parseInt(eventGrpId))
+            eq(event_groups.id, eventGroupId)
         ).returning({
             updatedId: event_groups.id,
             description: event_groups.description,
@@ -79,6 +81,16 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ eventGrpId: string }> }) {
     try {        
+        const pathParams = await params
+        const eventGroupId = isNumericString(pathParams.eventGrpId) ? parseInt(pathParams.eventGrpId) : null
+
+        if(eventGroupId === null){
+            return NextResponse.json(
+                { error: "eventGrpId must be a valid number" },
+                { status: 400 }
+            );      
+        }
+
         const session = await checkAuth(request)
         
         if(!session){
@@ -110,17 +122,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
         const custom_marker = body.customMarker;
 
 
-        const result = await db.insert(event_groups).values(
-            {
-                name: name,
-                description: description,
-                date_time_start: date_time_start,
-                date_time_end: date_time_end,
-                custom_marker: custom_marker
-            }
+        const result = await db.delete(event_groups).where(
+            eq(event_groups.id, eventGroupId)
         ).returning({
-            insertedId: event_groups.id
-        })
+            idDeleted: event_groups.id,
+            description: event_groups.description,
+            dateTimeStart: event_groups.date_time_start,
+            dateTimeEnd: event_groups.date_time_end,
+            customMarker: event_groups.custom_marker
+        });
 
         return NextResponse.json({ data: result[0] });
         
