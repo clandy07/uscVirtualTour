@@ -1,6 +1,6 @@
 import { smallint, integer, serial, timestamp, pgTable, 
         primaryKey, varchar, pgEnum, boolean, unique, 
-        text, index } from "drizzle-orm/pg-core";
+        text, index, jsonb } from "drizzle-orm/pg-core";
 import {timestamps} from './columns.helpers'
 import * as authSchema from "./auth-schema";
 
@@ -88,6 +88,13 @@ export const buildings = pgTable("buildings", {
     location_id: integer().references(() => locations.id, {onDelete: 'set null'}),
     basement_count: smallint(),
     floor_count: smallint(),
+    floor_data: jsonb().$type<{
+        [floor: number]: {
+            kmlUrl?: string;
+            center: { lat: number; lng: number };
+            zoom: number;
+        };
+    }>(),
     ...timestamps
 }, (table) => [
     index("building_name_idx").on(table.name),
