@@ -93,25 +93,25 @@ export async function PATCH(
 
 
         const body: {
-            name: string, 
-            description: string | null | undefined,
-            dateTimeStart: Date | string,
-            dateTimeEnd: Date | string | null | undefined,
-            visibility: "everyone" | "only_students" | "only_organization_members",
-            evetGroupId: number | null | undefined,
-            customMarker: string | null | undefined,
+            // name: string, 
+            // description: string | null | undefined,
+            // dateTimeStart: Date | string,
+            // dateTimeEnd: Date | string | null | undefined,
+            // visibility: "everyone" | "only_students" | "only_organization_members",
+            // evetGroupId: number | null | undefined,
+            // customMarker: string | null | undefined,
             roomId: number | null | undefined,
             locationId: number | null | undefined
         } = await request.json();
 
-        // admin logic goes here. admin cant update an event posted by students
-        const eventName = body.name;
-        const description = body.description;
-        const date_time_start = new Date(body.dateTimeStart);
-        const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
-        const visibility = body.visibility;
-        const event_group_id = body.evetGroupId;
-        const custom_marker = body.customMarker;
+        // // admin logic goes here. admin cant update an event posted by students
+        // const eventName = body.name;
+        // const description = body.description;
+        // const date_time_start = new Date(body.dateTimeStart);
+        // const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
+        // const visibility = body.visibility;
+        // const event_group_id = body.evetGroupId;
+        // const custom_marker = body.customMarker;
 
         let roomId = body.roomId;
         let locationId = body.locationId;
