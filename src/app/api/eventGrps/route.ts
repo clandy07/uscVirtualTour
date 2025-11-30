@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
             dateTimeStart: Date | string,
             dateTimeEnd: Date | string | null | undefined,
             customMarker: string | null | undefined
-            locationId: number
+            // locationId: number
         } = await request.json();
 
         const name = body.name;
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         const date_time_start = new Date(body.dateTimeStart);
         const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
         const custom_marker = body.customMarker;
-        const locationId = body.locationId;
+        //const locationId = body.locationId;
 
 
         const result = await db.insert(event_groups).values(
@@ -88,20 +88,25 @@ export async function POST(request: NextRequest) {
                 custom_marker: custom_marker
             }
         ).returning({
-            insertedId: event_groups.id
+            insertedId: event_groups.id,
+            name: event_groups.name,
+            description: event_groups.description,
+            dateTimeStart: event_groups.date_time_start,
+            dateTimeEnd: event_groups.date_time_end,
+            customMarker: event_groups.custom_marker
         })
 
-        const junctionResult = await db.insert(event_group_location_relations).values(
-            {
-                event_group_id: result[0].insertedId,
-                location_id: locationId
-            }
-        ).returning({
-            insertedId: event_group_location_relations.event_group_id,
-            insertedLocationId: event_group_location_relations.location_id
-        })
+        // const junctionResult = await db.insert(event_group_location_relations).values(
+        //     {
+        //         event_group_id: result[0].insertedId,
+        //         location_id: locationId
+        //     }
+        // ).returning({
+        //     insertedId: event_group_location_relations.event_group_id,
+        //     insertedLocationId: event_group_location_relations.location_id
+        // })
 
-        return NextResponse.json({ data: junctionResult[0] });
+        return NextResponse.json({ data: result[0] });
         
     } catch (err) {
         console.error(err);
