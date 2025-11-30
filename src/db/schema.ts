@@ -211,11 +211,11 @@ import { relations } from 'drizzle-orm';
 
 // ALL RELATIONS HAVE BEEN CHECKED
 
-// users, user_org_relations, and organizations relations
-export const usersRelations = relations(users, ({ one, many }) => ({
-    userOrgs: many(user_org_relations),
-    //userProfiles: one(user_profiles)
-}));
+// // users, user_org_relations, and organizations relations
+// export const usersRelations = relations(users, ({ one, many }) => ({
+//     userOrgs: many(user_org_relations),
+//     //userProfiles: one(user_profiles)
+// }));
 
 // export const userProfileRelations = relations(user_profiles, ({ one }) => ({
 // 	user: one(users, { 
@@ -399,7 +399,7 @@ export const schema = {
     event_group_location_relations,
     geometries,
 
-    usersRelations,
+    // usersRelations,
     organizationsRelations,
     userOrgRelations,
     eventsRelations,
