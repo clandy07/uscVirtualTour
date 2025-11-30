@@ -91,6 +91,7 @@ export const buildings = pgTable("buildings", {
     floor_data: jsonb().$type<{
         [floor: number]: {
             kmlUrl?: string;
+            embedUrl?: string; 
             center: { lat: number; lng: number };
             zoom: number;
         };

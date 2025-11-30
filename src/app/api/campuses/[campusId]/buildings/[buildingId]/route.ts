@@ -25,13 +25,14 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { name, floor_count, basement_count, latitude, longitude, description } = body;
+    const { name, floor_count, basement_count, latitude, longitude, description, floor_data } = body;
 
     // Build update object for building
     const buildingUpdateData: any = {};
     if (name !== undefined) buildingUpdateData.name = name;
     if (floor_count !== undefined) buildingUpdateData.floor_count = floor_count;
     if (basement_count !== undefined) buildingUpdateData.basement_count = basement_count;
+    if (floor_data !== undefined) buildingUpdateData.floor_data = floor_data;
 
     if (Object.keys(buildingUpdateData).length === 0 && latitude === undefined && longitude === undefined && description === undefined) {
       return NextResponse.json(

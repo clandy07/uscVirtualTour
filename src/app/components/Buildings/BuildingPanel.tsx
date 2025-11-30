@@ -2,6 +2,7 @@
 
 import { Building } from '@/types';
 import { useState } from 'react';
+import FloorMap from '../Map/FloorMap';
 
 interface BuildingPanelProps {
   building: Building | null;
@@ -10,6 +11,10 @@ interface BuildingPanelProps {
 
 export default function BuildingPanel({ building, onClose }: BuildingPanelProps) {
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
+
+  // Debug logging
+  console.log('BuildingPanel - building:', building);
+  console.log('BuildingPanel - floor_data:', building?.floor_data);
 
   if (!building) return null;
 
@@ -26,9 +31,15 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
     }
   }
 
+  const currentFloorData = selectedFloor !== null ? building.floor_data?.[selectedFloor] : null;
+
+  // Debug logging for floor data
+  console.log('Selected floor:', selectedFloor);
+  console.log('Current floor data:', currentFloorData);
+
   return (
     <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden flex flex-col animate-scaleIn">
+      <div className="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-scaleIn">
         {/* Header */}
         <div className="bg-red-900 text-white px-6 py-4 flex justify-between items-center">
           <div>
@@ -49,10 +60,6 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
           <div className="p-6 border-b bg-gray-50">
             <h3 className="text-xl font-bold mb-4 text-gray-900">Building Information</h3>
             <div className="grid grid-cols-2 gap-4">
-              {/* <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '100ms' }}>
-                <p className="text-sm text-gray-500 mb-1">Building ID</p>
-                <p className="text-lg font-semibold text-gray-900">{building.id}</p>
-              </div> */}
               {floors.length > 0 && (
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '200ms' }}>
                   <p className="text-sm text-gray-500 mb-1">Total Floors</p>
@@ -84,13 +91,32 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
               </div>
 
               {/* Floor Details */}
-              {selectedFloor !== null && (
+              {selectedFloor !== null && currentFloorData && (
+                <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 animate-slideDown">
+                  <h4 className="font-bold text-lg mb-3 text-gray-900">
+                    {selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`} - Floor Map
+                  </h4>
+                  <div className="rounded-lg overflow-hidden border-2 border-gray-300">
+                    <FloorMap
+                      center={currentFloorData.center}
+                      zoom={currentFloorData.zoom}
+                      kmlUrl={currentFloorData.kmlUrl}
+                      embedUrl={currentFloorData.embedUrl}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-3">
+                    Interactive floor plan showing rooms and facilities
+                  </p>
+                </div>
+              )}
+
+              {selectedFloor !== null && !currentFloorData && (
                 <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 animate-slideDown">
                   <h4 className="font-bold text-lg mb-2 text-gray-900">
                     {selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`}
                   </h4>
                   <p className="text-gray-600 text-sm">
-                    Floor information and room details coming soon.
+                    Floor map not available yet.
                   </p>
                 </div>
               )}

@@ -11,6 +11,7 @@ export interface Location {
 
 export interface FloorData {
   kmlUrl?: string;
+  embedUrl?: string; 
   center: { lat: number; lng: number };
   zoom: number;
 }
