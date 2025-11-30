@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
-import { event_groups, event_group_location_relations } from '@/db/schema';
+import { event_groups, event_group_location_relations, locations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
 import { eq, SQL, and, ilike, or, inArray, lte, gte } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
@@ -78,6 +78,50 @@ export async function POST(request: NextRequest,
         })
 
         return NextResponse.json({ data: junctionResult[0] });
+        
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function GET(request: NextRequest, 
+    { params }: { params: Promise<{ eventGrpId: string }> }) {
+    try {        
+        const session = await checkAuth(request)
+        
+        const paramsPath = await params;
+        const eventGroupId = (isNumericString(paramsPath.eventGrpId)) ? parseInt(paramsPath.eventGrpId) : null;
+        
+        if(eventGroupId === null){
+            return NextResponse.json(
+                { error: "Invalid eventGrpId"},
+                { status: 401}
+            )
+        }
+
+
+        const result = await db.query.event_groups.findMany({
+            columns: {
+                created_at: false,
+                updated_at: false
+            },
+            with: {
+                eventGroupLocations: {
+                    with: {
+                        location: true
+                    }
+                },
+            },
+            where: eq(event_groups.id, eventGroupId)
+        });
+
+
+        return NextResponse.json({ data: result[0] });
         
     } catch (err) {
         console.error(err);
