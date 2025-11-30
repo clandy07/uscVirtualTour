@@ -1,12 +1,12 @@
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
-import {isNumber} from '@/app/utils'
+import {isNumber, isNumericString} from '@/app/utils'
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { events, event_location_relations, event_room_relations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
-import { eq, and,} from 'drizzle-orm';
+import { eq, and, isNull} from 'drizzle-orm';
 
 // GET /orgs/:orgId/events/:eventId - Get full details of a given event in a given org
 export async function GET(
@@ -104,6 +104,119 @@ export async function DELETE(
 
         return NextResponse.json({ data: result });
 
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function PATCH(
+    request: NextRequest, 
+    { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
+
+    try {    
+        const pathParams = await params
+
+        const orgId = (!isNumericString(pathParams.orgId)) ? null : parseInt(pathParams.orgId)
+        const eventId = (!isNumericString(pathParams.eventId)) ? null : parseInt(pathParams.eventId)
+
+        if(eventId == null){
+            return NextResponse.json(
+                { error: "Provide a valid numerical value for eventId" },
+                { status: 400 }
+            );     
+        }        
+
+        const session = await checkAuth(request)
+        if(!session){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );        
+        }
+
+        const userOrgs = await getUserOrgs(session.user)
+        const userRole = getUserRole(session.user)
+
+        if(userRole == "student" && orgId != null && !userOrgs.includes(orgId)){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );     
+        }
+        else if(userRole == "student" && orgId != null){
+            const {can_post_events} = await getUserOrgPermissions(session.user, orgId)
+            if(!can_post_events){
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 }
+                );       
+            }
+        }
+        else if(userRole == "student" && orgId == null){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            ); 
+        }
+        else if(userRole == "admin" && orgId != null){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            ); 
+        }
+
+        const body: {
+            name: string, 
+            description: string | null | undefined,
+            dateTimeStart: Date | string,
+            dateTimeEnd: Date | string | null | undefined,
+            visibility: "everyone" | "only_students" | "only_organization_members",
+            evetGroupId: number | null | undefined,
+            customMarker: string | null | undefined
+        } = await request.json();
+
+
+        const eventName = body.name;
+        const description = body.description;
+        const date_time_start = new Date(body.dateTimeStart);
+        const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
+        const visibility = body.visibility;
+        const event_group_id = body.evetGroupId;
+        const custom_marker = body.customMarker;
+
+        const orgFilter = orgId === null ? isNull(events.org_id) : eq(events.org_id, orgId);
+
+        const result = await db.update(events).set({
+            name: eventName,
+            description: description,
+            date_time_start: date_time_start,
+            date_time_end: date_time_end,
+            visibility: visibility,
+            event_group_id: event_group_id,
+            custom_marker: custom_marker
+        }).where(
+            and(
+                eq(events.id, eventId),
+                orgFilter
+            )
+        ).returning({
+            eventIdUpdated: events.id,
+            description: events.description,
+            dateTimeStart: events.date_time_start,
+            dateTimeEnd: events.date_time_end,
+            visibility: events.visibility,
+            eventGroupId: events.event_group_id,
+            customMarker: events.custom_marker,
+            orgId: events.org_id   
+        });
+        return NextResponse.json(
+            { data: result[0] },
+        );
     } catch (err) {
         console.error(err);
         return NextResponse.json(

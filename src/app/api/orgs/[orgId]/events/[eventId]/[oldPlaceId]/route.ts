@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { events, event_location_relations, event_room_relations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
-import { eq, and,} from 'drizzle-orm';
+import { eq, and, isNull} from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
-import {isNumber} from '@/app/utils'
+import {isNumber, isNumericString} from '@/app/utils'
 
 
 
@@ -16,7 +16,25 @@ export async function PATCH(
     { params }: { params: Promise<{ orgId: string, eventId: string, oldPlaceId: string }> }){
 
     try {
-        const {orgId, eventId, oldPlaceId} = await params
+        const pathParams = await params
+
+        const orgId = (!isNumericString(pathParams.orgId)) ? null : parseInt(pathParams.orgId)
+        const eventId = (!isNumericString(pathParams.eventId)) ? null : parseInt(pathParams.eventId)
+        const oldPlaceId = (!isNumericString(pathParams.oldPlaceId)) ? null : parseInt(pathParams.oldPlaceId)
+
+        if(eventId == null){
+            return NextResponse.json(
+                { error: "Provide a valid numerical value for eventId" },
+                { status: 400 }
+            );     
+        }
+        if(oldPlaceId == null){
+            return NextResponse.json(
+                { error: "Provide a valid numerical value for oldPlaceId" },
+                { status: 400 }
+            );     
+        }
+
         const searchParams = request.nextUrl.searchParams
         let oldPlaceTypeTemp: any = searchParams.get('oldPlaceType')
         let  newPlaceTypeTemp: any = searchParams.get('newPlaceType')
@@ -45,14 +63,14 @@ export async function PATCH(
         const userOrgs = await getUserOrgs(session.user)
         const userRole = getUserRole(session.user)
 
-        if(userRole == "student" && !userOrgs.includes(parseInt(orgId))){
+        if(userRole == "student" && orgId != null && !userOrgs.includes(orgId)){
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
             );     
         }
-        else if(userRole == "student"){
-            const {can_post_events} = await getUserOrgPermissions(session.user, parseInt(orgId))
+        else if(userRole == "student" && orgId != null){
+            const {can_post_events} = await getUserOrgPermissions(session.user, orgId)
             if(!can_post_events){
                 return NextResponse.json(
                     { error: "Unauthorized" },
@@ -60,6 +78,19 @@ export async function PATCH(
                 );       
             }
         }
+        else if(userRole == "student" && orgId == null){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            ); 
+        }
+        else if(userRole == "admin" && orgId != null){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            ); 
+        }
+
 
         const body: {
             name: string, 
@@ -94,31 +125,30 @@ export async function PATCH(
             );
         }
 
-        const eventResult = await db.update(events).set(
-            {
-                name: eventName,
-                description: description,
-                date_time_start: date_time_start,
-                date_time_end: date_time_end,
-                custom_marker: custom_marker,
-                event_group_id: event_group_id,
-                visibility: visibility
-            }
-        )
-        .where(eq(events.id, parseInt(eventId)))
-        .returning({ eventIdUpdated: events.id });
+        const eventResult = await db.select({
+            eventId: events.id,
+        }).from(events).where(
+            and(
+                eq(events.id, eventId),
+                orgId === null ? isNull(events.org_id) : eq(events.org_id, orgId)
+            )
+        );
 
-        const {eventIdUpdated} = eventResult[0]
+        if(eventResult.length <= 0){
+            return NextResponse.json(
+                { error: "The given organization does not have the given event." },
+                { status: 404 }
+            );    
+        }
 
-        
         
         if(oldPlaceType == "location" && newPlaceType == "location"){              
             const result = await db.update(event_location_relations).set({
                 location_id: locationId
             }).where(
                 and(
-                    eq(event_location_relations.event_id, parseInt(eventId)),
-                    eq(event_location_relations.location_id, parseInt(oldPlaceId))
+                    eq(event_location_relations.event_id, eventId),
+                    eq(event_location_relations.location_id, oldPlaceId)
                 )
             ).returning({
                 eventIdUpdated: event_location_relations.event_id,
@@ -132,8 +162,8 @@ export async function PATCH(
                 room_id: roomId
             }).where(
                 and(
-                    eq(event_room_relations.event_id, parseInt(eventId)),
-                    eq(event_room_relations.room_id, parseInt(oldPlaceId))
+                    eq(event_room_relations.event_id, eventId),
+                    eq(event_room_relations.room_id, oldPlaceId)
                 )
             ).returning({
                 eventIdUpdated: event_room_relations.event_id,
@@ -145,12 +175,12 @@ export async function PATCH(
         else if (oldPlaceType == "room" && newPlaceType == "location"){
             const delResult = await db.delete(event_room_relations).where(
                 and(
-                    eq(event_room_relations.event_id, parseInt(eventId)),
-                    eq(event_room_relations.room_id, parseInt(oldPlaceId))
+                    eq(event_room_relations.event_id, eventId),
+                    eq(event_room_relations.room_id, oldPlaceId)
                 )
             )
             const insertResult = await db.insert(event_location_relations).values({
-                event_id: parseInt(eventId),
+                event_id: eventId,
                 location_id: locationId
             }).returning({
                 eventIdUpdated: event_location_relations.event_id,
@@ -161,12 +191,12 @@ export async function PATCH(
         else{
             const delResult = await db.delete(event_location_relations).where(
                 and(
-                    eq(event_location_relations.event_id, parseInt(eventId)),
-                    eq(event_location_relations.location_id, parseInt(oldPlaceId))
+                    eq(event_location_relations.event_id, eventId),
+                    eq(event_location_relations.location_id, oldPlaceId)
                 )
             )
             const insertResult = await db.insert(event_room_relations).values({
-                event_id: parseInt(eventId),
+                event_id: eventId,
                 room_id: roomId
             }).returning({
                 eventIdUpdated: event_room_relations.event_id,
