@@ -47,3 +47,21 @@ export interface MapConfig {
   zoom: number;
   apiKey: string;
 }
+
+export type UserRole = 'guest' | 'student' | 'admin';
+
+export type authUser = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image?: string | null | undefined;
+  username: string;
+  displayUsername?: string | null | undefined;
+  last_name: string;
+  is_student: boolean;
+  is_admin: boolean;
+  mid_name?: string | null | undefined;
+};

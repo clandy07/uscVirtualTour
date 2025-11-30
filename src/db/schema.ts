@@ -1,6 +1,6 @@
 import { smallint, integer, serial, timestamp, pgTable, 
         primaryKey, varchar, pgEnum, boolean, unique, 
-        text, index } from "drizzle-orm/pg-core";
+        text, index, geometry } from "drizzle-orm/pg-core";
 import {timestamps} from './columns.helpers'
 import * as authSchema from "./auth-schema";
 
@@ -40,17 +40,20 @@ export const accountRelations = authSchema.accountRelations;
 
 export const organizations = pgTable("organizations", {
     id: serial().primaryKey(),
+    name: varchar({length: 150}).notNull(),
+    description: text(),
     logo: text(),
     is_student_org: boolean(),
     ...timestamps
 });
 
 export const user_org_relations = pgTable("user_org_relations", {
-    user_id: text().references(() => users.id, {onDelete: 'cascade'}),
-    org_id: integer().references(() => organizations.id, {onDelete: 'cascade'}),
+    user_id: text().notNull().references(() => users.id, {onDelete: 'cascade'}),
+    org_id: integer().notNull().references(() => organizations.id, {onDelete: 'cascade'}),
     can_post_events: boolean().default(false).notNull(),
     can_add_members: boolean().default(false).notNull(),
-    can_remove_members: boolean().default(false).notNull()
+    can_remove_members: boolean().default(false).notNull(),
+    can_set_member_permissions: boolean().default(false).notNull()
 }, (table) => [
     primaryKey({ name: 'user_org_composite_pk', columns: [table.user_id, table.org_id] }),
     index("user_org_composite_idx").on(table.user_id, table.org_id)
@@ -157,11 +160,19 @@ export const offices = pgTable("offices", {
     index("school_of_office_idx").on(table.school_id)
 ]);
 
+export const geometries = pgTable("geometries", {
+    id: serial().primaryKey(),
+    polygon:  geometry('polygon', { type: 'polygon', mode: 'xy', srid: 4326 }),
+}, (table) => [
+    index("polygon_idx").using("gist", table.polygon)
+]);
+
 export const rooms = pgTable("rooms", {
     id: serial().primaryKey(),
     name: varchar({length: 255}).notNull(),
     building_id: integer().references(() => buildings.id, {onDelete: 'cascade'}),
     office_id: integer().references(() => offices.id, {onDelete: 'set null'}),
+    geometry_id: integer().references(() => geometries.id, {onDelete: 'set null'}),
     description: text(),
     floor_level: smallint()
 }, (table) => [
@@ -344,6 +355,10 @@ export const roomsRelations = relations(rooms, ({ one, many }) => ({
         fields: [rooms.building_id],
         references: [buildings.id],
     }),
+    geometry: one(geometries, {
+        fields: [rooms.geometry_id],
+        references: [geometries.id],
+    }),
     eventRooms: many(event_room_relations)
 }));
 
@@ -359,6 +374,11 @@ export const eventRoomRelations = relations(event_room_relations, ({ one }) => (
         fields: [event_room_relations.event_id],
         references: [events.id],
     })
+}));
+
+
+export const geometriesRelations = relations(geometries, ({one}) => ({
+    room: one(rooms)
 }));
 
 export const schema = {
@@ -377,6 +397,7 @@ export const schema = {
     event_room_relations,
     event_location_relations,
     event_group_location_relations,
+    geometries,
 
     usersRelations,
     organizationsRelations,
@@ -393,6 +414,7 @@ export const schema = {
     officesRelations,
     roomsRelations,
     eventRoomRelations,
+    geometriesRelations,
 
     sessions, 
     accounts, 
