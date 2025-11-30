@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { events, event_room_relations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
-import { eq, SQL, and, ilike, or, inArray } from 'drizzle-orm';
+import { eq, SQL, and, ilike, or, inArray, isNull } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
+import { isNumericString } from '@/app/utils';
 
 // POST /orgs/:orgId/events/:eventId/rooms - Get all locations in a given event of a given org
 export async function POST(
@@ -13,9 +14,11 @@ export async function POST(
     { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
 
     try {        
-        const { orgId, eventId } = await params
+        const pathParams = await params
+        const orgId = (isNumericString(pathParams.orgId)) ? parseInt(pathParams.orgId) : null;
+        const eventId = (isNumericString(pathParams.eventId)) ? parseInt(pathParams.eventId) : null;
 
-        if (isNaN(parseInt(eventId))){
+        if (eventId === null){
             return NextResponse.json(
                 { error: "Invalid eventId: Make sure eventId is a number." },
                 { status: 400 }
@@ -28,15 +31,15 @@ export async function POST(
             eventOrgId: events.org_id
         }).from(events).where(
             and(
-                eq(events.id, parseInt(eventId)),
-                eq(events.org_id, parseInt(orgId))
+                eq(events.id, eventId),
+                (orgId === null) ? isNull(events.org_id) : eq(events.org_id, orgId)
             )
         )
 
         if (event.length <= 0){
             return NextResponse.json(
-                { error: "Invalid eventId: event does not exist." },
-                { status: 400 }
+                { error: "The org of the given orgId does not have an event of the given eventId." },
+                { status: 404 }
             );
         }
 
@@ -82,7 +85,7 @@ export async function POST(
         }
 
         const result = await db.insert(event_room_relations).values({
-            event_id: parseInt(eventId),
+            event_id: eventId,
             room_id: (typeof body.roomId == "string") ? parseInt(body.roomId) : body.roomId
         }).returning(
             {

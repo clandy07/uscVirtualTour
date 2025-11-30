@@ -107,8 +107,8 @@ export async function POST(
 
         if (event.length <= 0){
             return NextResponse.json(
-                { error: "Invalid eventId: event does not exist." },
-                { status: 400 }
+                { error: "The org of the given orgId does not have an event of the given eventId." },
+                { status: 404 }
             );
         }
 
