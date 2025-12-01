@@ -8,7 +8,7 @@ import { getUserOrgs } from '@/app/api/utils/auth';
 import { getUserOrgPermissions } from '@/app/api/utils/auth';
 import { isNumericString } from '@/app/utils';
 
-export async function POST(request: NextRequest, 
+export async function DELETE(request: NextRequest, 
     { params }: { params: Promise<{ orgId: string, userId: string }> }) {
 
     try {        
