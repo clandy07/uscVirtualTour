@@ -5,6 +5,7 @@ import { getUserRole } from '@/app/api/utils/auth';
 import { eq, SQL, and, ilike, or, inArray } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
 import { isNumericString } from '@/app/utils';
+import { getUserOrgs } from '@/app/api/utils/auth';
 
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ orgId: string }> } ) {
@@ -23,24 +24,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ or
             )
         }
 
-        const searchParams = request.nextUrl.searchParams
-        const nameFilter: any = searchParams.get('name')
-        const isStudentOrgFilter: any = searchParams.get('isStudentOrg')
-
-        const filters: any = [];
-
-        if(nameFilter) filters.push(ilike(organizations.name, nameFilter))
-        if(isStudentOrgFilter) filters.push(organizations.is_student_org, isStudentOrgFilter === "true")
-
-        const where =
-            filters.length > 0
-                ? and(
-                    eq(organizations.id, orgId),
-                    ...filters
-                )
-                : eq(organizations.id, orgId);
-
-        if(userRole != "admin"){
+        if(!session || (session && userRole == "student" && !(await getUserOrgs(session.user)).includes(orgId))){
             const result = await db.query.organizations.findMany({
                 columns: {
                     name: true,
@@ -49,12 +33,12 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ or
                     description: true,
                     is_student_org: true
                 },
-                where
+                where: eq(organizations.id, orgId)
             })
 
             return NextResponse.json({data: result})
         }
-        else{
+        else if (userRole == "admin" || (userRole == "student" && (await getUserOrgs(session.user)).includes(orgId))){
             const result = await db.query.organizations.findMany({
                 columns: {
                     name: true,
@@ -78,7 +62,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ or
                         }
                     }
                 },
-                where
+                where: eq(organizations.id, orgId)
             })  
 
             return NextResponse.json({data: result})
