@@ -107,3 +107,40 @@ export async function DELETE(
     );
   }
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ campusId: string }> }
+) {
+  const authError = await requireAdmin(request);
+  if (authError) return authError;
+
+  try {
+    const { campusId } = await params;
+    const campusIdNum = parseInt(campusId);
+
+    if (isNaN(campusIdNum)) {
+      return NextResponse.json(
+        { error: 'Invalid campus ID' },
+        { status: 400 }
+      );
+    }
+
+    const result = await db.select({
+      id: campuses.id,
+      name: campuses.name,
+      address: campuses.address
+    }).from(campuses).where(eq(campuses.id, campusIdNum));
+
+    return NextResponse.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Error updating campus:', error);
+    return NextResponse.json(
+      { error: 'Failed to update campus' },
+      { status: 500 }
+    );
+  }
+}
