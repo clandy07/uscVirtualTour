@@ -206,6 +206,9 @@ export async function DELETE(
 ) {
 
   try {
+    const authError = await requireAdmin(request)
+    if(authError) return authError
+    
     const { campusId, buildingId, roomId } = await params;
     const campusIdNum = parseInt(campusId);
     const buildingIdNum = parseInt(buildingId)
@@ -246,10 +249,37 @@ export async function DELETE(
         );
     }
 
+    const deletedRooms = await db.delete(rooms).where(eq(rooms.id, roomIdNum)).returning({
+        deletedRoomId: rooms.id,
+        geomIdToDelete: rooms.geometry_id
+    })
+
+    if(deletedRooms[0].geomIdToDelete === null){
+        return NextResponse.json({
+            success: true,
+            data: deletedRooms
+        });
+    }
+
+    const deletedGeoms = await db.delete(geometries).where(
+        eq(geometries.id, deletedRooms[0].geomIdToDelete)
+    ).returning({
+        deletedRoomGeomId: geometries.id
+    })
+
+    return NextResponse.json({
+        success: true,
+        data: {
+            deletedRoomId: deletedRooms[0].deletedRoomId,
+            geomIdToDelete: deletedRooms[0].geomIdToDelete,
+            deletedRoomGeomId: deletedGeoms[0].deletedRoomGeomId
+        }
+    });
+
   } catch (error) {
-    console.error('Error getting the given room of the given building in the given campus:', error);
+    console.error('Error deleting the given room of the given building in the given campus:', error);
     return NextResponse.json(
-      { error: 'Failed to get the given room of the given building in the given campus' },
+      { error: 'Failed to delete the given room of the given building in the given campus' },
       { status: 500 }
     );
   }
