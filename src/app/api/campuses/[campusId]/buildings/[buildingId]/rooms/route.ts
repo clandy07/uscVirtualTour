@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
 import { campuses, buildings, rooms, geometries } from '@/db/schema';
 import { requireAdmin } from '@/app/api/utils/auth';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, SQL } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
+import { isNumericString } from '@/app/utils';
 
 
 
@@ -18,9 +19,19 @@ export async function GET(
     const buildingIdNum = parseInt(buildingId)
 
     const searchParams = request.nextUrl.searchParams
-    const query = searchParams.get('getGeometries')
+    const queryGeom = searchParams.get('getGeometries')
+    const queryOffice = searchParams.get('officeId')
+    const officeIdNum = (queryOffice != null && isNumericString(queryOffice)) ? parseInt(queryOffice) : null
 
-    const getGeometries: boolean = query === "true"
+    if(queryOffice != null && officeIdNum === null){
+        return NextResponse.json(
+            {error: "The given office ID was invalid. It has to be numeric or just exclude the office ID from the query parameters."},
+            {status: 400}
+        )
+    }
+
+    const getGeometries: boolean = queryGeom === "true"
+
 
     if (isNaN(campusIdNum) || isNaN(buildingIdNum)) {
       return NextResponse.json(
@@ -37,6 +48,9 @@ export async function GET(
         )
         .as('buildings_of_campus');
 
+    const filters: SQL[] = [eq(subquery.id, buildingIdNum)]
+    if(officeIdNum != null) filters.push(eq(rooms.office_id, officeIdNum))
+
     const mainQuery = db
         .select({
             roomId: rooms.id,
@@ -50,7 +64,7 @@ export async function GET(
         })
         .from(rooms)
         .innerJoin(subquery, eq(subquery.id, rooms.building_id))
-        .where(eq(subquery.id, buildingIdNum))
+        .where(and(...filters))
         
     if(getGeometries === true){
         const subqueryRooms = mainQuery.as('rooms_of_building')
