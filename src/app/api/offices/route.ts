@@ -7,6 +7,7 @@ import { auth } from '@/lib/auth';
 import { isNumericString } from '@/app/utils';
 import { SQL } from 'drizzle-orm';
 import { off } from 'process';
+import { success } from 'better-auth';
 
 
 
@@ -58,87 +59,32 @@ export async function GET(
 }
 
 export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ campusId: string; buildingId: string }> }
+  request: NextRequest
 ) {
 
   try {
     const authError = await requireAdmin(request)
     if(authError) return authError
 
-    const { campusId, buildingId } = await params;
-    const campusIdNum = parseInt(campusId);
-    const buildingIdNum = parseInt(buildingId)
-
-    const searchParams = request.nextUrl.searchParams
-    const query = searchParams.get('makeGeometry')
-
-    const makeGeometry: boolean = query === "true"
-
-    if (isNaN(campusIdNum) || isNaN(buildingIdNum)) {
-      return NextResponse.json(
-        { error: 'Invalid campus ID or building ID' },
-        { status: 400 }
-      );
-    }
-
-    const buildingsArr = await db.select({id: buildings.id}).from(buildings).where(
-        and(
-            eq(buildings.id, buildingIdNum),
-            eq(buildings.campus_id, campusIdNum)
-        )
-    )
-
-    if(buildingsArr.length <= 0){
-        return NextResponse.json(
-            { error: 'Given building in the given campus does not exist' },
-            { status: 400 }
-        );
-    }
-
     const body = await request.json()
 
-    if(makeGeometry === true){
-        const geomsInserted = await db.insert(geometries).values({
-            polygon: body.polygon
-        }).returning({insertedGeomId: geometries.id})
+    const result = await db.insert(offices).values({
+        name: body.name,
+        department_id: body.departmentId,
+        school_id: body.schoolId
+    }).returning({
+        insertedOfficeId: offices.id
+    })
 
-        const roomsInserted = await db.insert(rooms).values({
-            name: body.name,
-            building_id: buildingIdNum,
-            office_id: body.officeId,
-            geometry_id: geomsInserted[0].insertedGeomId,
-            description: body.description,
-            floor_level: body.floorLevel
-        }).returning({insertedRoomId: rooms.id})
-
-        return NextResponse.json({
-            success: true,
-            data: {
-                insertedRoomId: roomsInserted[0].insertedRoomId,
-                insertedGeomId: geomsInserted[0].insertedGeomId
-            }
-        })
-    }
-    else {
-        const roomsInserted = await db.insert(rooms).values({
-            name: body.name,
-            building_id: buildingIdNum,
-            office_id: body.officeId,
-            description: body.description,
-            floor_level: body.floorLevel
-        }).returning({insertedRoomId: rooms.id})
-
-        return NextResponse.json({
-            success: true,
-            data: roomsInserted
-        });
-    }
+    return NextResponse.json({
+        success: true,
+        data: result
+    })
     
   } catch (error) {
-    console.error('Error :', error);
+    console.error('Error inserting the office:', error);
     return NextResponse.json(
-        { error: 'Failed to ' },
+        { error: 'Failed to insert the office' },
         { status: 500 }
     );
   }
