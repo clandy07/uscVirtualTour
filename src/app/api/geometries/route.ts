@@ -27,7 +27,7 @@ export async function POST(
             data: result[0]
         })
     } catch(error){
-        console.error('Error creating a new geometry', error)
+        console.error('Error creating a new geometry:', error)
         NextResponse.json(      
             { error: 'Failed to create a new geometry' },
             { status: 500 }
