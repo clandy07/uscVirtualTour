@@ -10,6 +10,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ```
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
+CREATE EXTENSION pgrouting;
 ```
 
 ### What to do to run the app

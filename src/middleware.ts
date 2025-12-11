@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getSessionCookie } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
@@ -13,8 +14,9 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.includes(path);
 
   // Get the session token from cookies
-  const sessionToken = request.cookies.get('better-auth.session_token')?.value;
-
+  const sessionToken = getSessionCookie(request);
+  console.log(`request.cookies.get session token: ${sessionToken}`)
+  
   // If accessing protected route without session, redirect to signin
   if (isProtectedRoute && !sessionToken) {
     const url = new URL('/signin', request.url);

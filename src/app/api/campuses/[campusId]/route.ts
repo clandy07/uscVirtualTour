@@ -107,3 +107,38 @@ export async function DELETE(
     );
   }
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ campusId: string }> }
+) {
+
+  try {
+    const { campusId } = await params;
+    const campusIdNum = parseInt(campusId);
+
+    if (isNaN(campusIdNum)) {
+      return NextResponse.json(
+        { error: 'Invalid campus ID' },
+        { status: 400 }
+      );
+    }
+
+    const result = await db.select({
+      id: campuses.id,
+      name: campuses.name,
+      address: campuses.address
+    }).from(campuses).where(eq(campuses.id, campusIdNum));
+
+    return NextResponse.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Error getting campuses:', error);
+    return NextResponse.json(
+      { error: 'Failed to get campuses' },
+      { status: 500 }
+    );
+  }
+}
