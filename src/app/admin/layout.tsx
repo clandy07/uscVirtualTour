@@ -4,16 +4,18 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import Image from 'next/image';
+import { dashboardIcon, campusIcon, buildingIcon, floorMapIcon, locationIcon, eventsIcon, organizationsIcon, userIcon } from '@/app/lib/icons';
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: '📊' },
-  { name: 'Campuses', href: '/admin/campuses', icon: '🏫' },
-  { name: 'Buildings', href: '/admin/buildings', icon: '🏢' },
-  { name: 'Floor Maps', href: '/admin/floor-maps', icon: '🗺️' },
-  { name: 'Locations', href: '/admin/locations', icon: '📍' },
-  { name: 'Events', href: '/admin/events', icon: '📅' },
-  { name: 'Organizations', href: '/admin/organizations', icon: '👥' },
-  { name: 'Users', href: '/admin/users', icon: '👤' },
+  { name: 'Dashboard', href: '/admin', icon: dashboardIcon },
+  { name: 'Campuses', href: '/admin/campuses', icon: campusIcon },
+  { name: 'Buildings', href: '/admin/buildings', icon: buildingIcon },
+  { name: 'Floor Maps', href: '/admin/floor-maps', icon: floorMapIcon },
+  { name: 'Locations', href: '/admin/locations', icon: locationIcon },
+  { name: 'Events', href: '/admin/events', icon: eventsIcon },
+  { name: 'Organizations', href: '/admin/organizations', icon: organizationsIcon },
+  { name: 'Users', href: '/admin/users', icon: userIcon },
 ];
 
 export default function AdminLayout({
@@ -140,7 +142,7 @@ export default function AdminLayout({
                       : 'text-black hover:bg-green-50'
                   }`}
                 >
-                  <span className="text-xl">{item.icon}</span>
+                  <Image src={item.icon} alt="" width={20} height={20} />
                   <span>{item.name}</span>
                 </Link>
               );

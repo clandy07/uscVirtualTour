@@ -8,6 +8,7 @@ import BuildingPanel from "./components/Buildings/BuildingPanel";
 import ProfileMenu from "./components/Profile/ProfileMenu";
 import Image from "next/image";
 import { CategoryFilter, Building, Location } from "@/types";
+import { buildingIcon, locationIcon } from "@/app/lib/icons";
 
 import { uscLogo }  from "../app/lib/icons";
 
@@ -202,18 +203,27 @@ export default function Home() {
 							{searchResults.map((result, index) => (
 								<div
 									key={`${result.type}-${result.id}`}
-									onClick={() => handleSearchResultClick(result)}
-									className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
-								>
-									<div className="flex items-start justify-between">
+								onClick={() => handleSearchResultClick(result)}
+								className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+							>
+								<div className="flex items-start justify-between">
+									<div className="flex items-start gap-2">
+										<Image 
+											src={result.type === 'building' ? buildingIcon : locationIcon} 
+											alt="" 
+											width={16} 
+											height={16} 
+											className="mt-1"
+										/>
 										<div>
 											<p className="font-semibold text-gray-900">{result.name}</p>
 											<p className="text-xs text-gray-500 mt-1">
-												{result.type === 'building' ? '🏢 Building' : '📍 Location'} • {result.campusName}
+												{result.type === 'building' ? 'Building' : 'Location'} • {result.campusName}
 											</p>
 										</div>
 									</div>
 								</div>
+							</div>
 							))}
 						</div>
 					)}

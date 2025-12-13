@@ -1,19 +1,21 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import { buildingIcon, eventsIcon, organizationsIcon, userIcon, locationIcon } from '@/app/lib/icons';
 
 const stats = [
-  { name: 'Total Buildings', value: '42', change: '+2 this month', icon: '🏢' },
-  { name: 'Active Events', value: '28', change: '+5 this week', icon: '📅' },
-  { name: 'Organizations', value: '15', change: '+1 this month', icon: '👥' },
-  { name: 'Total Users', value: '1,234', change: '+43 this week', icon: '👤' },
+  { name: 'Total Buildings', value: '42', change: '+2 this month', icon: buildingIcon },
+  { name: 'Active Events', value: '28', change: '+5 this week', icon: eventsIcon },
+  { name: 'Organizations', value: '15', change: '+1 this month', icon: organizationsIcon },
+  { name: 'Total Users', value: '1,234', change: '+43 this week', icon: userIcon },
 ];
 
 const quickActions = [
-  { name: 'Add Building', href: '/admin/buildings', icon: '🏢' },
-  { name: 'Create Event', href: '/admin/events', icon: '📅' },
-  { name: 'Add Location', href: '/admin/locations', icon: '📍' },
-  { name: 'Add Organization', href: '/admin/organizations', icon: '👥' },
+  { name: 'Add Building', href: '/admin/buildings', icon: buildingIcon },
+  { name: 'Create Event', href: '/admin/events', icon: eventsIcon },
+  { name: 'Add Location', href: '/admin/locations', icon: locationIcon },
+  { name: 'Add Organization', href: '/admin/organizations', icon: organizationsIcon },
 ];
 
 export default function AdminDashboard() {
@@ -37,7 +39,7 @@ export default function AdminDashboard() {
                 <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
                 <p className="text-xs text-gray-900 mt-2">{stat.change}</p>
               </div>
-              <div className="text-4xl">{stat.icon}</div>
+              <Image src={stat.icon} alt="" width={36} height={36} />
             </div>
           </div>
         ))}
@@ -53,7 +55,7 @@ export default function AdminDashboard() {
               href={action.href}
               className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-md transition-all"
             >
-              <span className="text-2xl">{action.icon}</span>
+              <Image src={action.icon} alt="" width={24} height={24} />
               <span className="font-bold text-gray-900">{action.name}</span>
             </Link>
           ))}
@@ -65,7 +67,7 @@ export default function AdminDashboard() {
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h3>
         <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
           <div className="p-4 flex items-start gap-4">
-            <span className="text-2xl">🏢</span>
+            <Image src={buildingIcon} alt="" width={24} height={24} className="mt-1" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-900">New building added</p>
               <p className="text-xs text-gray-900 mt-1">Science Building was added to the campus map</p>
@@ -73,7 +75,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="p-4 flex items-start gap-4">
-            <span className="text-2xl">📅</span>
+            <Image src={eventsIcon} alt="" width={24} height={24} className="mt-1" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-900">Event updated</p>
               <p className="text-xs text-gray-900 mt-1">Campus Tour event details were modified</p>
@@ -81,7 +83,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="p-4 flex items-start gap-4">
-            <span className="text-2xl">👥</span>
+            <Image src={organizationsIcon} alt="" width={24} height={24} className="mt-1" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-900">New organization registered</p>
               <p className="text-xs text-gray-900 mt-1">USC Computer Science Club joined the platform</p>
