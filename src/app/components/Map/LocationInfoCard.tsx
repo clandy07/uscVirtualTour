@@ -55,15 +55,82 @@ export default function LocationInfoCard({ location, onClose, onGetDirections }:
       </div>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-4 space-y-3">
         {location.description && (
-          <p className="text-sm text-gray-700 mb-4">{location.description}</p>
+          <p className="text-sm text-gray-700">{location.description}</p>
+        )}
+
+        {/* Operating Hours */}
+        {location.operating_hours && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-1">Operating Hours</p>
+            <p className="text-gray-700">{location.operating_hours}</p>
+          </div>
+        )}
+
+        {/* Contact Information */}
+        {(location.contact_number || location.email) && (
+          <div className="text-sm space-y-1">
+            <p className="font-semibold text-gray-900">Contact</p>
+            {location.contact_number && (
+              <p className="text-gray-700">📞 {location.contact_number}</p>
+            )}
+            {location.email && (
+              <p className="text-gray-700">✉️ {location.email}</p>
+            )}
+          </div>
+        )}
+
+        {/* Website */}
+        {location.website_url && (
+          <a
+            href={location.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:underline inline-block"
+          >
+            🔗 Visit Website
+          </a>
+        )}
+
+        {/* Amenities */}
+        {location.amenities && location.amenities.length > 0 && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-2">Amenities</p>
+            <div className="flex flex-wrap gap-1.5">
+              {location.amenities.map((amenity, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                >
+                  {amenity}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tags */}
+        {location.tags && location.tags.length > 0 && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-2">Tags</p>
+            <div className="flex flex-wrap gap-1.5">
+              {location.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className={`px-2 py-1 ${categoryColors.bg} bg-opacity-20 ${categoryColors.text} text-xs rounded-full`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
 
         {location.coordinates && (
           <button
             onClick={handleGetDirections}
-            className={`w-full px-4 py-2 ${categoryColors.bg} text-white rounded-lg hover:opacity-90 font-bold transition-all hover:shadow-lg flex items-center justify-center gap-2`}
+            className={`w-full px-4 py-2 ${categoryColors.bg} text-white rounded-lg hover:opacity-90 font-bold transition-all hover:shadow-lg flex items-center justify-center gap-2 mt-3`}
           >
             <span>Get Directions</span>
           </button>

@@ -87,7 +87,8 @@ export async function POST(
     const { searchParams } = new URL(request.url);
     const locationId = searchParams.get('locationId');
 
-    const { name, floor_count, basement_count, latitude, longitude, description } = body;
+    const { name, floor_count, basement_count, latitude, longitude, description,
+            total_rooms, facilities, accessibility_features, fun_facts } = body;
 
     if (!name) {
       return NextResponse.json(
@@ -157,6 +158,10 @@ export async function POST(
       location_id: locationIdNum,
       floor_count: floor_count || null,
       basement_count: basement_count || null,
+      total_rooms: total_rooms || null,
+      facilities: facilities || null,
+      accessibility_features: accessibility_features || null,
+      fun_facts: fun_facts || null,
     }).returning();
 
     return NextResponse.json({

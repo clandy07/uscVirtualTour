@@ -28,6 +28,13 @@ export default function LocationsPage() {
     description: '',
     campus_id: 0,
     coordinates: null as { lat: number; lng: number } | null,
+    operating_hours: '',
+    contact_number: '',
+    email: '',
+    website_url: '',
+    images: [] as string[],
+    amenities: [] as string[],
+    tags: [] as string[],
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<Location['category'] | 'all'>('all');
@@ -83,7 +90,14 @@ export default function LocationsPage() {
       category: 'buildings', 
       description: '', 
       campus_id: selectedCampusId || 0, 
-      coordinates: null 
+      coordinates: null,
+      operating_hours: '',
+      contact_number: '',
+      email: '',
+      website_url: '',
+      images: [],
+      amenities: [],
+      tags: [],
     });
     setLatInput('');
     setLngInput('');
@@ -109,6 +123,13 @@ export default function LocationsPage() {
       description: location.description || '',
       campus_id: location.campus_id,
       coordinates: coordinates,
+      operating_hours: location.operating_hours || '',
+      contact_number: location.contact_number || '',
+      email: location.email || '',
+      website_url: location.website_url || '',
+      images: location.images || [],
+      amenities: location.amenities || [],
+      tags: location.tags || [],
     });
     setLatInput(coordinates?.lat ? String(coordinates.lat) : '');
     setLngInput(coordinates?.lng ? String(coordinates.lng) : '');
@@ -149,6 +170,13 @@ export default function LocationsPage() {
         description: formData.description,
         latitude: formData.coordinates?.lat.toString() || null,
         longitude: formData.coordinates?.lng.toString() || null,
+        operating_hours: formData.operating_hours || null,
+        contact_number: formData.contact_number || null,
+        email: formData.email || null,
+        website_url: formData.website_url || null,
+        images: formData.images.length > 0 ? formData.images : null,
+        amenities: formData.amenities.length > 0 ? formData.amenities : null,
+        tags: formData.tags.length > 0 ? formData.tags : null,
       };
       
       if (editingLocation) {
@@ -413,6 +441,98 @@ export default function LocationsPage() {
                     rows={3}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Operating Hours
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.operating_hours}
+                    onChange={(e) => setFormData({ ...formData, operating_hours: e.target.value })}
+                    placeholder="e.g., Mon-Fri: 8AM-5PM"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1">
+                      Contact Number
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.contact_number}
+                      onChange={(e) => setFormData({ ...formData, contact_number: e.target.value })}
+                      placeholder="+63 32 123 4567"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="location@usc.edu.ph"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Website URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.website_url}
+                    onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                    placeholder="https://example.com"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Image URLs (one per line)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={formData.images.join('\n')}
+                    onChange={(e) => setFormData({ ...formData, images: e.target.value.split('\n').filter(url => url.trim()) })}
+                    placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black font-mono text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Amenities (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.amenities.join(', ')}
+                    onChange={(e) => setFormData({ ...formData, amenities: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                    placeholder="WiFi, Air Conditioning, Wheelchair Accessible"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Tags (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.tags.join(', ')}
+                    onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                    placeholder="Popular, Student Favorite, New"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
                   />
                 </div>

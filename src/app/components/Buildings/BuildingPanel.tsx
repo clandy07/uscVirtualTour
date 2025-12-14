@@ -59,14 +59,60 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
           {/* Building Stats */}
           <div className="p-6 border-b bg-gray-50">
             <h3 className="text-xl font-bold mb-4 text-gray-900">Building Information</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {floors.length > 0 && (
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '200ms' }}>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '100ms' }}>
                   <p className="text-sm text-gray-500 mb-1">Total Floors</p>
                   <p className="text-lg font-semibold text-gray-900">{floors.length}</p>
                 </div>
               )}
+              {building.total_rooms && building.total_rooms > 0 && (
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '200ms' }}>
+                  <p className="text-sm text-gray-500 mb-1">Total Rooms</p>
+                  <p className="text-lg font-semibold text-gray-900">{building.total_rooms}</p>
+                </div>
+              )}
             </div>
+
+            {/* Facilities */}
+            {building.facilities && building.facilities.length > 0 && (
+              <div className="mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '300ms' }}>
+                <p className="text-sm font-semibold text-gray-900 mb-2">🏢 Facilities</p>
+                <div className="flex flex-wrap gap-2">
+                  {building.facilities.map((facility, idx) => (
+                    <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {facility}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Accessibility Features */}
+            {building.accessibility_features && building.accessibility_features.length > 0 && (
+              <div className="mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '400ms' }}>
+                <p className="text-sm font-semibold text-gray-900 mb-2">♿ Accessibility Features</p>
+                <div className="flex flex-wrap gap-2">
+                  {building.accessibility_features.map((feature, idx) => (
+                    <span key={idx} className="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fun Facts */}
+            {building.fun_facts && building.fun_facts.length > 0 && (
+              <div className="mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '500ms' }}>
+                <p className="text-sm font-semibold text-gray-900 mb-2">💡 Fun Facts</p>
+                <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                  {building.fun_facts.map((fact, idx) => (
+                    <li key={idx}>{fact}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Floor Navigator */}

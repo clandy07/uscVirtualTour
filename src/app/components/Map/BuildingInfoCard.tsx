@@ -3,7 +3,16 @@
 import { Building } from '@/types';
 
 interface BuildingInfoCardProps {
-  building: Building & { coordinates?: { lat: number; lng: number }; description?: string };
+  building: Building & {
+    coordinates?: { lat: number; lng: number };
+    description?: string;
+    operating_hours?: string | null;
+    contact_number?: string | null;
+    email?: string | null;
+    website_url?: string | null;
+    amenities?: string[] | null;
+    tags?: string[] | null;
+  };
   onClose: () => void;
   onGetDirections: (coordinates: { lat: number; lng: number }, name: string) => void;
   onViewDetails: () => void;
@@ -36,12 +45,79 @@ export default function BuildingInfoCard({ building, onClose, onGetDirections, o
       </div>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-4 space-y-3">
         {building.description && (
-          <p className="text-sm text-gray-700 mb-4">{building.description}</p>
+          <p className="text-sm text-gray-700">{building.description}</p>
         )}
 
-        <div className="space-y-2">
+        {/* Operating Hours (from location) */}
+        {building.operating_hours && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-1">Operating Hours</p>
+            <p className="text-gray-700">{building.operating_hours}</p>
+          </div>
+        )}
+
+        {/* Contact Information (from location) */}
+        {(building.contact_number || building.email) && (
+          <div className="text-sm space-y-1">
+            <p className="font-semibold text-gray-900">Contact</p>
+            {building.contact_number && (
+              <p className="text-gray-700">📞 {building.contact_number}</p>
+            )}
+            {building.email && (
+              <p className="text-gray-700">✉️ {building.email}</p>
+            )}
+          </div>
+        )}
+
+        {/* Website (from location) */}
+        {building.website_url && (
+          <a
+            href={building.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:underline inline-block"
+          >
+            🔗 Visit Website
+          </a>
+        )}
+
+        {/* Amenities (from location) */}
+        {building.amenities && building.amenities.length > 0 && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-2">Amenities</p>
+            <div className="flex flex-wrap gap-1.5">
+              {building.amenities.map((amenity, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full"
+                >
+                  {amenity}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tags (from location) */}
+        {building.tags && building.tags.length > 0 && (
+          <div className="text-sm">
+            <p className="font-semibold text-gray-900 mb-2">Tags</p>
+            <div className="flex flex-wrap gap-1.5">
+              {building.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-2 pt-2">
           {building.coordinates && (
             <button
               onClick={handleGetDirections}

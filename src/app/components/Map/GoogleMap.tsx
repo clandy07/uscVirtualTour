@@ -257,7 +257,17 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
         
         return (
           <BuildingInfoCard
-            building={{ ...selectedBuilding, coordinates: location.coordinates, description: location.description }}
+            building={{
+              ...selectedBuilding,
+              coordinates: location.coordinates,
+              description: location.description,
+              operating_hours: location.operating_hours,
+              contact_number: location.contact_number,
+              email: location.email,
+              website_url: location.website_url,
+              amenities: location.amenities,
+              tags: location.tags
+            }}
             onClose={() => {
               setSelectedBuilding(null);
             }}

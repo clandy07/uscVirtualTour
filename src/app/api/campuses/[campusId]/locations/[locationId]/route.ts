@@ -25,7 +25,8 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { name, category, description, latitude, longitude, floor_count, basement_count } = body;
+    const { name, category, description, latitude, longitude, floor_count, basement_count, 
+            operating_hours, contact_number, email, website_url, images, amenities, tags } = body;
 
     // Build update object for location
     const locationUpdateData: any = {};
@@ -34,6 +35,13 @@ export async function PATCH(
     if (description !== undefined) locationUpdateData.description = description;
     if (latitude !== undefined) locationUpdateData.latitude = latitude;
     if (longitude !== undefined) locationUpdateData.longitude = longitude;
+    if (operating_hours !== undefined) locationUpdateData.operating_hours = operating_hours;
+    if (contact_number !== undefined) locationUpdateData.contact_number = contact_number;
+    if (email !== undefined) locationUpdateData.email = email;
+    if (website_url !== undefined) locationUpdateData.website_url = website_url;
+    if (images !== undefined) locationUpdateData.images = images;
+    if (amenities !== undefined) locationUpdateData.amenities = amenities;
+    if (tags !== undefined) locationUpdateData.tags = tags;
 
     if (Object.keys(locationUpdateData).length === 0 && floor_count === undefined && basement_count === undefined) {
       return NextResponse.json(

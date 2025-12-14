@@ -19,6 +19,10 @@ export default function BuildingsPage() {
     location_id: 0,
     floor_count: 0,
     basement_count: 0,
+    total_rooms: 0,
+    facilities: [] as string[],
+    accessibility_features: [] as string[],
+    fun_facts: [] as string[],
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
@@ -78,7 +82,11 @@ export default function BuildingsPage() {
       campus_id: selectedCampusId || 0, 
       location_id: 0, 
       floor_count: 0, 
-      basement_count: 0 
+      basement_count: 0,
+      total_rooms: 0,
+      facilities: [],
+      accessibility_features: [],
+      fun_facts: [],
     });
     setIsModalOpen(true);
   };
@@ -91,6 +99,10 @@ export default function BuildingsPage() {
       location_id: building.location_id,
       floor_count: building.floor_count || 0,
       basement_count: building.basement_count || 0,
+      total_rooms: building.total_rooms || 0,
+      facilities: building.facilities || [],
+      accessibility_features: building.accessibility_features || [],
+      fun_facts: building.fun_facts || [],
     });
     setIsModalOpen(true);
   };
@@ -127,6 +139,10 @@ export default function BuildingsPage() {
         name: formData.name,
         floor_count: formData.floor_count,
         basement_count: formData.basement_count,
+        total_rooms: formData.total_rooms || null,
+        facilities: formData.facilities.length > 0 ? formData.facilities : null,
+        accessibility_features: formData.accessibility_features.length > 0 ? formData.accessibility_features : null,
+        fun_facts: formData.fun_facts.length > 0 ? formData.fun_facts : null,
       };
       
       if (editingBuilding) {
@@ -384,6 +400,58 @@ export default function BuildingsPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Total Rooms
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.total_rooms}
+                    onChange={(e) => setFormData({ ...formData, total_rooms: parseInt(e.target.value) || 0 })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Facilities (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.facilities.join(', ')}
+                    onChange={(e) => setFormData({ ...formData, facilities: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                    placeholder="Elevators, Restrooms, Water Fountains, Cafeteria"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Accessibility Features (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.accessibility_features.join(', ')}
+                    onChange={(e) => setFormData({ ...formData, accessibility_features: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                    placeholder="Wheelchair Ramp, Accessible Restrooms, Braille Signage"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">
+                    Fun Facts (one per line)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={formData.fun_facts.join('\n')}
+                    onChange={(e) => setFormData({ ...formData, fun_facts: e.target.value.split('\n').filter(fact => fact.trim()) })}
+                    placeholder="First LEED-certified building in USC&#10;Features a rooftop garden&#10;Houses the largest computer lab on campus"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                  />
                 </div>
 
                 <div className="flex gap-3 pt-4">

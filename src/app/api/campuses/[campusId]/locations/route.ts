@@ -87,7 +87,8 @@ export async function POST(
     const { searchParams } = new URL(request.url);
     const createBuilding = searchParams.get('createBuilding') === 'true';
 
-    const { name, category, description, latitude, longitude, floor_count, basement_count } = body;
+    const { name, category, description, latitude, longitude, floor_count, basement_count,
+            operating_hours, contact_number, email, website_url, images, amenities, tags } = body;
 
     if (!name) {
       return NextResponse.json(
@@ -104,6 +105,13 @@ export async function POST(
       campus_id: campusIdNum,
       latitude: latitude || null,
       longitude: longitude || null,
+      operating_hours: operating_hours || null,
+      contact_number: contact_number || null,
+      email: email || null,
+      website_url: website_url || null,
+      images: images || null,
+      amenities: amenities || null,
+      tags: tags || null,
     }).returning();
 
     // If createBuilding is true, also create a building record
