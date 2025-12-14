@@ -77,7 +77,16 @@ export const locations = pgTable("locations", {
     description: text(),
     campus_id: integer().references(() => campuses.id, {onDelete: 'cascade'}),
     latitude: varchar({ length: 50 }),
-    longitude: varchar({ length: 50 })
+    longitude: varchar({ length: 50 }),
+    // NEW: Rich content fields
+    operating_hours: text(), // e.g., "Mon-Fri: 8AM-5PM"
+    contact_number: varchar({ length: 50 }),
+    email: varchar({ length: 255 }),
+    website_url: text(),
+    images: jsonb().$type<string[]>(), // Array of image URLs
+    amenities: jsonb().$type<string[]>(), // e.g., ["WiFi", "Air Conditioned", "Wheelchair Accessible"]
+    tags: jsonb().$type<string[]>(), // e.g., ["Popular", "Student Favorite", "New"]
+    ...timestamps
 }, (table) => [
     index("location_name_idx").on(table.name),
     index("category_campus_idx").on(table.category, table.campus_id)
@@ -99,6 +108,11 @@ export const buildings = pgTable("buildings", {
             zoom: number;
         };
     }>(),
+    // NEW: Rich content fields
+    total_rooms: smallint(),
+    facilities: jsonb().$type<string[]>(), // e.g., ["Elevators", "Restrooms", "Water Fountains", "Cafeteria"]
+    accessibility_features: jsonb().$type<string[]>(), // e.g., ["Wheelchair Ramp", "Accessible Restrooms", "Braille Signage"]
+    fun_facts: jsonb().$type<string[]>(), // Interesting trivia about the building
     ...timestamps
 }, (table) => [
     index("building_name_idx").on(table.name),
