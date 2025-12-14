@@ -90,7 +90,7 @@ export default function LocationButton({ onLocationFound }: LocationButtonProps)
   };
 
   return (
-    <div className="absolute bottom-6 right-6 z-20">
+    <div className="relative">
       <button
         onClick={handleLocationClick}
         disabled={isLoading}

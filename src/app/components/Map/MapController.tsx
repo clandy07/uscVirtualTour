@@ -40,10 +40,10 @@ export default function MapController() {
         </AdvancedMarker>
       )}
       {createPortal(
-        <>
+        <div className="fixed bottom-4 right-4 flex flex-col gap-2">
           <MapControls onZoomIn={zoomIn} onZoomOut={zoomOut} />
           <LocationButton onLocationFound={handleLocationFound} />
-        </>,
+        </div>,
         document.body
       )}
     </>
