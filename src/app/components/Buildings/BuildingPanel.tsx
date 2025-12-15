@@ -77,7 +77,7 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
             {/* Facilities */}
             {building.facilities && building.facilities.length > 0 && (
               <div className="mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200 animate-fadeIn" style={{ animationDelay: '300ms' }}>
-                <p className="text-sm font-semibold text-gray-900 mb-2">🏢 Facilities</p>
+                <p className="text-sm font-semibold text-gray-900 mb-2">Facilities</p>
                 <div className="flex flex-wrap gap-2">
                   {building.facilities.map((facility, idx) => (
                     <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">

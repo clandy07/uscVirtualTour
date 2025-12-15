@@ -115,7 +115,7 @@ export default function BuildingInfoCard({ building, onClose, onGetDirections, o
               {building.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"
+                  className="px-2 py-1 bg-red-100 text-white text-xs rounded-full"
                 >
                   {tag}
                 </span>

@@ -125,7 +125,7 @@ export default function LocationInfoCard({ location, onClose, onGetDirections }:
               {location.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className={`px-2 py-1 ${categoryColors.bg} bg-opacity-20 ${categoryColors.text} text-xs rounded-full`}
+                  className={`px-2 py-1 ${categoryColors.bg} bg-opacity-20 text-white text-xs rounded-full`}
                 >
                   {tag}
                 </span>
