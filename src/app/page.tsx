@@ -237,6 +237,7 @@ export default function Home() {
 					onBuildingSelect={setSelectedBuilding}
 					searchResult={selectedSearchResult}
 					mapType={mapType}
+					onClearSearchResult={() => setSelectedSearchResult(null)}
 				/>
 				<Sidebar onFilterChange={setActiveFilters} />
 				{activeFilters.events && (

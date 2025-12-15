@@ -20,9 +20,10 @@ interface GoogleMapProps {
   onBuildingSelect?: (building: Building | null) => void;
   searchResult?: { coordinates: { lat: number; lng: number }; type: 'building' | 'location'; buildingData?: Building; locationData?: Location } | null;
   mapType?: string;
+  onClearSearchResult?: () => void;
 }
 
-export default function GoogleMap({ activeFilters, selectedEventId, onEventSelect, onBuildingSelect, searchResult, mapType = 'roadmap' }: GoogleMapProps) {
+export default function GoogleMap({ activeFilters, selectedEventId, onEventSelect, onBuildingSelect, searchResult, mapType = 'roadmap', onClearSearchResult }: GoogleMapProps) {
   // Data state
   const [campuses, setCampuses] = useState<{ id: number; name: string }[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
@@ -220,6 +221,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
               key={`location-${location.id}`}
               location={location}
               onClick={handleLocationClick}
+              isHighlighted={searchResult?.type === 'location' && searchResult?.locationData?.id === location.id}
             />
           );
         })}
@@ -235,6 +237,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
               building={building}
               location={location}
               onClick={handleBuildingClick}
+              isHighlighted={searchResult?.type === 'building' && searchResult?.buildingData?.id === building.id}
             />
           );
         })}
@@ -251,7 +254,10 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
       {selectedLocation && selectedLocation.coordinates && (
         <LocationInfoCard
           location={selectedLocation}
-          onClose={() => setSelectedLocation(null)}
+          onClose={() => {
+            setSelectedLocation(null);
+            onClearSearchResult?.();
+          }}
           onGetDirections={handleGetDirections}
         />
       )}
@@ -276,6 +282,7 @@ export default function GoogleMap({ activeFilters, selectedEventId, onEventSelec
             }}
             onClose={() => {
               setSelectedBuilding(null);
+              onClearSearchResult?.();
             }}
             onGetDirections={handleGetDirections}
             onViewDetails={handleViewBuildingDetails}

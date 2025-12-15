@@ -8,15 +8,18 @@ interface BuildingMarkerProps {
   building: Building;
   location: Location;
   onClick: (building: Building) => void;
+  isHighlighted?: boolean;
 }
 
-export default function BuildingMarker({ building, location, onClick }: BuildingMarkerProps) {
+export default function BuildingMarker({ building, location, onClick, isHighlighted = false }: BuildingMarkerProps) {
   return (
     <AdvancedMarker
       position={location.coordinates}
       onClick={() => onClick(building)}
     >
-      <div className="relative group cursor-pointer transform hover:scale-110 transition-transform">
+      <div className={`relative group cursor-pointer transform hover:scale-110 transition-all ${
+        isHighlighted ? 'scale-125 ring-4 ring-yellow-400 rounded-full animate-pulse' : ''
+      }`}>
         <BuildingIcon />
         
         {/* Tooltip */}

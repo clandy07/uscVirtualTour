@@ -7,6 +7,7 @@ import { BuildingIcon, FoodIcon, SportsIcon, StudyIcon, FacilitiesIcon, Transpor
 interface LocationMarkerProps {
   location: Location;
   onClick?: (location: Location) => void;
+  isHighlighted?: boolean;
 }
 
 const getMarkerIcon = (category?: string) => {
@@ -22,7 +23,7 @@ const getMarkerIcon = (category?: string) => {
   }
 };
 
-export default function LocationMarker({ location, onClick }: LocationMarkerProps) {
+export default function LocationMarker({ location, onClick, isHighlighted = false }: LocationMarkerProps) {
   if (!location.coordinates) return null;
   
   return (
@@ -30,7 +31,9 @@ export default function LocationMarker({ location, onClick }: LocationMarkerProp
       position={location.coordinates}
       onClick={() => onClick?.(location)}
     >
-      <div className="relative group cursor-pointer transform hover:scale-110 transition-transform">
+      <div className={`relative group cursor-pointer transform hover:scale-110 transition-all ${
+        isHighlighted ? 'scale-125 ring-4 ring-yellow-400 rounded-full animate-pulse' : ''
+      }`}>
         {getMarkerIcon(location.category)}
         
         {/* Tooltip */}
