@@ -253,27 +253,27 @@ export default function LocationsPage() {
           onClose={() => setToast(null)}
         />
       )}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Locations</h2>
-          <p className="mt-2 text-gray-900">Manage campus locations</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Locations</h2>
+          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-900">Manage campus locations</p>
         </div>
         <button
           onClick={handleAdd}
           disabled={!selectedCampusId}
-          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         >
           + Add Location
         </button>
       </div>
 
       {/* Campus Selector */}
-      <div className="flex items-center gap-4">
-        <label className="text-sm font-semibold text-gray-900">Select Campus:</label>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+        <label className="text-xs sm:text-sm font-semibold text-gray-900">Select Campus:</label>
         <select
           value={selectedCampusId || ''}
           onChange={(e) => setSelectedCampusId(parseInt(e.target.value))}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
+          className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
         >
           {campuses.map((campus) => (
             <option key={campus.id} value={campus.id}>
@@ -290,12 +290,12 @@ export default function LocationsPage() {
           placeholder="Search locations..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black text-sm"
+          className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
         />
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value as Location['category'] | 'all')}
-          className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer text-sm"
+          className="px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
         >
           <option value="all">All Categories</option>
           {categories.map((cat) => (

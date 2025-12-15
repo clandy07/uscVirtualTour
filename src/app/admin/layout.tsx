@@ -88,7 +88,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="px-3 sm:px-4 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <div className="flex items-center min-w-0">
@@ -136,7 +136,7 @@ export default function AdminLayout({
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 overflow-y-auto lg:translate-x-0`}
+          } fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 overflow-y-auto`}
         >
           <nav className="p-3 sm:p-4 space-y-1 sm:space-y-2 mt-14 sm:mt-0">
             {navigation.map((item) => {
@@ -145,12 +145,6 @@ export default function AdminLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={() => {
-                    // Close sidebar on mobile after clicking
-                    if (window.innerWidth < 1024) {
-                      setSidebarOpen(false);
-                    }
-                  }}
                   className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     active
                       ? 'bg-green-50 text-black font-bold'
@@ -166,7 +160,9 @@ export default function AdminLayout({
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 min-w-0">
+        <main className={`flex-1 p-3 sm:p-6 lg:p-8 min-w-0 transition-all duration-300 ${
+          sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'
+        }`}>
           {children}
         </main>
       </div>
