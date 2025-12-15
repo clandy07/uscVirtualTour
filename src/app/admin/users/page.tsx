@@ -218,18 +218,60 @@ export default function AdminUsersPage() {
   }
 
 
-  const handleUpdateUser = () => {
+  const handleUpdateUser = async () => {
     if (editingUser) {
-      if(editingUser.organizations != undefined) getOrgMembershipUpdates(previousUserOrgs, editingUser.organizations)
-      const orgsKickedFrom = []
-      const orgsJoined = []
+      // if(editingUser.organizations != undefined) 
+      const {orgsKickedFrom, orgsJoined} = getOrgMembershipUpdates(
+        previousUserOrgs, 
+        editingUser.organizations || []
+      );
       
-      if(orgsKickedFrom.length > 0){
-        // TODO: Call API to update user's org memberships
+      if (orgsKickedFrom.length > 0) {
+        try{
+          const retOrgsKickedId = await Promise.all(
+            orgsKickedFrom.map((orgId) =>
+              fetch(`/orgs/${orgId}/members/${editingUser.id}`, {
+                method: 'DELETE',
+              })
+            )
+          );
+
+          console.log("orgs kicked from: ", retOrgsKickedId )
+        }
+        catch(error){
+          console.error(error)
+        }
+
       }
+
 
       if(orgsJoined.length > 0){
         // TODO: Call API to update user's org memberships
+        try{
+          const retOrgsJoinedId = await Promise.all(
+            orgsJoined.map((orgId) =>
+              fetch(`/orgs/${orgId}/members`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userIdToAdd: editingUser.id,
+                  canPostEvents: false,
+                  canAddMembers: false,
+                  canRemoveMembers: false,
+                  canSetMemberPermissions: false,
+                }),
+              })
+            )
+          );
+
+          console.log("new orgs joined: ", retOrgsJoinedId )
+        }
+        catch(error){
+          console.error(error)
+        }
+
       }
 
       if(orgsKickedFrom.length > 0 || orgsJoined.length > 0) setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
@@ -358,10 +400,10 @@ export default function AdminUsersPage() {
           <div className="bg-white rounded-lg max-w-md w-full">
             <div className="p-4 sm:p-6">
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">
-                {editingUser.name}'s organization memberships
+                Edit user {editingUser.name}
               </h3>
               <div className="space-y-4">
-                {/* <div>
+                <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-1">
                     Name
                   </label>
@@ -395,12 +437,12 @@ export default function AdminUsersPage() {
                     onChange={(e) => setEditingUser({...editingUser, username: e.target.value})}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
                   />
-                </div> */}
+                </div>
 
                 <div>
-                  {/* <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Organization Memberships
-                  </label> */}
+                  </label>
                   <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto space-y-2">
                     {availableOrganizations.map((org) => (
                       <label key={org.id} className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
