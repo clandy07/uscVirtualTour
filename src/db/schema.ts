@@ -212,7 +212,20 @@ export const event_group_location_relations = pgTable("event_group_location_rela
     index('location_event_group_composite_idx').on(table.location_id, table.event_group_id)
 ]);
 
+export const indoor_nodes = pgTable("indoor_nodes", {
+    id: text("id").primaryKey().notNull(),
+    building_id: integer("building_id").references(() => buildings.id),
+    floor_level: integer("floor_level"),
+    geom_point:  geometry('geom_point', { type: 'point', mode: 'xy', srid: 4326 }),
+});
 
+export const indoor_edges = pgTable("indoor_edges", {
+    id: serial("id").primaryKey(),
+    source_node_id: text("source_node_id").notNull(),
+    target_node_id: text("target_node_id").notNull(),
+    cost_meters:  integer().notNull(),
+    reverse_cost_meters: integer().notNull()
+});
 
 
 import { relations } from 'drizzle-orm';
@@ -320,7 +333,8 @@ export const buildingsRelations = relations(buildings, ({ one, many }) => ({
         fields: [buildings.location_id],
         references: [locations.id],
     }), 
-    rooms: many(rooms)
+    rooms: many(rooms),
+    indoorNodes: many(indoor_nodes)
 }));
 
 
@@ -389,6 +403,28 @@ export const geometriesRelations = relations(geometries, ({one}) => ({
     room: one(rooms)
 }));
 
+export const indrNodesRelations = relations(indoor_nodes, ({one, many}) => ({
+	building: one(buildings, {
+		fields: [indoor_nodes.building_id],
+		references: [buildings.id],
+	}),
+	sourceNode: many(indoor_edges, { relationName: 'sourceNode' }),
+	targetNode: many(indoor_edges, { relationName: 'targetNode' }),
+}));
+
+export const indrEdgesRelations = relations(indoor_edges, ({one}) => ({
+	sourceNode: one(indoor_nodes, {
+		fields: [indoor_edges.source_node_id],
+		references: [indoor_nodes.id],
+		relationName: 'sourceNode',
+	}),
+    targetNode: one(indoor_nodes, {
+		fields: [indoor_edges.target_node_id],
+		references: [indoor_nodes.id],
+		relationName: 'targetNode',
+	}),
+}));
+
 export const schema = {
     users,
     organizations,
@@ -423,11 +459,15 @@ export const schema = {
     roomsRelations,
     eventRoomRelations,
     geometriesRelations,
+    indoor_nodes,
+    indoor_edges,
 
     sessions, 
     accounts, 
     verifications, 
     userRelations, 
     sessionRelations, 
-    accountRelations
+    accountRelations,
+    indrNodesRelations,
+    indrEdgesRelations
 };
