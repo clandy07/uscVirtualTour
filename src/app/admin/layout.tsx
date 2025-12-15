@@ -136,7 +136,7 @@ export default function AdminLayout({
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 overflow-y-auto`}
+          } fixed left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 overflow-y-auto`}
         >
           <nav className="p-3 sm:p-4 space-y-1 sm:space-y-2 mt-14 sm:mt-0">
             {navigation.map((item) => {
