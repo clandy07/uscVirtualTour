@@ -1,0 +1,226 @@
+[
+    {
+        "name": "LOBBY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913595 10.352091, 123.913512 10.352111, 123.913435 10.351823, 123.913522 10.3518, 123.913595 10.352091))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "CAFE PLUS",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913577 10.352339, 123.913555 10.352248, 123.91371 10.352212, 123.913733 10.352303, 123.913577 10.352339))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "INTERNAL AUDIT",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912967 10.35222, 123.912888 10.352239, 123.912872 10.352182, 123.912952 10.352161, 123.912967 10.35222))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "PROJECTION ROOM",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913248 10.352404, 123.913208 10.352414, 123.913191 10.352352, 123.913231 10.352342, 123.913248 10.352404))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB172TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913048 10.3522, 123.912968 10.352219, 123.912952 10.352161, 123.913032 10.35214, 123.913048 10.3522))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB171TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913087 10.35219, 123.913048 10.3522, 123.913032 10.35214, 123.91307 10.35213, 123.913087 10.35219))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "PCB LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913116 10.352183, 123.913086 10.35219, 123.91307 10.35213, 123.913099 10.352122, 123.913116 10.352183))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB170TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913195 10.352163, 123.913116 10.352183, 123.9131 10.352122, 123.913176 10.352102, 123.913195 10.352163))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB168TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913309 10.352135, 123.913226 10.352155, 123.91321 10.352093, 123.913292 10.352072, 123.913309 10.352135))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "SSC OFFICE",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.91321 10.352094, 123.913229 10.352163, 123.913197 10.35217, 123.913176 10.352102, 123.91321 10.352094))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "RESTROOM",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913428 10.352105, 123.913387 10.352115, 123.913371 10.352052, 123.913411 10.352041, 123.913428 10.352105))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "TELLER",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.91346 10.352097, 123.913428 10.352105, 123.913411 10.352041, 123.913443 10.352033, 123.91346 10.352097))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "RIGNEY HALL",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913498 10.352247, 123.913522 10.352338, 123.913248 10.352404, 123.913223 10.352313, 123.913498 10.352247))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": " ACCOUNTING AND TREASURY OFFICE",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913208 10.352414, 123.912974 10.35247, 123.912951 10.352377, 123.913182 10.352322, 123.913208 10.352414))",
+        "description": " ",
+        "floor_level": 1
+    },
+    {
+        "name": "LB167TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913387 10.352115, 123.913309 10.352135, 123.913292 10.352071, 123.91337 10.352052, 123.913387 10.352115))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "RESRTOOM",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912958 10.352409, 123.912974 10.35247, 123.912936 10.352479, 123.91292 10.352418, 123.912958 10.352409))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB142TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913373 10.351928, 123.913297 10.351947, 123.913272 10.351863, 123.91335 10.351844, 123.913373 10.351928))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB143TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913272 10.351863, 123.913296 10.351948, 123.913139 10.351987, 123.913116 10.351902, 123.913272 10.351863))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "LB144TC",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913139 10.351987, 123.912902 10.352045, 123.912879 10.351961, 123.913116 10.351902, 123.913139 10.351987))",
+        "description": "MECHANICAL/INDUSTRIAL ENGINEERING LABORATORY",
+        "floor_level": 1
+    },
+    {
+        "name": "LEXMARK MECHANICAL ENGINEERING LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912902 10.352046, 123.912865 10.352054, 123.912843 10.35197, 123.912879 10.351961, 123.912902 10.352046))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "RESTROOM",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912865 10.352054, 123.912834 10.352062, 123.912811 10.351978, 123.912843 10.35197, 123.912865 10.352054))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "SOFTWARE ENGINEERING LAB",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913339 10.351623, 123.91336 10.351708, 123.913285 10.351726, 123.913263 10.351642, 123.913339 10.351623))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "SECN LABORATORIES AND ADMIN OFFICE",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913262 10.351642, 123.913285 10.351726, 123.91325 10.351736, 123.913228 10.351651, 123.913262 10.351642))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "SECN COMPUTER LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913228 10.35165, 123.91325 10.351736, 123.913174 10.351754, 123.91315 10.351668, 123.913228 10.35165))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "MICROBIOLOGY LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913147 10.35167, 123.913171 10.351755, 123.913138 10.351764, 123.913112 10.351678, 123.913147 10.35167))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "RESEARCH LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.913112 10.351678, 123.913138 10.351764, 123.913028 10.35179, 123.913002 10.351705, 123.913112 10.351678))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "ANALYTICAL LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912965 10.351713, 123.912992 10.351799, 123.91292 10.351817, 123.912892 10.351731, 123.912965 10.351713))",
+        "description": "",
+        "floor_level": 1
+    },
+    {
+        "name": "WASTEWATER LABORATORY",
+        "building_id": "",
+        "office_id": "",
+        "geometry": "POLYGON ((123.912892 10.351731, 123.91292 10.351817, 123.912844 10.351835, 123.91282 10.351749, 123.912892 10.351731))",
+        "description": "",
+        "floor_level": 1
+    }
+]
