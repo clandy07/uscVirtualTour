@@ -89,31 +89,32 @@ export default function AdminLayout({
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
+        <div className="px-3 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center min-w-0">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="text-green-700 hover:text-green-800 focus:outline-none font-bold"
+                className="text-green-700 hover:text-green-800 focus:outline-none font-bold flex-shrink-0"
               >
-                <span className="text-2xl">{sidebarOpen ? '☰' : '☰'}</span>
+                <span className="text-xl sm:text-2xl">{sidebarOpen ? '☰' : '☰'}</span>
               </button>
-              <h1 className="ml-4 text-xl font-bold text-gray-900">
-                USC Virtual Tour Admin Panel
+              <h1 className="ml-2 sm:ml-4 text-sm sm:text-xl font-bold text-gray-900 truncate">
+                USC-VT Admin Panel
               </h1>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <Link
                 href="/"
-                className="text-gray-900 hover:text-green-700 text-sm flex items-center gap-2 cursor-pointer"
+                className="text-gray-900 hover:text-green-700 text-xs sm:text-sm flex items-center gap-1 sm:gap-2 cursor-pointer"
               >
                 <span>←</span>
-                <span>Back to Map</span>
+                <span className="hidden sm:inline">Back to Map</span>
+                <span className="sm:hidden">Map</span>
               </Link>
               <button 
                 onClick={handleSignOut}
-                className="px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 cursor-pointer"
+                className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 cursor-pointer"
               >
                 Sign out
               </button>
@@ -122,27 +123,41 @@ export default function AdminLayout({
         </div>
       </header>
 
-      <div className="flex">
+      <div className="flex relative">
+        {/* Overlay for mobile */}
+        {sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/20 z-20 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        
         {/* Sidebar */}
         <aside
           className={`${
-            sidebarOpen ? 'w-64' : 'w-0'
-          } bg-white border-r border-gray-200 transition-all duration-300 overflow-hidden`}
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 overflow-y-auto lg:translate-x-0`}
         >
-          <nav className="p-4 space-y-2">
+          <nav className="p-3 sm:p-4 space-y-1 sm:space-y-2 mt-14 sm:mt-0">
             {navigation.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  onClick={() => {
+                    // Close sidebar on mobile after clicking
+                    if (window.innerWidth < 1024) {
+                      setSidebarOpen(false);
+                    }
+                  }}
+                  className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     active
                       ? 'bg-green-50 text-black font-bold'
                       : 'text-black hover:bg-green-50'
                   }`}
                 >
-                  <Image src={item.icon} alt="" width={20} height={20} />
+                  <Image src={item.icon} alt="" width={18} height={18} className="sm:w-5 sm:h-5" />
                   <span>{item.name}</span>
                 </Link>
               );
@@ -151,7 +166,7 @@ export default function AdminLayout({
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 min-w-0">
           {children}
         </main>
       </div>

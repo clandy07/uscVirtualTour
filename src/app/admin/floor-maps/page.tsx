@@ -212,13 +212,13 @@ export default function FloorMapsPage() {
   return (
     <div className="space-y-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Floor Maps Management</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Floor Maps Management</h1>
         <p className="text-gray-900">Add and manage floor maps for buildings</p>
       </div>
 
       {/* Campus Selector */}
       <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-900 mb-2">Select Campus</label>
+        <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-2">Select Campus</label>
         <select
           value={selectedCampusId || ''}
           onChange={(e) => {
@@ -244,7 +244,7 @@ export default function FloorMapsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Buildings List */}
           <div className="lg:col-span-1">
-            <h2 className="text-xl text-gray-900 font-semibold mb-4">Buildings</h2>
+            <h2 className="text-lg sm:text-xl text-gray-900 font-semibold mb-4">Buildings</h2>
             <div className="space-y-2">
               {buildings.map((building) => (
                 <button
@@ -257,7 +257,7 @@ export default function FloorMapsPage() {
                   }`}
                 >
                   <div className="font-semibold">{building.name}</div>
-                  <div className={`text-sm ${selectedBuilding?.id === building.id ? 'text-red-100' : 'text-gray-900'}`}>
+                  <div className={`text-xs sm:text-sm ${selectedBuilding?.id === building.id ? 'text-red-100' : 'text-gray-900'}`}>
                     {building.floor_count || 0} floors
                     {building.basement_count ? `, ${building.basement_count} basement${building.basement_count > 1 ? 's' : ''}` : ''}
                   </div>
@@ -270,7 +270,7 @@ export default function FloorMapsPage() {
           <div className="lg:col-span-2">
             {selectedBuilding ? (
               <div>
-                <h2 className="text-xl font-semibold mb-4 text-gray-900">
+                <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900">
                   Floor Maps for {selectedBuilding.name}
                 </h2>
                 <div className="bg-white rounded-lg shadow">
@@ -278,16 +278,16 @@ export default function FloorMapsPage() {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase">
                             Floor
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase">
                             Status
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase">
-                            Map Type
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase">
+                            Source
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-semibold text-gray-900 uppercase">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-semibold text-gray-900 uppercase">
                             Actions
                           </th>
                         </tr>
@@ -357,10 +357,10 @@ export default function FloorMapsPage() {
 
       {/* Add/Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-4 text-black">
+            <div className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 text-black">
                 {editingFloor !== null && editingFloor < 0
                   ? `Basement ${Math.abs(editingFloor)}`
                   : `Floor ${editingFloor}`} Map Data
@@ -368,14 +368,14 @@ export default function FloorMapsPage() {
               
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
+                  <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
                     Google My Maps Embed URL
                   </label>
                   <input
                     type="url"
                     value={formData.embedUrl}
                     onChange={(e) => setFormData({ ...formData, embedUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                     placeholder="https://www.google.com/maps/d/embed?mid=..."
                   />
                   <p className="text-xs text-black mt-1">
@@ -383,24 +383,24 @@ export default function FloorMapsPage() {
                   </p>
                 </div>
 
-                <div className="text-center text-black text-sm font-medium">OR</div>
+                <div className="text-center text-black text-xs sm:text-sm font-medium">OR</div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
+                  <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
                     KML File URL
                   </label>
                   <input
                     type="url"
                     value={formData.kmlUrl}
                     onChange={(e) => setFormData({ ...formData, kmlUrl: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                     placeholder="https://example.com/floor.kml"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">
+                    <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
                       Center Latitude *
                     </label>
                     <input
@@ -409,12 +409,12 @@ export default function FloorMapsPage() {
                       required
                       value={formData.center_lat}
                       onChange={(e) => setFormData({ ...formData, center_lat: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                       placeholder="10.3521"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">
+                    <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
                       Center Longitude *
                     </label>
                     <input
@@ -423,14 +423,14 @@ export default function FloorMapsPage() {
                       required
                       value={formData.center_lng}
                       onChange={(e) => setFormData({ ...formData, center_lng: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                       placeholder="123.9131"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-1">
+                  <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1">
                     Zoom Level *
                   </label>
                   <input
@@ -440,24 +440,24 @@ export default function FloorMapsPage() {
                     required
                     value={formData.zoom}
                     onChange={(e) => setFormData({ ...formData, zoom: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                   />
                   <p className="text-xs text-gray-900 mt-1">
                     Recommended: 19-21 for indoor maps
                   </p>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-red-900 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition-colors font-bold"
+                    className="flex-1 bg-red-900 text-white px-4 sm:px-6 py-2 text-sm sm:text-base rounded-lg hover:bg-red-800 transition-colors font-bold"
                   >
                     Save Floor Data
                   </button>
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="flex-1 bg-gray-200 text-gray-900 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors font-bold"
+                    className="flex-1 bg-gray-200 text-gray-900 px-4 sm:px-6 py-2 text-sm sm:text-base rounded-lg hover:bg-gray-300 transition-colors font-bold"
                   >
                     Cancel
                   </button>
