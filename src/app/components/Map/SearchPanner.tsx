@@ -13,7 +13,7 @@ export default function SearchPanner({ searchResult }: SearchPannerProps) {
   useEffect(() => {
     if (map && searchResult) {
       map.panTo(searchResult.coordinates);
-      map.setZoom(18);
+      map.setZoom(20);
     }
   }, [map, searchResult]);
 

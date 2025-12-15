@@ -41,6 +41,7 @@ export interface Building {
 
 export interface Event {
   id: number;
+  name: string;
   theme: string;
   description: string;
   date_time_start: string;
