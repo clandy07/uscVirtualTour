@@ -16,6 +16,19 @@ export default function EventsPage() {
       visibility: 'everyone',
     },
   ]);
+  
+  // Mock organizations data - in real app, fetch from API
+  const [organizations] = useState([
+    { id: 1, name: 'USC Alumni Association', is_student_org: false },
+    { id: 2, name: 'USC Administration', is_student_org: false },
+    { id: 3, name: 'Supreme Student Council', is_student_org: true }, // Should not appear
+    { id: 4, name: 'Athletics Department', is_student_org: false },
+    { id: 5, name: 'Computer Science Society', is_student_org: true }, // Should not appear
+  ]);
+  
+  // Filter to only non-student organizations
+  const adminOrganizations = organizations.filter(org => !org.is_student_org);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [formData, setFormData] = useState({
@@ -224,14 +237,23 @@ export default function EventsPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-1">
-                    Organization ID
+                    Organization
                   </label>
-                  <input
-                    type="number"
+                  <select
                     value={formData.org_id}
                     onChange={(e) => setFormData({ ...formData, org_id: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
-                  />
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
+                  >
+                    <option value={0}>No Organization</option>
+                    {adminOrganizations.map(org => (
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Only non-student organizations are available for admin posting
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

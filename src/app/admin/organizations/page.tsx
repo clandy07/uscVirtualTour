@@ -5,12 +5,14 @@ import { Organization } from '@/types';
 
 export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([
-    { id: 1, logo: '', is_student_org: true },
-    { id: 2, logo: '', is_student_org: false },
+    { id: 1, name: 'USC Supreme Student Council', description: 'Main governing body of students', logo: '', is_student_org: true },
+    { id: 2, name: 'USC Alumni Association', description: 'Official alumni organization', logo: '', is_student_org: false },
   ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const [formData, setFormData] = useState({
+    name: '',
+    description: '',
     logo: '',
     is_student_org: true,
   });
@@ -18,13 +20,15 @@ export default function OrganizationsPage() {
 
   const handleAdd = () => {
     setEditingOrg(null);
-    setFormData({ logo: '', is_student_org: true });
+    setFormData({ name: '', description: '', logo: '', is_student_org: true });
     setIsModalOpen(true);
   };
 
   const handleEdit = (org: Organization) => {
     setEditingOrg(org);
     setFormData({
+      name: org.name || '',
+      description: org.description || '',
       logo: org.logo || '',
       is_student_org: org.is_student_org || false,
     });
@@ -58,6 +62,8 @@ export default function OrganizationsPage() {
   };
 
   const filteredOrgs = organizations.filter((org) =>
+    org.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    org.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     org.id.toString().includes(searchQuery)
   );
 
@@ -96,6 +102,12 @@ export default function OrganizationsPage() {
                 ID
               </th>
               <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider hidden sm:table-cell">
+                Description
+              </th>
+              <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
                 Type
               </th>
               <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
@@ -111,6 +123,12 @@ export default function OrganizationsPage() {
               <tr key={org.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-semibold text-gray-900">{org.id}</div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="text-sm font-semibold text-gray-900">{org.name}</div>
+                </td>
+                <td className="px-6 py-4 hidden sm:table-cell">
+                  <div className="text-sm text-gray-700 max-w-xs truncate">{org.description || 'N/A'}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
@@ -163,6 +181,33 @@ export default function OrganizationsPage() {
                 {editingOrg ? 'Edit Organization' : 'Add Organization'}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black"
+                    placeholder="Organization name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black resize-none"
+                    placeholder="Brief description of the organization"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-900 mb-1">
                     Logo URL
