@@ -1,6 +1,6 @@
 {
-  "id": "8de8a552-92fe-440a-a484-02896661592c",
-  "prevId": "bc3593e5-a81a-45a5-95eb-41d2ab68fad0",
+  "id": "74798e9d-e496-4f3e-aee9-aeb396b6db92",
+  "prevId": "ec16e0ac-99c7-48b6-83e7-886bfd03d5ae",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -976,6 +976,100 @@
         }
       },
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.indoor_edges": {
+      "name": "indoor_edges",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "source_node_id": {
+          "name": "source_node_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_node_id": {
+          "name": "target_node_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_meters": {
+          "name": "cost_meters",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reverse_cost_meters": {
+          "name": "reverse_cost_meters",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.indoor_nodes": {
+      "name": "indoor_nodes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "building_id": {
+          "name": "building_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "floor_level": {
+          "name": "floor_level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geom_point": {
+          "name": "geom_point",
+          "type": "geometry(point)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "indoor_nodes_building_id_buildings_id_fk": {
+          "name": "indoor_nodes_building_id_buildings_id_fk",
+          "tableFrom": "indoor_nodes",
+          "tableTo": "buildings",
+          "columnsFrom": [
+            "building_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
