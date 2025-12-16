@@ -106,6 +106,14 @@ export const buildings = pgTable("buildings", {
             embedUrl?: string; 
             center: { lat: number; lng: number };
             zoom: number;
+            virtualTour?: {
+                panoId?: string;
+                latitude?: number;
+                longitude?: number;
+                heading?: number;
+                pitch?: number;
+                zoom?: number;
+            };
         };
     }>(),
     // NEW: Rich content fields

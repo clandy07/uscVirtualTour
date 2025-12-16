@@ -21,6 +21,14 @@ export interface FloorData {
   embedUrl?: string; 
   center: { lat: number; lng: number };
   zoom: number;
+  virtualTour?: {
+    panoId?: string;
+    latitude?: number;
+    longitude?: number;
+    heading?: number;
+    pitch?: number;
+    zoom?: number;
+  };
 }
 
 export interface Building {

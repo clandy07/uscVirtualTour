@@ -12,7 +12,7 @@ interface FloorMapProps {
 
 const mapContainerStyle = {
   width: '100%',
-  height: '500px'
+  height: '700px'
 };
 
 const mapOptions = {
@@ -27,7 +27,7 @@ const mapOptions = {
 
 const iframeStyle = {
   width: '100%',
-  height: '500px',
+  height: '700px',
   border: 0,
 };
 

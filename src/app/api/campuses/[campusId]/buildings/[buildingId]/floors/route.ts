@@ -77,7 +77,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { floor_number, kmlUrl, embedUrl, center, zoom } = body;
+    const { floor_number, kmlUrl, embedUrl, center, zoom, virtualTour } = body;
 
     if (floor_number === undefined) {
       return NextResponse.json(
@@ -120,6 +120,7 @@ export async function PATCH(
       [floor_number]: {
         ...(kmlUrl !== undefined && { kmlUrl }),
         ...(embedUrl !== undefined && { embedUrl }),
+        ...(virtualTour !== undefined && { virtualTour }),
         center: {
           lat: center.lat,
           lng: center.lng
