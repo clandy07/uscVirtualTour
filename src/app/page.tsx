@@ -9,18 +9,20 @@ import ProfileMenu from "./components/Profile/ProfileMenu";
 import Image from "next/image";
 import { CategoryFilter, Building, Location } from "@/types";
 import { buildingIcon, locationIcon } from "@/app/lib/icons";
+import { Event, Organization } from "@/types";
 
 import { uscLogo }  from "../app/lib/icons";
 
 type SearchResult = {
 	id: number;
 	name: string;
-	type: 'building' | 'location';
+	type: 'building' | 'location' | 'event';
 	coordinates: { lat: number; lng: number };
 	campusName: string;
 	campusId: number;
 	buildingData?: Building;
 	locationData?: Location;
+	eventData?: Event;
 };
 
 export default function Home() {
@@ -43,6 +45,8 @@ export default function Home() {
 	const [showSearchResults, setShowSearchResults] = useState(false);
 	const [allLocations, setAllLocations] = useState<Location[]>([]);
 	const [allBuildings, setAllBuildings] = useState<Building[]>([]);
+	const [allEvents, setAllEvents] = useState<Event[]>([]);
+	const [organizations, setOrganizations] = useState<Organization[]>([]);
 	const [selectedSearchResult, setSelectedSearchResult] = useState<SearchResult | null>(null);
 	const [mapType, setMapType] = useState<string>('roadmap');
 
@@ -80,6 +84,18 @@ export default function Home() {
 					}
 				}
 
+				// Fetch events
+				const eventsRes = await fetch('/api/events');
+				const eventsData = await eventsRes.json();
+				if (eventsData.data) {
+					setAllEvents(eventsData.data);
+				}
+			// Fetch organizations
+			const orgsRes = await fetch('/api/orgs');
+			const orgsData = await orgsRes.json();
+			if (orgsData.data) {
+				setOrganizations(orgsData.data);
+			}
 				setAllLocations(locations);
 				setAllBuildings(buildings);
 			} catch (error) {
@@ -145,8 +161,31 @@ export default function Home() {
 				return acc;
 			}, []);
 
-		// Combine and sort results (buildings first, then alphabetically)
-		const combined = [...buildingResults, ...locationResults].slice(0, 10);
+		// Search events - need to find their location coordinates
+		const eventResults: SearchResult[] = allEvents
+			.filter(evt => evt.name.toLowerCase().includes(lowerQuery) || evt.description.toLowerCase().includes(lowerQuery) || evt.theme?.toLowerCase().includes(lowerQuery))
+			.reduce<SearchResult[]>((acc, evt) => {
+				const location = allLocations.find(loc => loc.id === evt.location_id);
+				if (!location || !location.latitude || !location.longitude) {
+					return acc;
+				}
+				acc.push({
+					id: evt.id || 0,
+					name: evt.name,
+					type: 'event' as const,
+					coordinates: {
+						lat: parseFloat(location.latitude),
+						lng: parseFloat(location.longitude)
+					},
+					campusName: location.name || '',
+					campusId: location.campus_id || 0,
+					eventData: evt
+				});
+				return acc;
+			}, []);
+
+		// Combine and sort results (buildings first, then events, then locations)
+		const combined = [...buildingResults, ...eventResults, ...locationResults].slice(0, 10);
 		setSearchResults(combined);
 		setShowSearchResults(true);
 	};
@@ -158,6 +197,11 @@ export default function Home() {
 		
 		// Set the selected result to pan map and show info card (right side)
 		setSelectedSearchResult(result);
+
+		// If it's an event, also trigger event selection
+		if (result.type === 'event' && result.eventData?.id) {
+			setSelectedEventId(result.eventData.id);
+		}
 
 		// Don't open the building panel automatically - let BuildingInfoCard handle it
 		// The BuildingInfoCard has a "View Details" button that will open the panel
@@ -208,7 +252,7 @@ export default function Home() {
 								<div className="flex items-start justify-between">
 									<div className="flex items-start gap-2">
 										<Image 
-											src={result.type === 'building' ? buildingIcon : locationIcon} 
+											src={result.type === 'building' ? buildingIcon : result.type === 'event' ? buildingIcon : locationIcon} 
 											alt="" 
 											width={16} 
 											height={16} 
@@ -217,7 +261,7 @@ export default function Home() {
 										<div>
 											<p className="font-semibold text-gray-900">{result.name}</p>
 											<p className="text-xs text-gray-500 mt-1">
-												{result.type === 'building' ? 'Building' : 'Location'} • {result.campusName}
+												{result.type === 'building' ? 'Building' : result.type === 'event' ? 'Event' : 'Location'} • {result.campusName}
 											</p>
 										</div>
 									</div>
@@ -241,7 +285,9 @@ export default function Home() {
 				/>
 				<Sidebar onFilterChange={setActiveFilters} />
 				{activeFilters.events && (
-					<EventsPanel onEventClick={setSelectedEventId} />
+					<div className="hidden sm:block">
+						<EventsPanel events={allEvents} organizations={organizations} onEventClick={setSelectedEventId} />
+					</div>
 				)}
 				<BuildingPanel
 					building={selectedBuilding}

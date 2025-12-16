@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Event } from '@/types';
+import { Event, Organization } from '@/types';
 
 interface EventsPanelProps {
   events?: Event[];
+  organizations?: Organization[];
   onEventClick?: (eventId: number) => void;
 }
 
-export default function EventsPanel({ events = [], onEventClick }: EventsPanelProps) {
+export default function EventsPanel({ events = [], organizations = [], onEventClick }: EventsPanelProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const getEventStatus = (startDate: string, endDate: string) => {
@@ -71,9 +72,14 @@ export default function EventsPanel({ events = [], onEventClick }: EventsPanelPr
                   <p className="text-xs text-gray-600 mb-1">
                     📅 {new Date(event.date_time_start).toLocaleDateString()}
                   </p>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-gray-600 mb-1">
                     🕐 {new Date(event.date_time_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
+                  {event.org_id && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      🏢 {organizations.find(org => org.id === event.org_id)?.name || 'No Organization'}
+                    </p>
+                  )}
                 </div>
               );
             })

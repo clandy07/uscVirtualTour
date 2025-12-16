@@ -32,28 +32,21 @@ export default function LocationInfoCard({ location, onClose, onGetDirections }:
   const categoryColors = location.category ? getCategoryColor(location.category) : { bg: 'bg-gray-600', text: 'text-gray-600', border: 'border-gray-600' };
 
   return (
-    <>
-      {/* Backdrop blur overlay - only visible on mobile */}
-      <div 
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 sm:hidden"
-        onClick={onClose}
-      />
-      
-      <div className="fixed inset-x-2 top-16 max-h-[calc(100vh-5rem)] sm:right-4 sm:left-auto sm:top-20 sm:inset-y-auto bg-white rounded-lg shadow-2xl sm:w-96 sm:max-w-md z-50 overflow-hidden border border-gray-200 sm:max-h-[calc(100vh-6rem)] flex flex-col">
+    <div className="bg-white rounded-lg shadow-2xl w-56 sm:w-96 overflow-hidden border border-gray-200 flex flex-col max-h-[calc(100vh-10rem)]">
       {/* Header with category color */}
-      <div className={`${categoryColors.bg} text-white px-3 sm:px-4 py-2 sm:py-3 flex-shrink-0`}>
+      <div className={`${categoryColors.bg} text-white px-2 sm:px-4 py-1.5 sm:py-3 flex-shrink-0`}>
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0 pr-2">
-            <h3 className="text-base sm:text-lg font-bold truncate">{location.name}</h3>
+            <h3 className="text-xs sm:text-lg font-bold truncate">{location.name}</h3>
             {location.category && (
-              <p className="text-xs opacity-90 mt-1 capitalize">
+              <p className="text-[10px] sm:text-xs opacity-90 mt-0.5 sm:mt-1 capitalize">
                 {location.category.replace(/_/g, ' / ')}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 text-2xl font-light leading-none transition-transform hover:rotate-90"
+            className="text-white hover:text-gray-200 text-xl sm:text-2xl font-light leading-none transition-transform hover:rotate-90"
             aria-label="Close"
           >
             ×
@@ -62,15 +55,15 @@ export default function LocationInfoCard({ location, onClose, onGetDirections }:
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 overflow-y-auto flex-1">
+      <div className="p-2 sm:p-4 space-y-1.5 sm:space-y-3 overflow-y-auto flex-1">
         {location.description && (
-          <p className="text-sm text-gray-700">{location.description}</p>
+          <p className="text-[11px] sm:text-sm text-gray-700">{location.description}</p>
         )}
 
         {/* Operating Hours */}
         {location.operating_hours && (
-          <div className="text-sm">
-            <p className="font-semibold text-gray-900 mb-1">Operating Hours</p>
+          <div className="text-[11px] sm:text-sm">
+            <p className="font-semibold text-gray-900 mb-0.5 sm:mb-1">Operating Hours</p>
             <p className="text-gray-700">{location.operating_hours}</p>
           </div>
         )}
@@ -143,7 +136,6 @@ export default function LocationInfoCard({ location, onClose, onGetDirections }:
           </button>
         )}
       </div>
-    </div>
-    </>
+      </div>
   );
 }
