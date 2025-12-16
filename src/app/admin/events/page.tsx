@@ -219,6 +219,10 @@ export default function EventsPage() {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
+
   const [prevFormData, setPrevFormData] = useState({
     name: '',
     description: '',
@@ -266,7 +270,7 @@ export default function EventsPage() {
       console.log("new data: ", formData)
       try {
         const res = await fetch(
-          `/api/orgs/${editingEvent.org_id}/events/${editingEvent.id}?oldLocationId=${prevFormData.location_id}`,
+          `/api/orgs/${prevFormData.org_id}/events/${editingEvent.id}?oldLocationId=${prevFormData.location_id}`,
           {
             method: "PATCH",
             headers: {
@@ -280,7 +284,8 @@ export default function EventsPage() {
               visibility: formData.visibility,
               evetGroupId: formData.event_group_id == 0 ? null : formData.event_group_id,
               customMarker: formData.custom_marker,
-              locationId: formData.location_id
+              locationId: formData.location_id,
+              org_id: formData.org_id
             }),
           }
         );
@@ -308,7 +313,7 @@ export default function EventsPage() {
         // Update local state after successful API call
         setEvents((prev) =>
           prev.map((ev) =>
-            ev.id === editingEvent.id ? { ...ev, updatedEvent } : ev
+            ev.id === editingEvent.id ? { ...ev, ...updatedEvent } : ev
           )
         );
       } catch (error) {

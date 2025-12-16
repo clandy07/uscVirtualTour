@@ -121,6 +121,7 @@ export async function PATCH(
     try {    
         const { searchParams } = new URL(request.url);
         const oldLocationId = searchParams.get('oldLocationId');
+        console.log("old location id: ", oldLocationId)
 
         if(oldLocationId == null){
             return NextResponse.json(
@@ -181,7 +182,7 @@ export async function PATCH(
                 { status: 401 }
             ); 
         }
-        else if(userRole == "admin" && orgId != null){
+        else if(userRole == "admin" && orgId != null && orgId != 0){
             const result = await db.select({
                 is_student_org: organizations.is_student_org
             }).from(organizations).where(eq(organizations.id, orgId))
@@ -202,8 +203,12 @@ export async function PATCH(
             visibility: "everyone" | "only_students" | "only_organization_members",
             eventGroupId: number | null | undefined,
             customMarker: string | null | undefined
-            locationId: number
+            locationId: number,
+            org_id: number
         } = await request.json();
+
+        console.log("request body: ", body)
+        console.log("path param orgId: ", orgId)
 
 
         const eventName = body.name;
@@ -214,7 +219,7 @@ export async function PATCH(
         const event_group_id = body.eventGroupId == 0 ? null : body.eventGroupId;
         const custom_marker = body.customMarker;
 
-        const orgFilter = orgId === null ? isNull(events.org_id) : eq(events.org_id, orgId);
+        const orgFilter = (orgId === null || orgId == 0) ? isNull(events.org_id) : eq(events.org_id, orgId);
 
         const result = await db.update(events).set({
             name: eventName,
@@ -223,7 +228,8 @@ export async function PATCH(
             date_time_end: date_time_end,
             visibility: visibility,
             event_group_id: event_group_id,
-            custom_marker: custom_marker
+            custom_marker: custom_marker,
+            org_id: body.org_id
         }).where(
             and(
                 eq(events.id, eventId),
@@ -240,6 +246,8 @@ export async function PATCH(
             orgId: events.org_id   
         });
 
+        console.log("result ", result)
+
         const result2 = await db.update(event_location_relations).set({
             location_id: body.locationId
         }).where(
@@ -251,11 +259,13 @@ export async function PATCH(
             newLocationId: event_location_relations.location_id
         })
 
+        const retVal = {
+            ...result[0],
+            ...result2[0]
+        }
+        console.log(retVal)
         return NextResponse.json(
-            { data: {
-                ...result[0],
-                ...result2[0]
-            } },
+            { data: retVal },
         );
     } catch (err) {
         console.error(err);
