@@ -452,7 +452,7 @@ export default function EventsPage() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(event.id)}
+                    onClick={() => event.id && handleDelete(event.id)}
                     className="text-red-600 hover:text-red-900 cursor-pointer font-bold"
                   >
                     <span className="hidden sm:inline">Delete</span>

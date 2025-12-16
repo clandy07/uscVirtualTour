@@ -139,20 +139,6 @@ export default function ProfileMenu({
 
 					{/* Menu Items */}
 					<div className="py-1">
-						{session && !((session?.user || session)?.is_admin) && (
-							<Link
-								href="/student-admin"
-								className="w-full px-4 py-2 text-left hover:bg-gray-100 text-black flex items-center gap-2"
-							>
-								<Image
-									src={studentIcon}
-									alt="Student Portal"
-									className="w-6 h-6 sm:w-6 sm:h-6 cursor-pointer"
-								/>
-								<span>Student Portal</span>
-							</Link>
-						)}
-
 						{(session?.user || session)?.is_admin && (
 							<Link
 								href="/admin"

@@ -34,8 +34,7 @@ export default function AdminLayout({
       try {
         const { data } = await authClient.getSession();
         console.log('Admin check - session data:', data); // Debug log
-        const user = data?.user || data;
-        if (!user?.is_admin) {
+        if (!data?.user?.is_admin) {
           // Not an admin, redirect to home
           console.log('User is not admin, redirecting...');
           router.push('/');
