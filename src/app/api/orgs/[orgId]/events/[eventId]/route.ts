@@ -4,7 +4,7 @@ import { getUserOrgPermissions } from '@/app/api/utils/auth';
 import {isNumber, isNumericString} from '@/app/utils'
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
-import { events, event_location_relations, event_room_relations } from '@/db/schema';
+import { events, organizations, event_location_relations, event_room_relations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
 import { eq, and, isNull} from 'drizzle-orm';
 
@@ -119,6 +119,24 @@ export async function PATCH(
     { params }: { params: Promise<{ orgId: string, eventId: string }> }) {
 
     try {    
+        const { searchParams } = new URL(request.url);
+        const oldLocationId = searchParams.get('oldLocationId');
+
+        if(oldLocationId == null){
+            return NextResponse.json(
+                { error: "Provide a valid numerical value for oldLocationId" },
+                { status: 400 }
+            )
+        }
+        const oldLocationIdNum = isNumericString(oldLocationId) ? parseInt(oldLocationId) : null
+
+        if(oldLocationIdNum == null){
+            return NextResponse.json(
+                { error: "Provide a valid numerical value for oldLocationId" },
+                { status: 400 }
+            )
+        }
+
         const pathParams = await params
 
         const orgId = (!isNumericString(pathParams.orgId)) ? null : parseInt(pathParams.orgId)
@@ -164,10 +182,16 @@ export async function PATCH(
             ); 
         }
         else if(userRole == "admin" && orgId != null){
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            ); 
+            const result = await db.select({
+                is_student_org: organizations.is_student_org
+            }).from(organizations).where(eq(organizations.id, orgId))
+
+            if(result[0].is_student_org){
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 }
+                );            
+            }
         }
 
         const body: {
@@ -176,8 +200,9 @@ export async function PATCH(
             dateTimeStart: Date | string,
             dateTimeEnd: Date | string | null | undefined,
             visibility: "everyone" | "only_students" | "only_organization_members",
-            evetGroupId: number | null | undefined,
+            eventGroupId: number | null | undefined,
             customMarker: string | null | undefined
+            locationId: number
         } = await request.json();
 
 
@@ -186,7 +211,7 @@ export async function PATCH(
         const date_time_start = new Date(body.dateTimeStart);
         const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
         const visibility = body.visibility;
-        const event_group_id = body.evetGroupId;
+        const event_group_id = body.eventGroupId == 0 ? null : body.eventGroupId;
         const custom_marker = body.customMarker;
 
         const orgFilter = orgId === null ? isNull(events.org_id) : eq(events.org_id, orgId);
@@ -214,8 +239,23 @@ export async function PATCH(
             customMarker: events.custom_marker,
             orgId: events.org_id   
         });
+
+        const result2 = await db.update(event_location_relations).set({
+            location_id: body.locationId
+        }).where(
+            and(
+                eq(event_location_relations.event_id, result[0].eventIdUpdated),
+                eq(event_location_relations.location_id, oldLocationIdNum)
+            )
+        ).returning({
+            newLocationId: event_location_relations.location_id
+        })
+
         return NextResponse.json(
-            { data: result[0] },
+            { data: {
+                ...result[0],
+                ...result2[0]
+            } },
         );
     } catch (err) {
         console.error(err);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/index';
-import { events, event_room_relations, event_location_relations } from '@/db/schema';
+import { events, event_room_relations, organizations, event_location_relations, locations } from '@/db/schema';
 import { getUserRole } from '@/app/api/utils/auth';
 import { eq, SQL, and, ilike, or, inArray, lte, gte } from 'drizzle-orm';
 import { checkAuth } from '@/app/api/utils/auth';
@@ -57,20 +57,33 @@ export async function GET(
 
         }
 
-        const result = await db.select({
-            id: events.id,
-            name: events.name,
-            description: events.description,
-            date_time_start: events.date_time_start,
-            date_time_end: events.date_time_end,
-            // custom_marker: events.custom_marker,
-            org_id: events.org_id,
-            visibility: events.visibility
-        }).from(events).where(
+        const result = await db.select(
+            {
+                id: events.id,
+                name: events.name,
+                description: events.description,
+                date_time_start: events.date_time_start,
+                date_time_end: events.date_time_end,
+                // custom_marker: events.custom_marker,
+                org_id: events.org_id,
+                visibility: events.visibility,
+                location_id: locations.id
+             }
+        )
+        .from(event_location_relations)
+        .innerJoin(events, eq(
+            event_location_relations.event_id, events.id
+        ))
+        .innerJoin(locations, eq(
+            event_location_relations.location_id, locations.id
+        ))
+        .where(
             filters.length > 0
                 ? and(...filters)
                 : undefined
         );
+
+        console.log("Events: ", result)
 
         return NextResponse.json({ data: result });
         
@@ -107,7 +120,7 @@ export async function POST(request: NextRequest,
         const userOrgs = await getUserOrgs(session.user)
         const userRole = getUserRole(session.user)
 
-        let orgIdTemp: null | number = null;
+        //let orgIdTemp: null | number = null;
 
         if(userRole == "student" && orgId != null && !userOrgs.includes(orgId)){
             // student doesnt even belong to the org, so they are blocked from using this endpoint to post events for their org
@@ -124,9 +137,6 @@ export async function POST(request: NextRequest,
                     { status: 401 }
                 );
             }
-            else{
-                orgIdTemp = orgId
-            }
         }
        else if(userRole == "student" && orgId == null){
             return NextResponse.json(
@@ -135,35 +145,37 @@ export async function POST(request: NextRequest,
             );            
         }
         else if(userRole == "admin" && orgId != null){
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            );            
+            const result = await db.select({
+                is_student_org: organizations.is_student_org
+            }).from(organizations).where(eq(organizations.id, orgId))
+            
+            if(result.length > 0 && result[0].is_student_org){
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 }
+                );            
+            }
+            else if(result.length <= 0){
+                return NextResponse.json(
+                    { error: "Org doesnt exist" },
+                    { status: 404 }            
+                )
+            }
         }
  
 
-        const body: {
-            name: string, 
-            description: string | null | undefined,
-            dateTimeStart: Date | string,
-            dateTimeEnd: Date | string | null | undefined,
-            visibility: "everyone" | "only_students" | "only_organization_members",
-            evetGroupId: number | null | undefined,
-            customMarker: string | null | undefined,
-            // roomId: number | null | undefined,
-            // locationId: number | null | undefined
-        } = await request.json();
-
+        const body: any = await request.json();
+        console.log(body)
 
         const eventName = body.name;
         const description = body.description;
         const date_time_start = new Date(body.dateTimeStart);
-        const date_time_end = (body.dateTimeEnd) ? new Date(body.dateTimeEnd) : null;
+        const date_time_end = body.dateTimeEnd ? new Date(body.dateTimeEnd) : null;
         const visibility = body.visibility;
-        const event_group_id = body.evetGroupId;
+        const event_group_id = body.eventGroupId == 0 ? null : body.eventGroupId;
         const custom_marker = body.customMarker;
         // const roomId = body.roomId;
-        // const locationId = body.locationId;
+        const locationId = body.locationId;
 
         // if (!roomId && !locationId){
         //     return NextResponse.json(
@@ -182,12 +194,25 @@ export async function POST(request: NextRequest,
                 date_time_end: date_time_end,
                 custom_marker: custom_marker,
                 event_group_id: event_group_id,
-                org_id: orgIdTemp,
-                visibility: visibility
+                org_id: orgId == 0 ? null : orgId,
+                visibility: visibility,
             }
         ).returning({ insertedEventId: events.id });
         //const {insertedEventId} = eventResult[0]
 
+        if(eventResult.length > 0){
+            const newEventId = eventResult[0].insertedEventId
+
+            const result = await db.insert(event_location_relations).values({
+                event_id: newEventId,
+                location_id: locationId
+            }).returning({
+                insertedEventId: event_location_relations.event_id,
+                locationId: event_location_relations.location_id
+            })
+
+            return NextResponse.json({data: result})
+        }
         // let result;
         // if(inLocation){
         //     result = await db.insert(event_location_relations).values({
@@ -202,7 +227,7 @@ export async function POST(request: NextRequest,
         //     });
         // }
 
-        return NextResponse.json({ data: eventResult[0] });
+        return NextResponse.json({ data: eventResult });
         
     } catch (err) {
         console.error(err);

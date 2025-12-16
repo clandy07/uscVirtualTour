@@ -4,6 +4,36 @@ import { useEffect, useState } from 'react';
 // import AdminMapPicker from '@/app/components/Map/AdminMapPicker';
 import { Event, Organization, Location } from '@/types';
 
+// Add this helper function at the top of your component
+const formatDateTimeLocal = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  
+  // Format to YYYY-MM-DDTHH:mm
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+function datetimeLocalToUTC(value: string) {
+  // value: "2025-09-21T14:30"
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid datetime-local value");
+  }
+
+  const returnDate = date.toISOString()
+  console.log(returnDate)
+  return returnDate; // UTC, safe for timestamptz
+}
+
+
 export default function EventsPage() {
   const [campuses, setCampuses] = useState<{
     created_at: Date;
@@ -64,7 +94,7 @@ export default function EventsPage() {
         console.error('Failed to fetch locations', err);
       }
     };
-
+    console.log(campuses)
     fetchAllLocations();
   }, [campuses]);
 
@@ -92,37 +122,27 @@ export default function EventsPage() {
   ]);
 
   useEffect(() => {
-    if (campuses.length === 0) return;
-
     const fetchEvents = async () => {
       try {
-        const eventRequests = organizations.map((org) =>
-          fetch(`/api/orgs/${org.id}/events`, {
-            method: "GET"
-          })
-            .then((res) => {
-              if (!res.ok) {
-                throw new Error(`Failed to fetch events for org ${org.id}`);
-              }
-              return res.json();
-            })
-            .then((json) => json.success ? json.data : [])
-        );
+        const res = await fetch(`/api/events`, {
+          method: "GET"
+        })
 
-        // Wait for all events
-        const eventsByOrg = await Promise.all(eventRequests);
+        if (!res.ok) throw new Error('Failed to fetch events');
 
-        // Compile into a single array
-        const compiledEvents = eventsByOrg.flat();
+        const json = await res.json();
+        if (json.data.length > 0) {
+          setEvents(json.data);
+          console.log(json.data)
+        }
 
-        setEvents(compiledEvents);
       } catch (err) {
         console.error('Failed to fetch events', err);
       }
     };
-
+    console.log(locations)
     fetchEvents();
-  }, [locations]);
+  }, []);
 
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const adminOrgs = organizations.filter(org => !org.is_student_org);
@@ -159,7 +179,9 @@ export default function EventsPage() {
   //   { id: 5, name: 'Computer Science Society', is_student_org: true }, // Should not appear
   // ]);
 
-  
+  useEffect(() => {
+    console.log(events)
+  }, [events])
 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -177,9 +199,9 @@ export default function EventsPage() {
   });
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
+  // useEffect(() => {
+  //   console.log(formData)
+  // }, [formData])
 
   const handleAdd = () => {
     setEditingEvent(null);
@@ -197,19 +219,34 @@ export default function EventsPage() {
     setIsModalOpen(true);
   };
 
+  const [prevFormData, setPrevFormData] = useState({
+    name: '',
+    description: '',
+    date_time_start: '',
+    date_time_end: '',
+    custom_marker: '',
+    event_group_id: 0,
+    org_id: 0,
+    visibility: 'everyone' as 'everyone' | 'only_students' | 'only_organization_members',
+    location_id: 0
+  });
+
   const handleEdit = (event: Event) => {
     setEditingEvent(event);
-    setFormData({
+
+    const data = {
       name: event.name,
       description: event.description || '',
       date_time_start: event.date_time_start,
-      date_time_end: event.date_time_end || '',
+      date_time_end: event.date_time_end,
       custom_marker: event.custom_marker || '',
       event_group_id: event.event_group_id || 0,
       org_id: event.org_id || 0,
       visibility: event.visibility || 'everyone',
       location_id: event.location_id
-    });
+    }
+    setFormData(data);
+    setPrevFormData(data)
     setIsModalOpen(true);
   };
 
@@ -220,24 +257,104 @@ export default function EventsPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (editingEvent) {
-      setEvents(
-        events.map((ev) =>
-          ev.id === editingEvent.id ? { ...ev, ...formData } : ev
-        )
-      );
+      // UPDATE (edit existing event)
+      console.log("prev data: ", prevFormData)
+      console.log("new data: ", formData)
+      try {
+        const res = await fetch(
+          `/api/orgs/${editingEvent.org_id}/events/${editingEvent.id}?oldLocationId=${prevFormData.location_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.name, 
+              description: formData.description,
+              dateTimeStart: datetimeLocalToUTC(formData.date_time_start),
+              dateTimeEnd: datetimeLocalToUTC(formData.date_time_end),
+              visibility: formData.visibility,
+              evetGroupId: formData.event_group_id == 0 ? null : formData.event_group_id,
+              customMarker: formData.custom_marker,
+              locationId: formData.location_id
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to update event");
+        }
+
+        const json = await res.json();
+        const {data} = json
+        console.log("after updating: ", data)
+        
+        const updatedEvent = {
+          id: data.eventIdUpdated,
+          name: formData.name,
+          description: formData.description,
+          date_time_start: formData.date_time_start,
+          date_time_end: formData.date_time_end,
+          custom_marker: formData.custom_marker,
+          event_group_id: formData.event_group_id,
+          org_id: formData.org_id,
+          visibility: formData.visibility,
+          location_id: data.newLocationId
+        }
+        // Update local state after successful API call
+        setEvents((prev) =>
+          prev.map((ev) =>
+            ev.id === editingEvent.id ? { ...ev, updatedEvent } : ev
+          )
+        );
+      } catch (error) {
+        console.error("Error updating event:", error);
+      }
     } else {
-      const newEvent: Event = {
-        id: Math.max(0, ...events.map((e) => e.id)) + 1,
-        ...formData,
+      // CREATE (add new event)
+      const newEventPayload = {
+        name: formData.name,
+        description: formData.description,
+        dateTimeStart: datetimeLocalToUTC(formData.date_time_start),
+        dateTimeEnd: datetimeLocalToUTC(formData.date_time_end),
+        customMarker: formData.custom_marker,
+        eventGroupId: formData.event_group_id,
+        org_id: formData.org_id,
+        visibility: formData.visibility,
+        locationId: formData.location_id
       };
-      setEvents([...events, newEvent]);
+      console.log(newEventPayload)
+      try {
+        const res = await fetch(`/api/orgs/${formData.org_id}/events`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newEventPayload),
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to create event");
+        }
+
+        const json = await res.json();
+        const {data} = json
+
+        // Use the event returned by the backend (important!)
+        if(data.length > 0) setEvents((prev) => [...prev, {
+          id: data[0].insertedEventId,
+          ...formData
+        }]);
+
+      } catch (error) {
+        console.error("Error creating event:", error);
+      }
     }
-    // TODO: Call API to create/update
-    setIsModalOpen(false);
+      setIsModalOpen(false);
   };
 
   const filteredEvents = events.filter((event) =>
