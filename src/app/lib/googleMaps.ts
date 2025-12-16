@@ -1,4 +1,4 @@
-import { MapConfig } from '@/app/types';
+import { MapConfig } from '@/types';
 
 // USC Talamban Campus coordinates (approximate center)
 export const USC_TALAMBAN_CENTER = {
