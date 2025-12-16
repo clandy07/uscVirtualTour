@@ -8,6 +8,7 @@ interface LocationMarkerProps {
   location: Location;
   onClick?: (location: Location) => void;
   isHighlighted?: boolean;
+  positionOverride?: google.maps.LatLngLiteral;
 }
 
 const getMarkerIcon = (category?: string) => {
@@ -23,12 +24,12 @@ const getMarkerIcon = (category?: string) => {
   }
 };
 
-export default function LocationMarker({ location, onClick, isHighlighted = false }: LocationMarkerProps) {
+export default function LocationMarker({ location, onClick, isHighlighted = false, positionOverride }: LocationMarkerProps) {
   if (!location.coordinates) return null;
   
   return (
     <AdvancedMarker
-      position={location.coordinates}
+      position={positionOverride || location.coordinates}
       onClick={() => onClick?.(location)}
     >
       <div className={`relative group cursor-pointer transform hover:scale-110 transition-all ${

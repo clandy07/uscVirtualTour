@@ -42,15 +42,15 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
   };
 
   return (
-    <aside className={`absolute left-2 sm:left-4 top-16 sm:top-20 bg-white rounded-lg shadow-lg w-52 sm:w-64 z-20 transition-all duration-300 ${
-      isExpanded ? 'max-h-[calc(100vh-120px)]' : 'max-h-12 sm:max-h-14'
+    <aside className={`absolute left-2 sm:left-4 top-16 sm:top-20 bg-white rounded-lg shadow-lg w-36 sm:w-64 z-20 transition-all duration-300 ${
+      isExpanded ? 'max-h-[calc(100vh-120px)]' : 'max-h-10 sm:max-h-14'
     }`}>
       <div 
-        className="p-2 sm:p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg"
+        className="p-1.5 sm:p-4 cursor-pointer flex justify-between items-center bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h2 className="font-bold text-sm sm:text-lg text-gray-800">Map Layers</h2>
-        <button className="text-gray-500 hover:text-gray-700 text-lg sm:text-xl transition-transform duration-300" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+        <h2 className="font-bold text-xs sm:text-lg text-gray-800">Map Layers</h2>
+        <button className="text-gray-500 hover:text-gray-700 text-sm sm:text-xl transition-transform duration-300" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
           ▼
         </button>
       </div>
@@ -58,27 +58,27 @@ export default function Sidebar({ onFilterChange }: SidebarProps) {
       <div className={`overflow-y-auto transition-all duration-300 ${
         isExpanded ? 'max-h-[calc(100vh-180px)] opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <div className="p-2 sm:p-4 space-y-1 sm:space-y-2">
+        <div className="p-1.5 sm:p-4 space-y-0.5 sm:space-y-2">
           {items.map((item, index) => (
             <label
               key={item.id}
-              className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-all hover:scale-102 animate-fadeIn"
+              className="flex items-center gap-1 sm:gap-3 p-1 sm:p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-all hover:scale-102 animate-fadeIn"
               style={{ animationDelay: `${index * 30}ms` }}
             >
               <input
                 type="checkbox"
                 checked={filters[item.id]}
                 onChange={() => toggleFilter(item.id)}
-                className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-green-700 transition-transform checked:scale-110 flex-shrink-0"
+                className="w-3 h-3 sm:w-4 sm:h-4 accent-green-700 transition-transform checked:scale-110 flex-shrink-0"
               />
               <Image 
                 src={item.icon} 
                 alt={item.label}
                 width={24}
                 height={24}
-                className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:scale-110 flex-shrink-0"
+                className="w-4 h-4 sm:w-6 sm:h-6 transition-transform group-hover:scale-110 flex-shrink-0"
               />
-              <span className="text-sm text-gray-700">{item.label}</span>
+              <span className="text-[10px] sm:text-sm text-gray-700">{item.label}</span>
             </label>
           ))}
         </div>

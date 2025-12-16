@@ -9,12 +9,13 @@ interface BuildingMarkerProps {
   location: Location;
   onClick: (building: Building) => void;
   isHighlighted?: boolean;
+  positionOverride?: google.maps.LatLngLiteral;
 }
 
-export default function BuildingMarker({ building, location, onClick, isHighlighted = false }: BuildingMarkerProps) {
+export default function BuildingMarker({ building, location, onClick, isHighlighted = false, positionOverride }: BuildingMarkerProps) {
   return (
     <AdvancedMarker
-      position={location.coordinates}
+      position={positionOverride || location.coordinates}
       onClick={() => onClick(building)}
     >
       <div className={`relative group cursor-pointer transform hover:scale-110 transition-all ${
