@@ -87,3 +87,11 @@ export type authUser = {
   is_admin: boolean;
   mid_name?: string | null | undefined;
 };
+
+export type Organization = {
+  id: number;
+  name: string;
+  description: string | null;
+  logo: string | null;
+  is_student_org: boolean;
+};

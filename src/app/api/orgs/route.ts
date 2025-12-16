@@ -74,9 +74,13 @@ export async function POST(request: NextRequest) {
             name: body.name,
             description: body.description,
             logo: body.logo,
-            is_student_org: body.isStudentOrg
+            is_student_org: body.is_student_org
         }).returning({
-            insertedOrgId: organizations.id
+            insertedOrgId: organizations.id,
+            name: organizations.name,
+            description: organizations.description,
+            logo: organizations.logo,
+            is_student_org: organizations.is_student_org
         })
 
         return NextResponse.json({data: result})
