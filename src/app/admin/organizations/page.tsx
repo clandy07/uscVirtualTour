@@ -73,21 +73,80 @@ export default function OrganizationsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this organization?')) {
-      setOrganizations(organizations.filter((o) => o.id !== id));
-      // TODO: Call API to delete
+      try{
+        const res = await fetch(`/api/orgs/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch organizations');
+        }        
+        
+        const {data} = await res.json()
+        if(data.length > 0) {
+          setOrganizations(organizations.filter((o) => o.id !== id));
+        }
+      }
+      catch(error){
+        console.error(error)
+      }
+      
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingOrg) {
-      setOrganizations(
-        organizations.map((o) =>
-          o.id === editingOrg.id ? { ...o, ...formData } : o
-        )
-      );
+      try {
+        const res = await fetch(`/api/orgs/${editingOrg.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            description: formData.description,
+            logo: formData.logo,
+            is_student_org: formData.is_student_org
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch organizations');
+        }
+
+        const {data} = await res.json();
+        
+        // if(data.length > 0){
+        //   const orgs = data.map((org: {
+        //     id: number,
+        //     name: string,
+        //     description: string | null,
+        //     logo: string | null,
+        //     is_student_org: boolean
+        //   }) => ({
+        //     id: org.id,
+        //     name: org.name
+        //   }))
+        //   // setOrganizations([...organizations, {
+        //   //   id: orgs[0].id,
+        //   //   name: orgs[0].name,
+        //   //   description: orgs[0].description,
+        //   //   logo: orgs[0].logo,
+        //   //   is_student_org: orgs[0].is_student_org
+        //   // }]);
+        // }        
+        if(data.length > 0) setOrganizations(
+          organizations.map((o) =>
+            o.id === editingOrg.id ? { ...o, ...formData } : o
+          )
+        );
+      } catch (err) {
+        console.error(err);
+      } 
+
     } else {
       const newOrg: Organization = {
         id: Math.max(0, ...organizations.map((o) => o.id)) + 1,
@@ -111,14 +170,17 @@ export default function OrganizationsPage() {
         
         if(data.length > 0){
           const orgs = data.map((org: {
-            id: number,
+            insertedOrgId: number,
             name: string,
             description: string | null,
             logo: string | null,
             is_student_org: boolean
           }) => ({
-            id: org.id,
-            name: org.name
+            id: org.insertedOrgId,
+            name: org.name,
+            description: org.description,
+            logo: org.logo,
+            is_student_org: org.is_student_org
           }))
           setOrganizations([...organizations, {
             id: orgs[0].id,
@@ -132,7 +194,7 @@ export default function OrganizationsPage() {
         console.error(err);
       } 
 
-      setOrganizations([...organizations, newOrg]);
+      //setOrganizations([...organizations, newOrg]);
     }
     // TODO: Call API to create/update
     setIsModalOpen(false);

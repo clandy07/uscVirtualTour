@@ -111,7 +111,68 @@ export async function DELETE(
 
         const result = await db.delete(organizations).where(
             eq(organizations.id, orgId)
-        )
+        ).returning({
+            deletedOrgId: organizations.id
+        })
+
+        return NextResponse.json({data: result})
+    
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+
+}
+
+export async function PATCH(
+    request: NextRequest,
+    {params}: { params: Promise<{ orgId: string }> } 
+) {
+
+    try {        
+        const session = await checkAuth(request)
+        const paramsPath = await params
+        const orgId = (isNumericString(paramsPath.orgId)) ? parseInt(paramsPath.orgId) : null
+        
+        if(orgId === null){
+            return NextResponse.json(
+                {error: "orgId has to be numeric"},
+                {status: 400}
+            )
+        }
+
+        if(!session){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );     
+        }
+        const userRole = getUserRole(session.user)
+        if(userRole != "admin"){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );                
+        }
+
+        const body = await request.json()
+
+        const result = await db.update(organizations).set({
+                name: body.name,
+                description: body.description,
+                logo: body.logo,
+                is_student_org: body.is_student_org
+            }
+        ).where(eq(organizations.id, orgId)).returning({
+            updatedOrgId: organizations.id,
+            name: organizations.name,
+            description: organizations.description,
+            logo: organizations.logo,
+            is_student_org: organizations.is_student_org
+        })
 
         return NextResponse.json({data: result})
     
