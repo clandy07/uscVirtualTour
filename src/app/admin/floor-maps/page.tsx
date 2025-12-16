@@ -19,6 +19,14 @@ export default function FloorMapsPage() {
     center_lat: '',
     center_lng: '',
     zoom: 19,
+    virtualTour: {
+      panoId: '',
+      latitude: '',
+      longitude: '',
+      heading: 0,
+      pitch: 0,
+      zoom: 1,
+    },
   });
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
@@ -78,6 +86,14 @@ export default function FloorMapsPage() {
       center_lat: existingData?.center?.lat?.toString() || '',
       center_lng: existingData?.center?.lng?.toString() || '',
       zoom: existingData?.zoom || 19,
+      virtualTour: {
+        panoId: existingData?.virtualTour?.panoId || '',
+        latitude: existingData?.virtualTour?.latitude?.toString() || '',
+        longitude: existingData?.virtualTour?.longitude?.toString() || '',
+        heading: existingData?.virtualTour?.heading || 0,
+        pitch: existingData?.virtualTour?.pitch || 0,
+        zoom: existingData?.virtualTour?.zoom || 1,
+      },
     });
     setIsModalOpen(true);
   };
@@ -92,6 +108,14 @@ export default function FloorMapsPage() {
       center_lat: '',
       center_lng: '',
       zoom: 19,
+      virtualTour: {
+        panoId: '',
+        latitude: '',
+        longitude: '',
+        heading: 0,
+        pitch: 0,
+        zoom: 1,
+      },
     });
   };
 
@@ -126,6 +150,14 @@ export default function FloorMapsPage() {
               lng: parseFloat(formData.center_lng),
             },
             zoom: formData.zoom,
+            virtualTour: (formData.virtualTour.panoId || formData.virtualTour.latitude) ? {
+              panoId: formData.virtualTour.panoId || undefined,
+              latitude: formData.virtualTour.latitude ? parseFloat(formData.virtualTour.latitude) : undefined,
+              longitude: formData.virtualTour.longitude ? parseFloat(formData.virtualTour.longitude) : undefined,
+              heading: formData.virtualTour.heading,
+              pitch: formData.virtualTour.pitch,
+              zoom: formData.virtualTour.zoom,
+            } : undefined,
           }),
         }
       );
@@ -396,6 +428,105 @@ export default function FloorMapsPage() {
                     className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
                     placeholder="https://example.com/floor.kml"
                   />
+                </div>
+
+                <div className="border-t pt-4 space-y-3">
+                  <h3 className="text-sm sm:text-base font-bold text-gray-900">
+                    🎥 Virtual Tour (Google Street View) - Optional
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    Use either Panorama ID (recommended) or coordinates to show a 360° virtual tour
+                  </p>
+                  
+                  <div>
+                    <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                      Panorama ID
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.virtualTour.panoId}
+                      onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, panoId: e.target.value } })}
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      placeholder="e.g., CAoSLEFGMVFpcFBnVDRRRDB..."
+                    />
+                    <p className="text-xs text-gray-600 mt-1">
+                      Find this in the URL when viewing Street View: pano=XXXX
+                    </p>
+                  </div>
+
+                  <div className="text-center text-black text-xs font-medium">OR use coordinates</div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                        Tour Latitude
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={formData.virtualTour.latitude}
+                        onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, latitude: e.target.value } })}
+                        className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                        placeholder="10.3521"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                        Tour Longitude
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={formData.virtualTour.longitude}
+                        onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, longitude: e.target.value } })}
+                        className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                        placeholder="123.9131"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                        Heading (0-360°)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="360"
+                        value={formData.virtualTour.heading}
+                        onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, heading: parseInt(e.target.value) || 0 } })}
+                        className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                        Pitch (-90 to 90°)
+                      </label>
+                      <input
+                        type="number"
+                        min="-90"
+                        max="90"
+                        value={formData.virtualTour.pitch}
+                        onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, pitch: parseInt(e.target.value) || 0 } })}
+                        className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-black mb-1">
+                        Zoom (0-5)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="5"
+                        step="0.1"
+                        value={formData.virtualTour.zoom}
+                        onChange={(e) => setFormData({ ...formData, virtualTour: { ...formData.virtualTour, zoom: parseFloat(e.target.value) || 1 } })}
+                        className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder-gray-500"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

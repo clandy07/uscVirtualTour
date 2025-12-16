@@ -3,6 +3,7 @@
 import { Building } from '@/types';
 import { useState } from 'react';
 import FloorMap from '../Map/FloorMap';
+import VirtualTourViewer from './VirtualTourViewer';
 
 interface BuildingPanelProps {
   building: Building | null;
@@ -138,21 +139,45 @@ export default function BuildingPanel({ building, onClose }: BuildingPanelProps)
 
               {/* Floor Details */}
               {selectedFloor !== null && currentFloorData && (
-                <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 animate-slideDown">
-                  <h4 className="font-bold text-lg mb-3 text-gray-900">
-                    {selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`} - Floor Map
-                  </h4>
-                  <div className="rounded-lg overflow-hidden border-2 border-gray-300">
-                    <FloorMap
-                      center={currentFloorData.center}
-                      zoom={currentFloorData.zoom}
-                      kmlUrl={currentFloorData.kmlUrl}
-                      embedUrl={currentFloorData.embedUrl}
-                    />
+                <div className="space-y-4">
+                  {/* Virtual Tour Section */}
+                  {currentFloorData.virtualTour && (
+                    <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 animate-slideDown min-h-[900px] sm:min-h-[1000px]">
+                      <h4 className="font-bold text-lg mb-3 text-gray-900 flex items-center gap-2">
+                        Virtual Tour - {selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`}
+                      </h4>
+                      <VirtualTourViewer 
+                        panoId={currentFloorData.virtualTour.panoId}
+                        latitude={currentFloorData.virtualTour.latitude}
+                        longitude={currentFloorData.virtualTour.longitude}
+                        heading={currentFloorData.virtualTour.heading}
+                        pitch={currentFloorData.virtualTour.pitch}
+                        zoom={currentFloorData.virtualTour.zoom}
+                        floorName={selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`}
+                      />
+                      <p className="text-sm text-gray-600 mt-3">
+                        Explore this floor with an immersive 360° virtual tour
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Floor Map Section */}
+                  <div className="bg-gray-50 rounded-lg p-5 border border-gray-200 animate-slideDown min-h-[900px]">
+                    <h4 className="font-bold text-lg mb-3 text-gray-900">
+                      {selectedFloor < 0 ? `Basement ${Math.abs(selectedFloor)}` : `Floor ${selectedFloor}`} - Floor Map
+                    </h4>
+                    <div className="rounded-lg overflow-hidden">
+                      <FloorMap
+                        center={currentFloorData.center}
+                        zoom={currentFloorData.zoom}
+                        kmlUrl={currentFloorData.kmlUrl}
+                        embedUrl={currentFloorData.embedUrl}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-3">
+                      Interactive floor plan showing rooms and facilities
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-600 mt-3">
-                    Interactive floor plan showing rooms and facilities
-                  </p>
                 </div>
               )}
 
