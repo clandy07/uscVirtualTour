@@ -48,15 +48,15 @@ export interface Building {
 }
 
 export interface Event {
-  id: number;
+  id?: number;
   name: string;
   theme?: string;
   description: string;
   date_time_start: string;
   date_time_end: string;
-  custom_marker?: string;
-  event_group_id?: number;
-  org_id?: number;
+  custom_marker?: string | null;
+  event_group_id?: number | null;
+  org_id?: number | null;
   visibility: 'everyone'| 'only_students'| 'only_organization_members';
   location_id: number;
 }
