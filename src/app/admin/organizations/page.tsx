@@ -1,13 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Organization } from '@/types';
 
 export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([
-    { id: 1, name: 'USC Supreme Student Council', description: 'Main governing body of students', logo: '', is_student_org: true },
-    { id: 2, name: 'USC Alumni Association', description: 'Official alumni organization', logo: '', is_student_org: false },
+    // { id: 1, name: 'USC Supreme Student Council', description: 'Main governing body of students', logo: '', is_student_org: true },
+    // { id: 2, name: 'USC Alumni Association', description: 'Official alumni organization', logo: '', is_student_org: false },
   ]);
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      try {
+        const res = await fetch('/api/orgs', {
+          method: 'GET',
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch organizations');
+        }
+
+        const {data} = await res.json();
+        
+        if(data.length > 0){
+          const orgs = data.map((org: {
+            id: number,
+            name: string,
+            description: string | null,
+            logo: string | null,
+            is_student_org: boolean
+          }) => ({
+            id: org.id,
+            name: org.name,
+            description: org.description,
+            logo: org.logo,
+            is_student_org: org.is_student_org
+          }))
+          setOrganizations(orgs);
+        }        
+      } catch (err) {
+        console.error(err);
+      } 
+    };
+
+    fetchOrgs();
+  }, []); // empty dependency → run once on mount
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const [formData, setFormData] = useState({
@@ -42,7 +80,7 @@ export default function OrganizationsPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingOrg) {
       setOrganizations(
@@ -55,6 +93,45 @@ export default function OrganizationsPage() {
         id: Math.max(0, ...organizations.map((o) => o.id)) + 1,
         ...formData,
       };
+      console.log("new org: ", newOrg)
+      try {
+        const res = await fetch('/api/orgs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newOrg),
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch organizations');
+        }
+
+        const {data} = await res.json();
+        
+        if(data.length > 0){
+          const orgs = data.map((org: {
+            id: number,
+            name: string,
+            description: string | null,
+            logo: string | null,
+            is_student_org: boolean
+          }) => ({
+            id: org.id,
+            name: org.name
+          }))
+          setOrganizations([...organizations, {
+            id: orgs[0].id,
+            name: orgs[0].name,
+            description: orgs[0].description,
+            logo: orgs[0].logo,
+            is_student_org: orgs[0].is_student_org
+          }]);
+        }        
+      } catch (err) {
+        console.error(err);
+      } 
+
       setOrganizations([...organizations, newOrg]);
     }
     // TODO: Call API to create/update

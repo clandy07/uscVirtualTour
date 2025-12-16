@@ -38,10 +38,17 @@ export async function GET(request: NextRequest,
                 username: true,
                 first_name: true,
                 mid_name: true,
-                last_name: true
+                last_name: true,
+                email_verified: true,
+                is_admin: true,
+                created_at: true
             },
             with: {
-                userOrgs: true
+                userOrgs: {
+                    with: {
+                        organization: true
+                    }
+                }
             },
             where: eq(users.id, id)
         });

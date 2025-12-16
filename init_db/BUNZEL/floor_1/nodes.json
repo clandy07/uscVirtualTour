@@ -1,0 +1,344 @@
+[
+    {
+        "id": "BUNZEL_A01_001",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913502 10.352261)"
+    },
+    {
+        "id": "BUNZEL_A01_002",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913524 10.352257)"
+    },
+    {
+        "id": "BUNZEL_A01_003",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913556 10.351944)"
+    },
+    {
+        "id": "BUNZEL_A01_004",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913452 10.35197)"
+    },
+    {
+        "id": "BUNZEL_A01_005",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913424 10.351979)"
+    },
+    {
+        "id": "BUNZEL_A01_006",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9135463 10.352347)"
+    },
+    {
+        "id": "BUNZEL_A01_007",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913374 10.351658)"
+    },
+    {
+        "id": "BUNZEL_A01_008",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.91339 10.351723)"
+    },
+    {
+        "id": "BUNZEL_A01_009",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9134127 10.351813)"
+    },
+    {
+        "id": "BUNZEL_A01_010",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913491 10.352126)"
+    },
+    {
+        "id": "BUNZEL_A01_011",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913518 10.352235)"
+    },
+    {
+        "id": "BUNZEL_A01_012",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.912878 10.352386)"
+    },
+    {
+        "id": "BUNZEL_A01_013",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.912852 10.352278)"
+    },
+    {
+        "id": "BUNZEL_A01_014",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9127864 10.3519997)"
+    },
+    {
+        "id": "BUNZEL_A01_015",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913037 10.352357)"
+    },
+    {
+        "id": "BUNZEL_A01_016",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913035 10.352349)"
+    },
+    {
+        "id": "BUNZEL_A01_017",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913449 10.352058)"
+    },
+    {
+        "id": "BUNZEL_A01_018",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913473 10.352054)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913376 10.352119)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913384 10.352152)"
+    },
+    {
+        "id": "BUNZEL_A01_021",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913294 10.352139)"
+    },
+    {
+        "id": "BUNZEL_A01_022",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.913301 10.352172)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9133834 10.3522756)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9133807 10.3522673)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9132141 10.3521662)"
+    },
+    {
+        "id": "replace_with_node_id",
+        "building_id": -999,
+        "floor_level": 1,
+        "geom_point": "POINT (123.9132185 10.3521906)"
+    },
+    {
+        "id": "BUNZEL_A01_027",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9131358 10.3521782)"
+    },
+    {
+        "id": "BUNZEL_A01_028",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9131419 10.3522089)"
+    },
+    {
+        "id": "BUNZEL_A01_029",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130672 10.3521953)"
+    },
+    {
+        "id": "BUNZEL_A01_030",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130733 10.3522253)"
+    },
+    {
+        "id": "BUNZEL_A01_031",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130293 10.3522046)"
+    },
+    {
+        "id": "BUNZEL_A01_032",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130357 10.3522343)"
+    },
+    {
+        "id": "BUNZEL_A01_033",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9129804 10.3522162)"
+    },
+    {
+        "id": "BUNZEL_A01_034",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9129871 10.3522462)"
+    },
+    {
+        "id": "BUNZEL_A01_035",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9129307 10.3522286)"
+    },
+    {
+        "id": "BUNZEL_A01_036",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9129374 10.3522579)"
+    },
+    {
+        "id": "BUNZEL_A01_037",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.912888 10.352426)"
+    },
+    {
+        "id": "BUNZEL_A01_038",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128841 10.3524113)"
+    },
+    {
+        "id": "BUNZEL_A01_039",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128539 10.3524182)"
+    },
+    {
+        "id": "BUNZEL_A01_040",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128208 10.3522851)"
+    },
+    {
+        "id": "BUNZEL_A01_041",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9127529 10.3520077)"
+    },
+    {
+        "id": "BUNZEL_A01_042",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9133521 10.3518549)"
+    },
+    {
+        "id": "BUNZEL_A01_043",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9134188 10.3518388)"
+    },
+    {
+        "id": "BUNZEL_A01_044",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9131282 10.3518996)"
+    },
+    {
+        "id": "BUNZEL_A01_045",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9131235 10.3518831)"
+    },
+    {
+        "id": "BUNZEL_A01_046",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130514 10.3519184)"
+    },
+    {
+        "id": "BUNZEL_A01_047",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9130478 10.3519016)"
+    },
+    {
+        "id": "BUNZEL_A01_048",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128728 10.3519635)"
+    },
+    {
+        "id": "BUNZEL_A01_049",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128684 10.3519454)"
+    },
+    {
+        "id": "BUNZEL_A01_050",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9128418 10.3522307)"
+    },
+    {
+        "id": "BUNZEL_A01_051",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9127989 10.3520496)"
+    },
+    {
+        "id": "BUNZEL_A01_052",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9135467 10.3522788)"
+    },
+    {
+        "id": "BUNZEL_A01_053",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9135564 10.3523289)"
+    },
+    {
+        "id": "BUNZEL_A01_054",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9133141 10.3521329)"
+    },
+    {
+        "id": "BUNZEL_A01_055",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9133226 10.3521658)"
+    },
+    {
+        "id": "BUNZEL_A01_056",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9132428 10.3521506)"
+    },
+    {
+        "id": "BUNZEL_A01_057",
+        "building_id": "replace_me",
+        "floor_level": 1,
+        "geom_point": "POINT (123.9132515 10.3521833)"
+    }
+]

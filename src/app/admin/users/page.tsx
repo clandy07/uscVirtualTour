@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface User {
   id: string;
@@ -13,48 +13,164 @@ interface User {
   organizations?: string[]; // Organization names the user is a member of
 }
 
+// SUGGESTION: Nice unta if there was a loading gif shown while the users are being fetched
+
+
 export default function AdminUsersPage() {
-  // Mock: Available organizations for assignment
-  const [availableOrganizations] = useState([
-    { id: 1, name: 'Supreme Student Council' },
-    { id: 2, name: 'Computer Science Society' },
-    { id: 3, name: 'Carolinian Dance Troupe' },
-    { id: 4, name: 'USC Alumni Association' },
-    { id: 5, name: 'Athletics Department' },
-  ]);
+  // // Mock: Available organizations for assignment
+  // const [availableOrganizations] = useState([
+  //   { id: 1, name: 'Supreme Student Council' },
+  //   { id: 2, name: 'Computer Science Society' },
+  //   { id: 3, name: 'Carolinian Dance Troupe' },
+  //   { id: 4, name: 'USC Alumni Association' },
+  //   { id: 5, name: 'Athletics Department' },
+  // ]);
+  const [availableOrganizations, setAvailableOrganizations] = useState<{id: number, name: string}[]>([]);
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      try {
+        const res = await fetch('/api/orgs', {
+          method: 'GET',
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch organizations');
+        }
+
+        const {data} = await res.json();
+        
+        if(data.length > 0){
+          const orgs = data.map((org: {
+            id: number,
+            name: string,
+            description: string | null,
+            logo: string | null,
+            is_student_org: boolean
+          }) => ({
+            id: org.id,
+            name: org.name
+          }))
+          setAvailableOrganizations(orgs);
+        }        
+      } catch (err) {
+        console.error(err);
+      } 
+    };
+
+    fetchOrgs();
+  }, []); // empty dependency → run once on mount
 
   const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'Juan Dela Cruz',
-      email: '21081234@usc.edu.ph',
-      username: '21081234',
-      is_admin: false,
-      email_verified: true,
-      created_at: '2024-01-15',
-      organizations: ['Supreme Student Council', 'Computer Science Society'],
-    },
-    {
-      id: '2',
-      name: 'Maria Santos',
-      email: '21655678@usc.edu.ph',
-      username: '21655678',
-      is_admin: false,
-      email_verified: true,
-      created_at: '2024-02-20',
-      organizations: ['Supreme Student Council', 'Carolinian Dance Troupe'],
-    },
-    {
-      id: '3',
-      name: 'Admin User',
-      email: 'admin@usc.edu.ph',
-      username: 'admin-001',
-      is_admin: true,
-      email_verified: true,
-      created_at: '2023-12-01',
-      organizations: [],
-    },
+    // {
+    //   id: '1',
+    //   name: 'Juan Dela Cruz',
+    //   email: '21081234@usc.edu.ph',
+    //   username: '21081234',
+    //   is_admin: false,
+    //   email_verified: true,
+    //   created_at: '2024-01-15',
+    //   organizations: ['Supreme Student Council', 'Computer Science Society'],
+    // },
+    // {
+    //   id: '2',
+    //   name: 'Maria Santos',
+    //   email: '21655678@usc.edu.ph',
+    //   username: '21655678',
+    //   is_admin: false,
+    //   email_verified: true,
+    //   created_at: '2024-02-20',
+    //   organizations: ['Supreme Student Council', 'Carolinian Dance Troupe'],
+    // },
+    // {
+    //   id: '3',
+    //   name: 'Admin User',
+    //   email: 'admin@usc.edu.ph',
+    //   username: 'admin-001',
+    //   is_admin: true,
+    //   email_verified: true,
+    //   created_at: '2023-12-01',
+    //   organizations: [],
+    // },
   ]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users', {
+          method: 'GET',
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch users');
+        }
+
+        const {data} = await res.json();
+        
+        if (data.length === 0) return;
+
+        const users = await Promise.all(
+          data.map(async (user: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            username: string;
+            email: string;
+          }) => {
+            const res = await fetch(`/api/users/${user.id}`, {
+              method: 'GET'
+            });
+            if (!res.ok) throw new Error('Failed to fetch user');
+
+
+            const { data } = await res.json();
+
+            const userOrgs: {
+              user_id: string;
+              org_id: number;
+              can_post_events: boolean;
+              can_add_members: boolean;
+              can_remove_members: boolean;
+              can_set_member_permissions: boolean;
+              organization: {
+                  id: number;
+                  name: string;
+                  created_at: Date;
+                  description: string | null;
+                  updated_at: Date | null;
+                  logo: string | null;
+                  is_student_org: boolean | null;
+              };
+            }[] = data.userOrgs
+
+            let orgNames = (userOrgs.length > 0) 
+              ? userOrgs.map((userOrg) => userOrg.organization.name)
+              : [];
+            
+            return {
+              id: data.id,
+              name: `${data.first_name} ${data.mid_name} ${data.last_name}`,
+              email: data.email,
+              username: `${data.username}`,
+              is_admin: data.is_admin,
+              email_verified: data.email_verified,
+              created_at: data.created_at,
+              organizations: orgNames,
+            };
+          })
+        );
+        
+        console.log(users)
+        setUsers(users);
+             
+      } catch (err) {
+        console.error(err);
+      } 
+    };
+
+    fetchUsers();
+  }, []); // empty dependency → run once on mount
+
+  const [previousUserOrgs, setPreviousUserOrgs] = useState<string[]>([]);
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -63,6 +179,7 @@ export default function AdminUsersPage() {
   const handleEdit = (user: User) => {
     setEditingUser(user);
     setIsEditModalOpen(true);
+    if(user.organizations != undefined) setPreviousUserOrgs(user.organizations);
   };
 
   const handleDelete = (userId: string) => {
@@ -72,12 +189,96 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleUpdateUser = () => {
+  function getOrgMembershipUpdates(
+    previousUserOrgs: string[], 
+    currentUserOrgs: string[]
+  ): {
+    orgsKickedFrom: number[],
+    orgsJoined: number[]
+  } {
+    const orgNameToId = new Map(
+      availableOrganizations.map(org => [org.name, org.id])
+    );
+
+    const prevUsrOrgIds = previousUserOrgs
+      .map(name => orgNameToId.get(name))
+      .filter((id): id is number => id !== undefined);
+
+    const currUsrOrgIds = currentUserOrgs
+      .map(name => orgNameToId.get(name))
+      .filter((id): id is number => id !== undefined);
+
+    const prevSet = new Set(prevUsrOrgIds);
+    const currSet = new Set(currUsrOrgIds);
+
+    return {
+      orgsKickedFrom: prevUsrOrgIds.filter(id => !currSet.has(id)),
+      orgsJoined: currUsrOrgIds.filter(id => !prevSet.has(id)),
+    };
+  }
+
+
+  const handleUpdateUser = async () => {
     if (editingUser) {
-      setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
+      // if(editingUser.organizations != undefined) 
+      const {orgsKickedFrom, orgsJoined} = getOrgMembershipUpdates(
+        previousUserOrgs, 
+        editingUser.organizations || []
+      );
+      
+      if (orgsKickedFrom.length > 0) {
+        try{
+          const retOrgsKickedId = await Promise.all(
+            orgsKickedFrom.map((orgId) =>
+              fetch(`/api/orgs/${orgId}/members/${editingUser.id}`, {
+                method: 'DELETE',
+              })
+            )
+          );
+
+          console.log("orgs kicked from: ", retOrgsKickedId )
+        }
+        catch(error){
+          console.error(error)
+        }
+
+      }
+
+
+      if(orgsJoined.length > 0){
+        // TODO: Call API to update user's org memberships
+        try{
+          const retOrgsJoinedId = await Promise.all(
+            orgsJoined.map((orgId) =>
+              fetch(`/api/orgs/${orgId}/members`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userIdToAdd: editingUser.id,
+                  canPostEvents: false,
+                  canAddMembers: false,
+                  canRemoveMembers: false,
+                  canSetMemberPermissions: false,
+                }),
+              })
+            )
+          );
+
+          console.log("new orgs joined: ", retOrgsJoinedId )
+        }
+        catch(error){
+          console.error(error)
+        }
+
+      }
+
+      if(orgsKickedFrom.length > 0 || orgsJoined.length > 0) setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
+      
       setIsEditModalOpen(false);
       setEditingUser(null);
-      // TODO: Call API to update user
+      
     }
   };
 
@@ -199,7 +400,7 @@ export default function AdminUsersPage() {
           <div className="bg-white rounded-lg max-w-md w-full">
             <div className="p-4 sm:p-6">
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">
-                Edit User - {editingUser.name}
+                Edit user {editingUser.name}
               </h3>
               <div className="space-y-4">
                 <div>

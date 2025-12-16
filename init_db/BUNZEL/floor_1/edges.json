@@ -1,0 +1,344 @@
+[
+    {
+        "source_node_id": "BUNZEL_A01_026",
+        "target_node_id": "BUNZEL_A01_057",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_044",
+        "target_node_id": "BUNZEL_A01_045",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_048",
+        "target_node_id": "BUNZEL_A01_049",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_057",
+        "target_node_id": "BUNZEL_A01_056",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_055",
+        "target_node_id": "BUNZEL_A01_054",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_012",
+        "target_node_id": "BUNZEL_A01_016",
+        "cost_meters": 18,
+        "reverse_cost_meters": 18
+    },
+    {
+        "source_node_id": "BUNZEL_A01_013",
+        "target_node_id": "BUNZEL_A01_050",
+        "cost_meters": 5,
+        "reverse_cost_meters": 5
+    },
+    {
+        "source_node_id": "BUNZEL_A01_016",
+        "target_node_id": "BUNZEL_A01_024",
+        "cost_meters": 39,
+        "reverse_cost_meters": 39
+    },
+    {
+        "source_node_id": "BUNZEL_A01_006",
+        "target_node_id": "BUNZEL_A01_002",
+        "cost_meters": 10,
+        "reverse_cost_meters": 10
+    },
+    {
+        "source_node_id": "BUNZEL_A01_001",
+        "target_node_id": "BUNZEL_A01_002",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_011",
+        "target_node_id": "BUNZEL_A01_002",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_011",
+        "target_node_id": "BUNZEL_A01_010",
+        "cost_meters": 12,
+        "reverse_cost_meters": 12
+    },
+    {
+        "source_node_id": "BUNZEL_A01_018",
+        "target_node_id": "BUNZEL_A01_010",
+        "cost_meters": 8,
+        "reverse_cost_meters": 8
+    },
+    {
+        "source_node_id": "BUNZEL_A01_018",
+        "target_node_id": "BUNZEL_A01_004",
+        "cost_meters": 10,
+        "reverse_cost_meters": 10
+    },
+    {
+        "source_node_id": "BUNZEL_A01_005",
+        "target_node_id": "BUNZEL_A01_004",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_003",
+        "target_node_id": "BUNZEL_A01_004",
+        "cost_meters": 12,
+        "reverse_cost_meters": 12
+    },
+    {
+        "source_node_id": "BUNZEL_A01_043",
+        "target_node_id": "BUNZEL_A01_004",
+        "cost_meters": 15,
+        "reverse_cost_meters": 15
+    },
+    {
+        "source_node_id": "BUNZEL_A01_017",
+        "target_node_id": "BUNZEL_A01_018",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_042",
+        "target_node_id": "BUNZEL_A01_043",
+        "cost_meters": 8,
+        "reverse_cost_meters": 8
+    },
+    {
+        "source_node_id": "BUNZEL_A01_009",
+        "target_node_id": "BUNZEL_A01_043",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_009",
+        "target_node_id": "BUNZEL_A01_008",
+        "cost_meters": 10,
+        "reverse_cost_meters": 10
+    },
+    {
+        "source_node_id": "BUNZEL_A01_007",
+        "target_node_id": "BUNZEL_A01_008",
+        "cost_meters": 7,
+        "reverse_cost_meters": 7
+    },
+    {
+        "source_node_id": "BUNZEL_A01_002",
+        "target_node_id": "BUNZEL_A01_052",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_006",
+        "target_node_id": "BUNZEL_A01_053",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_010",
+        "target_node_id": "BUNZEL_A01_020",
+        "cost_meters": 12,
+        "reverse_cost_meters": 12
+    },
+    {
+        "source_node_id": "BUNZEL_A01_019",
+        "target_node_id": "BUNZEL_A01_020",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_020",
+        "target_node_id": "BUNZEL_A01_055",
+        "cost_meters": 7,
+        "reverse_cost_meters": 7
+    },
+    {
+        "source_node_id": "BUNZEL_A01_022",
+        "target_node_id": "BUNZEL_A01_021",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_022",
+        "target_node_id": "BUNZEL_A01_057",
+        "cost_meters": 6,
+        "reverse_cost_meters": 6
+    },
+    {
+        "source_node_id": "BUNZEL_A01_026",
+        "target_node_id": "BUNZEL_A01_025",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_026",
+        "target_node_id": "BUNZEL_A01_028",
+        "cost_meters": 9,
+        "reverse_cost_meters": 9
+    },
+    {
+        "source_node_id": "BUNZEL_A01_030",
+        "target_node_id": "BUNZEL_A01_028",
+        "cost_meters": 8,
+        "reverse_cost_meters": 8
+    },
+    {
+        "source_node_id": "BUNZEL_A01_030",
+        "target_node_id": "BUNZEL_A01_032",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_034",
+        "target_node_id": "BUNZEL_A01_032",
+        "cost_meters": 5,
+        "reverse_cost_meters": 5
+    },
+    {
+        "source_node_id": "BUNZEL_A01_034",
+        "target_node_id": "BUNZEL_A01_036",
+        "cost_meters": 6,
+        "reverse_cost_meters": 6
+    },
+    {
+        "source_node_id": "BUNZEL_A01_013",
+        "target_node_id": "BUNZEL_A01_036",
+        "cost_meters": 10,
+        "reverse_cost_meters": 10
+    },
+    {
+        "source_node_id": "BUNZEL_A01_027",
+        "target_node_id": "BUNZEL_A01_028",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_029",
+        "target_node_id": "BUNZEL_A01_030",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_031",
+        "target_node_id": "BUNZEL_A01_032",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_034",
+        "target_node_id": "BUNZEL_A01_033",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_036",
+        "target_node_id": "BUNZEL_A01_035",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_011",
+        "target_node_id": "BUNZEL_A01_024",
+        "cost_meters": 15,
+        "reverse_cost_meters": 15
+    },
+    {
+        "source_node_id": "BUNZEL_A01_023",
+        "target_node_id": "BUNZEL_A01_024",
+        "cost_meters": 1,
+        "reverse_cost_meters": 1
+    },
+    {
+        "source_node_id": "BUNZEL_A01_012",
+        "target_node_id": "BUNZEL_A01_038",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_016",
+        "target_node_id": "BUNZEL_A01_015",
+        "cost_meters": 1,
+        "reverse_cost_meters": 1
+    },
+    {
+        "source_node_id": "BUNZEL_A01_038",
+        "target_node_id": "BUNZEL_A01_039",
+        "cost_meters": 3,
+        "reverse_cost_meters": 3
+    },
+    {
+        "source_node_id": "BUNZEL_A01_038",
+        "target_node_id": "BUNZEL_A01_037",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_012",
+        "target_node_id": "BUNZEL_A01_013",
+        "cost_meters": 12,
+        "reverse_cost_meters": 12
+    },
+    {
+        "source_node_id": "BUNZEL_A01_040",
+        "target_node_id": "BUNZEL_A01_013",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_050",
+        "target_node_id": "BUNZEL_A01_051",
+        "cost_meters": 21,
+        "reverse_cost_meters": 21
+    },
+    {
+        "source_node_id": "BUNZEL_A01_014",
+        "target_node_id": "BUNZEL_A01_051",
+        "cost_meters": 6,
+        "reverse_cost_meters": 6
+    },
+    {
+        "source_node_id": "BUNZEL_A01_014",
+        "target_node_id": "BUNZEL_A01_041",
+        "cost_meters": 4,
+        "reverse_cost_meters": 4
+    },
+    {
+        "source_node_id": "BUNZEL_A01_009",
+        "target_node_id": "BUNZEL_A01_045",
+        "cost_meters": 33,
+        "reverse_cost_meters": 33
+    },
+    {
+        "source_node_id": "BUNZEL_A01_047",
+        "target_node_id": "BUNZEL_A01_045",
+        "cost_meters": 9,
+        "reverse_cost_meters": 9
+    },
+    {
+        "source_node_id": "BUNZEL_A01_047",
+        "target_node_id": "BUNZEL_A01_049",
+        "cost_meters": 20,
+        "reverse_cost_meters": 20
+    },
+    {
+        "source_node_id": "BUNZEL_A01_047",
+        "target_node_id": "BUNZEL_A01_046",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    },
+    {
+        "source_node_id": "BUNZEL_A01_022",
+        "target_node_id": "BUNZEL_A01_055",
+        "cost_meters": 2,
+        "reverse_cost_meters": 2
+    }
+]

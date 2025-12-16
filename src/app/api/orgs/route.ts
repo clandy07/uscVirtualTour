@@ -48,3 +48,49 @@ export async function GET(request: NextRequest) {
     }
 
 }
+
+export async function POST(request: NextRequest) {
+
+    try {        
+        const session = await checkAuth(request)
+
+        if(!session){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );     
+        }
+        const userRole = getUserRole(session.user)
+        if(userRole != "admin"){
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );                
+        }
+
+        const body = await request.json()
+
+        const result = await db.insert(organizations).values({
+            name: body.name,
+            description: body.description,
+            logo: body.logo,
+            is_student_org: body.is_student_org
+        }).returning({
+            insertedOrgId: organizations.id,
+            name: organizations.name,
+            description: organizations.description,
+            logo: organizations.logo,
+            is_student_org: organizations.is_student_org
+        })
+
+        return NextResponse.json({data: result})
+    
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
+
+}
