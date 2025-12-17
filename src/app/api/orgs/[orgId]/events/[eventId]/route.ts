@@ -182,18 +182,18 @@ export async function PATCH(
                 { status: 401 }
             ); 
         }
-        else if(userRole == "admin" && orgId != null && orgId != 0){
-            const result = await db.select({
-                is_student_org: organizations.is_student_org
-            }).from(organizations).where(eq(organizations.id, orgId))
+        // else if(userRole == "admin" && orgId != null && orgId != 0){
+        //     const result = await db.select({
+        //         is_student_org: organizations.is_student_org
+        //     }).from(organizations).where(eq(organizations.id, orgId))
 
-            if(result[0].is_student_org){
-                return NextResponse.json(
-                    { error: "Unauthorized" },
-                    { status: 401 }
-                );            
-            }
-        }
+        //     if(result[0].is_student_org){
+        //         return NextResponse.json(
+        //             { error: "Unauthorized" },
+        //             { status: 401 }
+        //         );            
+        //     }
+        // }
 
         const body: {
             name: string, 
