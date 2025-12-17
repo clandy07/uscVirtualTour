@@ -144,24 +144,24 @@ export async function POST(request: NextRequest,
                 { status: 401 }
             );            
         }
-        else if(userRole == "admin" && orgId != null){
-            const result = await db.select({
-                is_student_org: organizations.is_student_org
-            }).from(organizations).where(eq(organizations.id, orgId))
+        // else if(userRole == "admin" && orgId != null){
+        //     const result = await db.select({
+        //         is_student_org: organizations.is_student_org
+        //     }).from(organizations).where(eq(organizations.id, orgId))
             
-            if(result.length > 0 && result[0].is_student_org){
-                return NextResponse.json(
-                    { error: "Unauthorized" },
-                    { status: 401 }
-                );            
-            }
-            else if(result.length <= 0){
-                return NextResponse.json(
-                    { error: "Org doesnt exist" },
-                    { status: 404 }            
-                )
-            }
-        }
+        //     if(result.length > 0 && result[0].is_student_org){
+        //         return NextResponse.json(
+        //             { error: "Unauthorized" },
+        //             { status: 401 }
+        //         );            
+        //     }
+        //     else if(result.length <= 0){
+        //         return NextResponse.json(
+        //             { error: "Org doesnt exist" },
+        //             { status: 404 }            
+        //         )
+        //     }
+        // }
  
 
         const body: any = await request.json();
