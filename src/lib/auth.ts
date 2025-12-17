@@ -5,8 +5,8 @@ import {schema} from "@/db/schema"
 import { username } from "better-auth/plugins"
 
 export const auth = betterAuth({
-    secret: process.env.BETTER_AUTH_SECRET || "your-secret-key",
-    baseURL: process.env.BETTER_AUTH_URL || "https://usc-virtual-tour.vercel.app",
+    secret: process.env.BETTER_AUTH_SECRET,
+    baseURL: process.env.BETTER_AUTH_URL, 
     trustedOrigins: [
         "https://usc-virtual-tour.vercel.app",
         ...(process.env.VERCEL ? ["https://*.vercel.app"] : [])
