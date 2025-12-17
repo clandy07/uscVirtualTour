@@ -527,7 +527,7 @@ export default function EventsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
                   >
                     <option value={0}>No Organization</option>
-                    {adminOrgs.map(org => (
+                    {organizations.map(org => (
                       <option key={org.id} value={org.id}>
                         {org.name}
                       </option>
