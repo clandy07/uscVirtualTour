@@ -254,10 +254,27 @@ export default function EventsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this event?')) {
-      setEvents(events.filter((e) => e.id !== id));
-      // TODO: Call API to delete
+      
+      try{
+        const res = await fetch(`/api/events/${id}`, {
+          method: "DELETE"
+        })
+
+        if (!res.ok) {
+          throw new Error("Failed to update event");
+        }
+
+        const json = await res.json();
+        const {data} = json
+
+        if(data.length > 0){
+          setEvents(events.filter((e) => e.id !== id));
+        }
+      }catch (error){
+        console.error("Error deleting event:", error);
+      }
     }
   };
 
@@ -510,7 +527,7 @@ export default function EventsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-black cursor-pointer"
                   >
                     <option value={0}>No Organization</option>
-                    {adminOrgs.map(org => (
+                    {organizations.map(org => (
                       <option key={org.id} value={org.id}>
                         {org.name}
                       </option>
